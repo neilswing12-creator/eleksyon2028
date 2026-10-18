@@ -481,12 +481,12 @@ async function main() {
       // Pick selections based on realistic regional affinity patterns
       // (e.g. Mindanao leans Sara Duterte/Bato, Luzon NCR leans Tulfo/Hontiveros/Poe)
       let presChoice = presCandidates[i % presCandidates.length];
-      if (province.islandGroup === "Mindanao" && presCandidates.find((c) => c.slug === "sara-duterte")) {
-        presChoice = presCandidates.find((c) => c.slug === "sara-duterte")!;
-      } else if (province.id === "metro-manila" && presCandidates.find((c) => c.slug === "raffy-tulfo")) {
-        presChoice = presCandidates.find((c) => c.slug === "raffy-tulfo")!;
-      } else if (province.regionId === "R06" && presCandidates.find((c) => c.slug === "risa-hontiveros")) {
-        presChoice = presCandidates.find((c) => c.slug === "risa-hontiveros")!;
+      if (province.islandGroup === "Mindanao" && presCandidates.find((c: any) => c.slug === "sara-duterte")) {
+        presChoice = presCandidates.find((c: any) => c.slug === "sara-duterte")!;
+      } else if (province.id === "metro-manila" && presCandidates.find((c: any) => c.slug === "raffy-tulfo")) {
+        presChoice = presCandidates.find((c: any) => c.slug === "raffy-tulfo")!;
+      } else if (province.regionId === "R06" && presCandidates.find((c: any) => c.slug === "risa-hontiveros")) {
+        presChoice = presCandidates.find((c: any) => c.slug === "risa-hontiveros")!;
       }
 
       const vpChoice = vpCandidates[i % vpCandidates.length];

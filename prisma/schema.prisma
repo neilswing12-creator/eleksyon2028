@@ -1,0 +1,228 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("SURVEY_MANAGER") // SUPER_ADMIN, SURVEY_MANAGER, CANDIDATE_MANAGER, ANALYST
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Candidate {
+  id              String              @id @default(cuid())
+  slug            String              @unique
+  name            String
+  position        String // PRESIDENT, VICE_PRESIDENT, SENATOR
+  party           String?
+  color           String              @default("#1455D9")
+  photoUrl        String?
+  bio             String?
+  education       String?
+  publicService   String?
+  officialWebsite String?
+  socialLinks     String? // JSON string
+  displayOrder    Int                 @default(0)
+  isPublished     Boolean             @default(true)
+  lastVerifiedAt  DateTime?
+  platforms       CandidatePlatform[]
+  selections      CandidateSelection[]
+  educations      CandidateEducation[]
+  publicServices  CandidatePublicService[]
+  sources         CandidateSource[]
+  adjustments     SurveyAdjustment[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([position, isPublished])
+}
+
+model CandidateEducation {
+  id           String    @id @default(cuid())
+  candidateId  String
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  degree       String
+  institution  String?
+  year         String?
+  displayOrder Int       @default(0)
+  sourceUrl    String?
+  sourceTitle  String?
+  isVerified   Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([candidateId, displayOrder])
+}
+
+model CandidatePublicService {
+  id           String    @id @default(cuid())
+  candidateId  String
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position     String
+  title        String?
+  period       String?
+  displayOrder Int       @default(0)
+  sourceUrl    String?
+  sourceTitle  String?
+  isVerified   Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([candidateId, displayOrder])
+}
+
+model CandidatePlatform {
+  id                 String    @id @default(cuid())
+  candidateId        String
+  candidate          Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  title              String
+  description        String
+  category           String // ECONOMY, EDUCATION, HEALTHCARE, AGRICULTURE, INFRASTRUCTURE, PUBLIC_SAFETY, GOVERNANCE, ENVIRONMENT, DIGITAL_TRANSFORMATION, SOCIAL_WELFARE, FOREIGN_POLICY, OTHER
+  sourceUrl          String?
+  sourceTitle        String?
+  sourceType         String?   // OFFICIAL_PLATFORM, LEGISLATIVE_RECORD, GOVERNMENT_PUBLICATION, NEWS_REPORT
+  publicationDate    DateTime?
+  verificationStatus String    @default("VERIFIED") // VERIFIED, SECONDARY_CONFIRMED, PENDING
+  verifiedAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([candidateId, category])
+}
+
+model CandidateSource {
+  id                 String    @id @default(cuid())
+  candidateId        String
+  candidate          Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  category           String    // EDUCATION, PUBLIC_SERVICE, PLATFORM, PORTRAIT, GENERAL
+  title              String
+  url                String
+  publisher          String?   // e.g. "Senate of the Philippines", "House of Representatives", "Official Gazette", "COMELEC", "Rappler", "Inquirer"
+  publicationDate    String?
+  accessedDate       DateTime  @default(now())
+  verificationStatus String    @default("VERIFIED") // VERIFIED, SECONDARY_CONFIRMED, PENDING
+  notes              String?
+  displayOrder       Int       @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([candidateId, category])
+}
+
+model SurveyCampaign {
+  id                       String             @id @default(cuid())
+  title                    String
+  description              String?
+  status                   String             @default("ACTIVE") // ACTIVE, PAUSED, CLOSED
+  startDate                DateTime           @default(now())
+  endDate                  DateTime?
+  enablePresident          Boolean            @default(true)
+  enableVicePresident      Boolean            @default(true)
+  enableSenators           Boolean            @default(true)
+  maxSenatorSelections     Int                @default(12)
+  ipRestrictionEnabled     Boolean            @default(true)
+  minResponseThreshold     Int                @default(1)
+  publicResultsVisible     Boolean            @default(true)
+  geographicResultsVisible Boolean            @default(true)
+  presidentialQuestion     String?
+  vicePresidentialQuestion String?
+  senatorialQuestion       String?
+  geographicQuestion       String?
+  methodologyDisclaimer    String?
+  privacyNotice            String?
+  submissions              SurveySubmission[]
+  adjustments              SurveyAdjustment[]
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+}
+
+model SurveyAdjustment {
+  id                     String         @id @default(cuid())
+  campaignId             String
+  campaign               SurveyCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  candidateId            String
+  candidate              Candidate      @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  category               String         // PRESIDENT, VICE_PRESIDENT, SENATOR
+  amount                 Int            // Positive or negative adjustment
+  reason                 String
+  adminId                String?
+  adminEmail             String
+  status                 String         @default("APPROVED") // APPROVED, REVERSED
+  geographicScope        String         @default("NATIONAL") // NATIONAL, REGION, PROVINCE
+  regionId               String?
+  provinceId             String?
+  reversedByAdjustmentId String?
+  reversalReason         String?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  @@index([campaignId, candidateId, status])
+  @@index([category, status])
+}
+
+model SurveySubmission {
+  id              String               @id @default(cuid())
+  campaignId      String
+  campaign        SurveyCampaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  participantName String
+  regionId        String?
+  regionName      String?
+  provinceId      String?
+  provinceName    String?
+  cityId          String?
+  cityName        String?
+  status          String               @default("ACTIVE") // ACTIVE, RETRACTED
+  ageGroup        String?              // 18-24, 25-34, 35-49, 50-64, 65+
+  gender          String?              // FEMALE, MALE, PREFER_NOT_TO_SAY
+  civilStatus     String?              // SINGLE, MARRIED, WIDOWED, SEPARATED
+  isFirstTimeVoter Boolean?            @default(false)
+  ipHash          String               // HMAC-SHA-256 of IP
+  tokenHash       String               // SHA-256 of the random management token
+  retractedAt     DateTime?
+  selections      CandidateSelection[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([campaignId, status])
+  @@index([ipHash, campaignId, status])
+  @@index([tokenHash])
+  @@index([provinceName, status])
+  @@index([regionName, status])
+}
+
+model CandidateSelection {
+  id           String           @id @default(cuid())
+  submissionId String
+  submission   SurveySubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  candidateId  String
+  candidate    Candidate        @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position     String // PRESIDENT, VICE_PRESIDENT, SENATOR
+  createdAt    DateTime         @default(now())
+
+  @@unique([submissionId, candidateId])
+  @@index([candidateId, position])
+  @@index([submissionId])
+}
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  adminEmail String
+  action     String
+  entityType String
+  entityId   String?
+  details    String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+

@@ -47,8 +47,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   // Login form state
-  const [loginEmail, setLoginEmail] = useState("admin@survey2028.ph");
-  const [loginPassword, setLoginPassword] = useState("Admin@2028!");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
 
@@ -352,26 +352,42 @@ export default function AdminPage() {
     const method = isEdit ? "PUT" : "POST";
 
     const payload = {
-      ...candidateForm,
-      educations: candidateForm.educations,
-      publicServices: candidateForm.publicServices,
-      sources: candidateForm.sources,
+      id: candidateForm.id,
+      name: candidateForm.name,
+      slug: candidateForm.slug,
+      position: candidateForm.position,
+      party: candidateForm.party,
+      color: candidateForm.color,
+      photoUrl: candidateForm.photoUrl ? candidateForm.photoUrl.trim() : "",
+      bio: candidateForm.bio,
+      officialWebsite: candidateForm.officialWebsite ? candidateForm.officialWebsite.trim() : "",
+      socialLinks: candidateForm.socialLinks,
+      displayOrder: candidateForm.displayOrder,
+      isPublished: candidateForm.isPublished !== false,
+      educations: candidateForm.educations || [],
+      publicServices: candidateForm.publicServices || [],
+      sources: candidateForm.sources || [],
       lastVerifiedAt: candidateForm.lastVerifiedAt || new Date().toISOString(),
     };
 
-    const res = await fetch("/api/admin/candidates", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch("/api/admin/candidates", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      setShowCandidateModal(false);
-      showNotify("success", `Candidate ${candidateForm.name} saved successfully.`);
-      loadAdminData();
-    } else {
-      const err = await res.json();
-      alert(err.error || "Failed to save candidate.");
+      if (res.ok) {
+        setShowCandidateModal(false);
+        showNotify("success", `Candidate ${candidateForm.name} saved successfully.`);
+        loadAdminData();
+      } else {
+        const err = await res.json();
+        alert(err.error || "Failed to save candidate.");
+      }
+    } catch (err) {
+      console.error("Save candidate error:", err);
+      alert("Network or server error while saving candidate.");
     }
   };
 
@@ -570,6 +586,7 @@ export default function AdminPage() {
               <input
                 type="email"
                 required
+                placeholder="admin@survey2028.ph"
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border focus:ring-2 focus:ring-brand-blue/30 focus:border-brand-blue outline-none"
@@ -581,16 +598,11 @@ export default function AdminPage() {
               <input
                 type="password"
                 required
+                placeholder="Enter admin password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border focus:ring-2 focus:ring-brand-blue/30 focus:border-brand-blue outline-none"
               />
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-[11px] text-slate-600">
-              <p className="font-semibold text-brand-navy">Default Development Credentials:</p>
-              <p>Email: <code className="text-brand-blue font-bold">admin@survey2028.ph</code></p>
-              <p>Password: <code className="text-brand-blue font-bold">Admin@2028!</code></p>
             </div>
 
             <button
@@ -1787,7 +1799,7 @@ export default function AdminPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveCandidate} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveCandidate} noValidate className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-brand-navy mb-1">Full Name</label>
@@ -1909,13 +1921,13 @@ export default function AdminPage() {
                     {uploadError && <div className="text-[11px] text-red-600 font-bold">{uploadError}</div>}
 
                     <div>
-                      <span className="text-[10px] text-slate-400 block mb-0.5">Or enter direct image URL:</span>
+                      <span className="text-[10px] text-slate-400 block mb-0.5">Or enter image URL or local server path:</span>
                       <input
-                        type="url"
-                        placeholder="https://..."
+                        type="text"
+                        placeholder="/uploads/candidates/... or https://..."
                         value={candidateForm.photoUrl || ""}
                         onChange={(e) => setCandidateForm({ ...candidateForm, photoUrl: e.target.value })}
-                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 outline-none"
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 outline-none font-mono text-[11px]"
                       />
                     </div>
                   </div>
@@ -2130,7 +2142,8 @@ export default function AdminPage() {
                 <div>
                   <label className="block font-bold text-brand-navy mb-1">Official Website</label>
                   <input
-                    type="url"
+                    type="text"
+                    placeholder="https://..."
                     value={candidateForm.officialWebsite || ""}
                     onChange={(e) => setCandidateForm({ ...candidateForm, officialWebsite: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border border-brand-border outline-none"
@@ -2221,7 +2234,7 @@ export default function AdminPage() {
                       />
                       <div className="flex items-center gap-2">
                         <input
-                          type="url"
+                          type="text"
                           placeholder="https://..."
                           value={candidateForm.newSourceUrl || ""}
                           onChange={(e) => setCandidateForm({ ...candidateForm, newSourceUrl: e.target.value })}

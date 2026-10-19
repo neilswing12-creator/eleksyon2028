@@ -204,7 +204,26 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { id, educations, publicServices, sources, lastVerifiedAt, ...dataToUpdate } = body;
+    const {
+      id,
+      name,
+      slug,
+      position,
+      party,
+      color,
+      photoUrl,
+      bio,
+      education,
+      publicService,
+      officialWebsite,
+      socialLinks,
+      displayOrder,
+      isPublished,
+      lastVerifiedAt,
+      educations,
+      publicServices,
+      sources,
+    } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Candidate ID is required." }, { status: 400 });
@@ -219,12 +238,24 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Candidate not found." }, { status: 404 });
     }
 
-    // Clean up old uploaded image if replaced
+    // Normalize photo URL
+    let normalizedPhotoUrl = photoUrl;
+    if (photoUrl && typeof photoUrl === "string") {
+      const trimmed = photoUrl.trim();
+      if (trimmed) {
+        normalizedPhotoUrl = trimmed.startsWith("http") || trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+      } else {
+        normalizedPhotoUrl = null;
+      }
+    }
+
+    // Clean up old custom uploaded image if replaced
     if (
-      dataToUpdate.photoUrl &&
+      normalizedPhotoUrl &&
       existing.photoUrl &&
-      dataToUpdate.photoUrl !== existing.photoUrl &&
-      existing.photoUrl.startsWith("/uploads/candidates/")
+      normalizedPhotoUrl !== existing.photoUrl &&
+      existing.photoUrl.startsWith("/uploads/candidates/") &&
+      !existing.photoUrl.endsWith("-portrait.jpg")
     ) {
       try {
         const oldFilename = path.basename(existing.photoUrl);
@@ -239,7 +270,7 @@ export async function PUT(req: NextRequest) {
 
     const updated = await prisma.$transaction(async (tx) => {
       // 1. Update structured educations if provided
-      let legacyEdu = dataToUpdate.education;
+      let legacyEdu = education;
       if (Array.isArray(educations)) {
         await tx.candidateEducation.deleteMany({ where: { candidateId: id } });
         const validEdu = educations
@@ -259,7 +290,7 @@ export async function PUT(req: NextRequest) {
       }
 
       // 2. Update structured public services if provided
-      let legacyService = dataToUpdate.publicService;
+      let legacyService = publicService;
       if (Array.isArray(publicServices)) {
         await tx.candidatePublicService.deleteMany({ where: { candidateId: id } });
         const validService = publicServices
@@ -301,23 +332,30 @@ export async function PUT(req: NextRequest) {
         }
       }
 
-      // 4. Update candidate core fields
+      // 4. Update candidate core fields with strict whitelisted data
+      const updateData: any = {};
+      if (name !== undefined) updateData.name = name.trim();
+      if (slug !== undefined) updateData.slug = slug.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+      if (position !== undefined) updateData.position = position;
+      if (party !== undefined) updateData.party = party ? party.trim() : null;
+      if (color !== undefined) updateData.color = color;
+      if (photoUrl !== undefined) updateData.photoUrl = normalizedPhotoUrl;
+      if (bio !== undefined) updateData.bio = bio ? bio.trim() : null;
+      if (legacyEdu !== undefined) updateData.education = legacyEdu;
+      if (legacyService !== undefined) updateData.publicService = legacyService;
+      if (officialWebsite !== undefined) updateData.officialWebsite = officialWebsite ? officialWebsite.trim() : null;
+      if (socialLinks !== undefined) {
+        updateData.socialLinks = typeof socialLinks === "object" ? JSON.stringify(socialLinks) : socialLinks || null;
+      }
+      if (displayOrder !== undefined) updateData.displayOrder = parseInt(displayOrder, 10) || 0;
+      if (isPublished !== undefined) updateData.isPublished = Boolean(isPublished);
+      if (lastVerifiedAt !== undefined) {
+        updateData.lastVerifiedAt = lastVerifiedAt ? new Date(lastVerifiedAt) : null;
+      }
+
       const cand = await tx.candidate.update({
         where: { id },
-        data: {
-          ...dataToUpdate,
-          ...(legacyEdu !== undefined ? { education: legacyEdu } : {}),
-          ...(legacyService !== undefined ? { publicService: legacyService } : {}),
-          ...(lastVerifiedAt !== undefined
-            ? { lastVerifiedAt: lastVerifiedAt ? new Date(lastVerifiedAt) : null }
-            : {}),
-          ...(dataToUpdate.displayOrder !== undefined
-            ? { displayOrder: parseInt(dataToUpdate.displayOrder, 10) }
-            : {}),
-          ...(typeof dataToUpdate.socialLinks === "object"
-            ? { socialLinks: JSON.stringify(dataToUpdate.socialLinks) }
-            : {}),
-        },
+        data: updateData,
         include: {
           educations: { orderBy: { displayOrder: "asc" } },
           publicServices: { orderBy: { displayOrder: "asc" } },

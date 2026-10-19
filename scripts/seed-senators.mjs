@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import path from 'path';
 
 const dbPath = path.resolve(process.cwd(), 'prisma', 'dev.db');

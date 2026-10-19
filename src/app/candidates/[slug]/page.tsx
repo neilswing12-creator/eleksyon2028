@@ -19,7 +19,6 @@ import {
   Check,
   Info,
   Share2,
-  Sparkles,
 } from "lucide-react";
 import ShareVoteCardModal, {
   ShareCandidateData,

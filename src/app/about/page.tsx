@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Vote, Shield, Globe, Award, Sparkles, ArrowRight } from "lucide-react";
+import { Vote, Shield, Globe, Award, ArrowRight } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -8,7 +8,7 @@ export default function AboutPage() {
       <div className="bg-white border-b border-brand-border py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-bold mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Vote className="w-3.5 h-3.5" />
             <span>Civic Technology &amp; Public Sentiment Research</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">

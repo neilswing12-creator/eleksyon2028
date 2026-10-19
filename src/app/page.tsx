@@ -21,7 +21,6 @@ import {
   Award,
   Layers,
   Map,
-  Sparkles,
   Flame,
   ChevronRight,
   RefreshCw,

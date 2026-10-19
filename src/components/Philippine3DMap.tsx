@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { geoTo3D } from "@/lib/philippines-geo";
-import { Layers, RotateCw, Sparkles, MapPin } from "lucide-react";
+import { Layers, RotateCw, MapPin } from "lucide-react";
 import ElectionLiveBadge from "./ElectionLiveBadge";
 
 interface ProvinceData {

@@ -10,7 +10,6 @@ import ProvinceDetailModal from "@/components/ProvinceDetailModal";
 import {
   Map,
   Layers,
-  Sparkles,
   RefreshCw,
   Award,
   Vote,

@@ -7,7 +7,6 @@ import {
   PieChart as PieIcon,
   MapPin,
   Vote,
-  Sparkles,
   ShieldCheck,
   ChevronRight,
   TrendingUp,
@@ -228,7 +227,7 @@ export default function VotersProfilePage() {
 
             {/* Generational Insight Callout */}
             <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-relaxed flex items-start gap-3">
-              <Sparkles className="w-5 h-5 text-[#004B93] flex-shrink-0 mt-0.5" />
+              <Award className="w-5 h-5 text-[#004B93] flex-shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold uppercase font-headline">Research Insight by Neil Swing: </span>
                 Combined, <strong>Millennials and Gen Z account for over 56.4%</strong> of the entire

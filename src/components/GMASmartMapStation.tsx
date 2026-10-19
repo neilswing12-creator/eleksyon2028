@@ -11,7 +11,6 @@ import {
   ChevronUp,
   Check,
   Info,
-  Sparkles,
   Hexagon,
   Map as MapIcon,
   Flame,

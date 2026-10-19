@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Map, Hexagon, Info, ChevronRight, Layers, Sparkles } from "lucide-react";
+import { Search, Map, Hexagon, Info, ChevronRight, Layers, Vote } from "lucide-react";
 
 import ElectionLiveBadge from "./ElectionLiveBadge";
 
@@ -251,7 +251,7 @@ export default function Philippine2DMap({
             {/* Cartogram Explanation Banner */}
             <div className="mb-4 text-center max-w-lg">
               <span className="text-[11px] font-headline font-bold uppercase tracking-wider text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <Vote className="w-3.5 h-3.5 text-amber-500" />
                 <span>Equal-Representation Cartogram: Eliminates Geographic Landmass Bias</span>
               </span>
             </div>

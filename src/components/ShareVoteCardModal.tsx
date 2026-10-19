@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { Download, Share2, X, Check, Loader2, Sparkles } from "lucide-react";
+import { Download, Share2, X, Check, Loader2, Vote } from "lucide-react";
 
 export interface ShareCandidateData {
   id: string;
@@ -620,39 +620,77 @@ export default function ShareVoteCardModal({
     };
   }, [isOpen, candidate, competitors, voterName, provinceName]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!previewUrl || !candidate) return;
-    const a = document.createElement("a");
-    a.href = previewUrl;
     const candSlug = candidate.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    a.download = `eleksyon2028-${candSlug}-card.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const filename = `eleksyon2028-${candSlug}-card.png`;
+
+    try {
+      const blob = dataURLtoBlob(previewUrl);
+      const file = new File([blob], filename, { type: "image/png" });
+      const isMobile = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      // On mobile devices, native share sheet lets users tap "Save Image" straight into Photos / Gallery!
+      if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: `Eleksyon 2028 - ${candidate.name}`,
+            text: `Official Eleksyon 2028 Vote Card for ${candidate.name}`,
+          });
+          return;
+        } catch (shareErr: any) {
+          if (shareErr?.name === "AbortError") return;
+        }
+      }
+
+      // Robust Blob Object URL download for desktop and Android browsers
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      }, 2000);
+    } catch (e) {
+      try {
+        const a = document.createElement("a");
+        a.href = previewUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => document.body.removeChild(a), 500);
+      } catch (err) {
+        window.open(previewUrl, "_blank");
+      }
+    }
   };
 
   const handleShare = async () => {
     if (!previewUrl || !candidate) return;
+    const candSlug = candidate.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const filename = `eleksyon2028-${candSlug}-card.png`;
     const shareText = `I voted for ${candidate.name} in the Eleksyon 2028 Survey! See live rankings and cast your vote here:`;
     const shareUrl =
       typeof window !== "undefined" ? `${window.location.origin}/survey` : "https://eleksyon2028.ph/survey";
 
-    if (navigator.share && navigator.canShare) {
-      try {
-        const blob = await (await fetch(previewUrl)).blob();
-        const file = new File([blob], `eleksyon2028-${candidate.name}.png`, { type: "image/png" });
-        if (navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: `Eleksyon 2028: I Voted for ${candidate.name}!`,
-            text: shareText,
-            url: shareUrl,
-            files: [file],
-          });
-          return;
-        }
-      } catch (e) {
-        // Fallback to text share or clipboard
+    try {
+      const blob = dataURLtoBlob(previewUrl);
+      const file = new File([blob], filename, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `Eleksyon 2028: I Voted for ${candidate.name}!`,
+          text: shareText,
+          url: shareUrl,
+          files: [file],
+        });
+        return;
       }
+    } catch (e: any) {
+      if (e?.name === "AbortError") return;
     }
 
     navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
@@ -670,7 +708,7 @@ export default function ShareVoteCardModal({
         <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-[#10224A]/80">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-[#CE1126] flex items-center justify-center text-white shadow">
-              <Sparkles className="w-4 h-4 text-amber-300" />
+              <Vote className="w-4 h-4 text-amber-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -707,12 +745,17 @@ export default function ShareVoteCardModal({
               </p>
             </div>
           ) : (
-            <div className="relative group max-w-[420px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80 aspect-[4/5] bg-[#0A1730] flex items-center justify-center">
-              <img
-                src={previewUrl}
-                alt={`Eleksyon 2028 - ${candidate.name}`}
-                className="w-full h-full object-contain"
-              />
+            <div className="w-full flex flex-col items-center">
+              <div className="relative group max-w-[420px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80 aspect-[4/5] bg-[#0A1730] flex items-center justify-center">
+                <img
+                  src={previewUrl}
+                  alt={`Eleksyon 2028 - ${candidate.name}`}
+                  className="w-full h-full object-contain select-none pointer-events-auto"
+                />
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2 text-center sm:hidden">
+                Tap &apos;Download Image&apos; to save to Photos, or long-press image
+              </p>
             </div>
           )}
         </div>
@@ -819,4 +862,16 @@ function buildComparisonList(
 
   const top3 = combined.slice(0, 3);
   return [...top3, combined[selectedIndex]];
+}
+
+function dataURLtoBlob(dataurl: string): Blob {
+  const parts = dataurl.split(",");
+  const mime = parts[0].match(/:(.*?);/)?.[1] || "image/png";
+  const bstr = atob(parts[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
 }

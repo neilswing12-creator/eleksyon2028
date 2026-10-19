@@ -14,7 +14,6 @@ import {
   Users,
   Flame,
   Share2,
-  Sparkles,
 } from "lucide-react";
 import ShareVoteCardModal, {
   ShareCandidateData,
@@ -1027,7 +1026,7 @@ export default function SurveyPage() {
             <div className="bg-gradient-to-r from-[#0B132B] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-5 text-left text-white shadow-xl space-y-3 font-sans">
               <div className="flex items-center justify-between font-headline">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
+                  <Vote className="w-5 h-5 text-amber-300" />
                   <span className="text-sm font-black uppercase tracking-wider text-amber-300">
                     SHARE WHO YOU VOTED FOR (1080×1350)
                   </span>

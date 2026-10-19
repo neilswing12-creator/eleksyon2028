@@ -117,6 +117,12 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    // Calculate total net adjustment amounts added manually by admin
+    const totalAdjustmentAmount = approvedAdjustments.reduce((sum, adj) => sum + adj.amount, 0);
+    const todayAdjustmentAmount = approvedAdjustments
+      .filter((adj) => adj.createdAt >= startOfToday)
+      .reduce((sum, adj) => sum + adj.amount, 0);
+
     // National adjustments grouped by candidate & category
     const nationalAdjustmentMap: Record<string, number> = {};
     const provincialAdjustmentMap: Record<string, Record<string, number>> = {};
@@ -253,6 +259,8 @@ export async function GET(req: NextRequest) {
       rawSenMap[s.candidateId] = (rawSenMap[s.candidateId] || 0) + 1;
     });
 
+    const totalActiveVotes = Math.max(1, activeSubmissionsCount + totalAdjustmentAmount);
+
     const senatorialRankings = candidates
       .filter((c) => c.position === "SENATOR")
       .map((c) => {
@@ -260,8 +268,8 @@ export async function GET(req: NextRequest) {
         const adj = nationalAdjustmentMap[c.id] || 0;
         const displayedVotes = Math.max(0, rawVotes + adj);
         const voterPercentage =
-          activeSubmissionsCount > 0
-            ? Number(((displayedVotes / activeSubmissionsCount) * 100).toFixed(1))
+          totalActiveVotes > 0
+            ? Number(((displayedVotes / totalActiveVotes) * 100).toFixed(1))
             : 0;
         return {
           ...c,
@@ -649,12 +657,15 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       summary: {
-        totalActiveSubmissions: activeSubmissionsCount,
+        totalActiveSubmissions: Math.max(0, activeSubmissionsCount + totalAdjustmentAmount),
+        rawActiveSubmissions: activeSubmissionsCount,
         totalRetractedSubmissions: retractedSubmissionsCount,
-        todaySubmissions: todaySubmissionsCount,
+        todaySubmissions: Math.max(0, todaySubmissionsCount + todayAdjustmentAmount),
+        rawTodaySubmissions: todaySubmissionsCount,
         presidentialTotalVotes: totalPresDisplayedVotes,
         vicePresidentialTotalVotes: totalVpDisplayedVotes,
         totalAdjustmentsCount: approvedAdjustments.length,
+        totalAdjustmentAmount,
         minResponseThreshold: minThreshold,
         campaignStatus: campaign?.status || "ACTIVE",
         publicResultsVisible,

@@ -1113,7 +1113,7 @@ export default function GMASmartMapStation({
                           fill={fillColor}
                           stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
                           strokeWidth={isSelected ? 2.5 : 1}
-                          className="transition-transform transform-gpu hover:scale-125"
+                          className="transition-colors duration-75"
                         />
                       </g>
                     );
@@ -1122,23 +1122,23 @@ export default function GMASmartMapStation({
               ) : (
                 /* VIEW B: INTERLOCKING HEXAGONAL CARTOGRAM */
                 <svg
-                  viewBox="0 0 680 940"
+                  viewBox="0 0 540 720"
                   className="w-full h-auto max-h-[520px] drop-shadow-sm select-none"
                 >
                   <defs>
                     <filter id="hexDrop" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#0B132B" floodOpacity="0.12" />
+                      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0B132B" floodOpacity="0.12" />
                     </filter>
                   </defs>
 
                   {/* Island Group Guides */}
-                  <text x="30" y="80" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
+                  <text x="24" y="90" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
                     LUZON
                   </text>
-                  <text x="30" y="520" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
+                  <text x="24" y="390" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
                     VISAYAS
                   </text>
-                  <text x="30" y="740" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
+                  <text x="24" y="520" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
                     MINDANAO
                   </text>
 
@@ -1147,11 +1147,11 @@ export default function GMASmartMapStation({
                     const coord = CARTOGRAM_GRID[p.id];
                     if (!coord) return null;
 
-                    const hexRadius = 22;
-                    const hexW = 44;
-                    const hexH = 38;
-                    const x = 50 + coord.col * (hexW * 0.95);
-                    const y = 50 + coord.row * hexH + (coord.col % 2 === 1 ? hexH * 0.5 : 0);
+                    const hexRadius = 18.5;
+                    const dx = 32.042; // Math.sqrt(3) * hexRadius
+                    const dy = 27.75;  // 1.5 * hexRadius
+                    const x = 100 + coord.col * dx + (coord.row % 2 !== 0 ? dx / 2 : 0);
+                    const y = 45 + coord.row * dy;
 
                     const pData = provinceDataMap.get(p.id) || { totalSubmissions: 0 };
                     const isSelected = selectedProvinceId === p.id;
@@ -1169,18 +1169,18 @@ export default function GMASmartMapStation({
                     });
 
                     const points = [
-                      `${x},${y - hexRadius}`,
-                      `${x + hexRadius * 0.866},${y - hexRadius * 0.5}`,
-                      `${x + hexRadius * 0.866},${y + hexRadius * 0.5}`,
-                      `${x},${y + hexRadius}`,
-                      `${x - hexRadius * 0.866},${y + hexRadius * 0.5}`,
-                      `${x - hexRadius * 0.866},${y - hexRadius * 0.5}`,
+                      `${x},${(y - hexRadius).toFixed(2)}`,
+                      `${(x + hexRadius * 0.866).toFixed(2)},${(y - hexRadius * 0.5).toFixed(2)}`,
+                      `${(x + hexRadius * 0.866).toFixed(2)},${(y + hexRadius * 0.5).toFixed(2)}`,
+                      `${x},${(y + hexRadius).toFixed(2)}`,
+                      `${(x - hexRadius * 0.866).toFixed(2)},${(y + hexRadius * 0.5).toFixed(2)}`,
+                      `${(x - hexRadius * 0.866).toFixed(2)},${(y - hexRadius * 0.5).toFixed(2)}`,
                     ].join(" ");
 
                     return (
                       <g
                         key={p.id}
-                        className="cursor-pointer transition-transform duration-100 hover:scale-110 transform-gpu"
+                        className="cursor-pointer"
                         onClick={() => {
                           setSelectedProvinceId(p.id);
                           if (onSelectProvince && pData) onSelectProvince(pData);
@@ -1220,12 +1220,13 @@ export default function GMASmartMapStation({
                           stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
                           strokeWidth={isSelected ? 3.5 : isHovered ? 2.5 : 1.5}
                           filter="url(#hexDrop)"
+                          className="transition-colors duration-75"
                         />
                         <text
                           x={x}
-                          y={y + 4}
+                          y={y + 3.5}
                           textAnchor="middle"
-                          className="font-headline font-bold text-[10px] fill-white pointer-events-none select-none drop-shadow tracking-tight"
+                          className="font-headline font-bold text-[9px] fill-white pointer-events-none select-none drop-shadow tracking-tight"
                         >
                           {coord.code}
                         </text>

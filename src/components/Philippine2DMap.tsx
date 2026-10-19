@@ -46,93 +46,93 @@ interface Props {
 
 // Hex Cartogram layout coordinates (Col: 0-14, Row: 0-16)
 export const CARTOGRAM_GRID: Record<string, { col: number; row: number; code: string }> = {
-  // North Luzon
-  "batanes": { col: 6, row: 0, code: "BTN" },
+  // Luzon (North, Central, NCR, South, MIMAROPA, Bicol)
+  "batanes": { col: 5, row: 0, code: "BTN" },
   "ilocos-norte": { col: 4, row: 1, code: "ILN" },
-  "apayao": { col: 6, row: 1, code: "APA" },
-  "cagayan": { col: 8, row: 1, code: "CAG" },
+  "apayao": { col: 5, row: 1, code: "APA" },
+  "cagayan": { col: 6, row: 1, code: "CAG" },
   "abra": { col: 4, row: 2, code: "ABR" },
-  "kalinga": { col: 6, row: 2, code: "KAL" },
-  "isabela": { col: 8, row: 2, code: "ISA" },
+  "kalinga": { col: 5, row: 2, code: "KAL" },
+  "isabela": { col: 6, row: 2, code: "ISA" },
   "ilocos-sur": { col: 4, row: 3, code: "ILS" },
-  "mountain-province": { col: 6, row: 3, code: "MTP" },
-  "ifugao": { col: 7, row: 3, code: "IFU" },
-  "quirino": { col: 8, row: 3, code: "QUI" },
+  "mountain-province": { col: 5, row: 3, code: "MTP" },
+  "ifugao": { col: 6, row: 3, code: "IFU" },
   "la-union": { col: 4, row: 4, code: "LAU" },
   "benguet": { col: 5, row: 4, code: "BEN" },
-  "nueva-vizcaya": { col: 7, row: 4, code: "NVI" },
-  "aurora": { col: 8, row: 4, code: "AUR" },
+  "nueva-vizcaya": { col: 6, row: 4, code: "NVI" },
+  "quirino": { col: 7, row: 4, code: "QUI" },
   "pangasinan": { col: 4, row: 5, code: "PAN" },
   "tarlac": { col: 5, row: 5, code: "TAR" },
-  "nueva-ecija": { col: 7, row: 5, code: "NEC" },
+  "nueva-ecija": { col: 6, row: 5, code: "NEC" },
+  "aurora": { col: 7, row: 5, code: "AUR" },
   "zambales": { col: 3, row: 6, code: "ZAM" },
-  "pampanga": { col: 5, row: 6, code: "PAM" },
-  "bulacan": { col: 6, row: 6, code: "BUL" },
-  "bataan": { col: 4, row: 7, code: "BAT" },
-  "metro-manila": { col: 6, row: 7, code: "NCR" },
-  "rizal": { col: 7, row: 7, code: "RIZ" },
-  "cavite": { col: 5, row: 8, code: "CAV" },
-  "laguna": { col: 6, row: 8, code: "LAG" },
-  "quezon": { col: 8, row: 8, code: "QUE" },
-  "batangas": { col: 5, row: 9, code: "BTG" },
-  "marinduque": { col: 7, row: 9, code: "MRQ" },
-  "camarines-norte": { col: 9, row: 8, code: "CAN" },
-  "camarines-sur": { col: 10, row: 9, code: "CAS" },
-  "catanduanes": { col: 12, row: 8, code: "CAT" },
-  "albay": { col: 11, row: 10, code: "ALB" },
-  "sorsogon": { col: 11, row: 11, code: "SOR" },
-  "masbate": { col: 9, row: 11, code: "MAS" },
-  "occidental-mindoro": { col: 4, row: 10, code: "MDO" },
-  "oriental-mindoro": { col: 5, row: 10, code: "MDR" },
-  "romblon": { col: 7, row: 10, code: "ROM" },
-  "palawan": { col: 2, row: 11, code: "PLW" },
+  "pampanga": { col: 4, row: 6, code: "PAM" },
+  "bulacan": { col: 5, row: 6, code: "BUL" },
+  "bataan": { col: 3, row: 7, code: "BAT" },
+  "metro-manila": { col: 4, row: 7, code: "NCR" },
+  "rizal": { col: 5, row: 7, code: "RIZ" },
+  "cavite": { col: 4, row: 8, code: "CAV" },
+  "laguna": { col: 5, row: 8, code: "LAG" },
+  "quezon": { col: 6, row: 8, code: "QUE" },
+  "camarines-norte": { col: 7, row: 8, code: "CAN" },
+  "catanduanes": { col: 9, row: 8, code: "CAT" },
+  "batangas": { col: 4, row: 9, code: "BTG" },
+  "marinduque": { col: 5, row: 9, code: "MRQ" },
+  "camarines-sur": { col: 7, row: 9, code: "CAS" },
+  "albay": { col: 8, row: 9, code: "ALB" },
+  "occidental-mindoro": { col: 3, row: 10, code: "MDO" },
+  "oriental-mindoro": { col: 4, row: 10, code: "MDR" },
+  "romblon": { col: 5, row: 10, code: "ROM" },
+  "sorsogon": { col: 8, row: 10, code: "SOR" },
+  "palawan": { col: 1, row: 11, code: "PLW" },
+  "masbate": { col: 6, row: 11, code: "MAS" },
 
-  // Visayas
-  "northern-samar": { col: 12, row: 11, code: "NSA" },
-  "eastern-samar": { col: 13, row: 12, code: "ESA" },
-  "samar": { col: 12, row: 12, code: "WSA" },
-  "biliran": { col: 11, row: 12, code: "BIL" },
-  "leyte": { col: 12, row: 13, code: "LEY" },
-  "southern-leyte": { col: 12, row: 14, code: "SLE" },
-  "aklan": { col: 6, row: 11, code: "AKL" },
-  "capiz": { col: 7, row: 11, code: "CAP" },
-  "antique": { col: 5, row: 12, code: "ANT" },
-  "iloilo": { col: 6, row: 12, code: "ILO" },
-  "guimaras": { col: 6, row: 13, code: "GUI" },
-  "negros-occidental": { col: 7, row: 13, code: "NOC" },
-  "negros-oriental": { col: 7, row: 14, code: "NOR" },
-  "cebu": { col: 8, row: 13, code: "CEB" },
-  "bohol": { col: 9, row: 14, code: "BOH" },
-  "siquijor": { col: 7, row: 15, code: "SIQ" },
+  // Visayas (Western, Central, Eastern)
+  "northern-samar": { col: 8, row: 11, code: "NSA" },
+  "aklan": { col: 4, row: 12, code: "AKL" },
+  "capiz": { col: 5, row: 12, code: "CAP" },
+  "biliran": { col: 7, row: 12, code: "BIL" },
+  "samar": { col: 8, row: 12, code: "WSA" },
+  "eastern-samar": { col: 9, row: 12, code: "ESA" },
+  "antique": { col: 4, row: 13, code: "ANT" },
+  "iloilo": { col: 5, row: 13, code: "ILO" },
+  "cebu": { col: 6, row: 13, code: "CEB" },
+  "leyte": { col: 7, row: 13, code: "LEY" },
+  "guimaras": { col: 4, row: 14, code: "GUI" },
+  "negros-occidental": { col: 5, row: 14, code: "NOC" },
+  "bohol": { col: 6, row: 14, code: "BOH" },
+  "southern-leyte": { col: 7, row: 14, code: "SLE" },
+  "negros-oriental": { col: 4, row: 15, code: "NOR" },
+  "siquijor": { col: 5, row: 15, code: "SIQ" },
 
-  // Mindanao
-  "dinagat-islands": { col: 12, row: 15, code: "DNG" },
-  "surigao-del-norte": { col: 12, row: 16, code: "SUN" },
-  "surigao-del-sur": { col: 13, row: 17, code: "SUS" },
-  "agusan-del-norte": { col: 11, row: 16, code: "AGN" },
-  "agusan-del-sur": { col: 12, row: 17, code: "AGS" },
-  "camiguin": { col: 9, row: 15, code: "CAM" },
-  "misamis-oriental": { col: 10, row: 16, code: "MOR" },
-  "bukidnon": { col: 10, row: 17, code: "BUK" },
-  "davao-de-oro": { col: 11, row: 18, code: "DVO" },
-  "davao-del-norte": { col: 10, row: 18, code: "DVN" },
-  "davao-oriental": { col: 12, row: 18, code: "DOR" },
-  "davao-del-sur": { col: 10, row: 19, code: "DVS" },
-  "davao-occidental": { col: 10, row: 20, code: "DVO" },
-  "zamboanga-del-norte": { col: 6, row: 16, code: "ZDN" },
-  "misamis-occidental": { col: 7, row: 16, code: "MOC" },
-  "lanao-del-norte": { col: 8, row: 17, code: "LDN" },
-  "lanao-del-sur": { col: 8, row: 18, code: "LDS" },
-  "cotabato": { col: 9, row: 18, code: "COT" },
-  "maguindanao": { col: 8, row: 19, code: "MAG" },
-  "sultan-kudarat": { col: 8, row: 20, code: "SKU" },
-  "south-cotabato": { col: 9, row: 20, code: "SCO" },
-  "sarangani": { col: 9, row: 21, code: "SAR" },
-  "zamboanga-del-sur": { col: 6, row: 17, code: "ZDS" },
-  "zamboanga-sibugay": { col: 5, row: 17, code: "ZSI" },
-  "basilan": { col: 4, row: 18, code: "BAS" },
-  "sulu": { col: 3, row: 19, code: "SUL" },
-  "tawi-tawi": { col: 2, row: 20, code: "TAW" },
+  // Mindanao (Northern, Caraga, Zamboanga, Central, Davao, BARMM)
+  "camiguin": { col: 6, row: 15, code: "CAM" },
+  "dinagat-islands": { col: 8, row: 15, code: "DNG" },
+  "surigao-del-norte": { col: 9, row: 15, code: "SUN" },
+  "misamis-occidental": { col: 4, row: 16, code: "MOC" },
+  "misamis-oriental": { col: 6, row: 16, code: "MOR" },
+  "agusan-del-norte": { col: 7, row: 16, code: "AGN" },
+  "surigao-del-sur": { col: 9, row: 16, code: "SUS" },
+  "zamboanga-del-norte": { col: 3, row: 17, code: "ZDN" },
+  "lanao-del-norte": { col: 5, row: 17, code: "LDN" },
+  "bukidnon": { col: 6, row: 17, code: "BUK" },
+  "agusan-del-sur": { col: 7, row: 17, code: "AGS" },
+  "davao-de-oro": { col: 8, row: 17, code: "DVO" },
+  "zamboanga-sibugay": { col: 3, row: 18, code: "ZSI" },
+  "lanao-del-sur": { col: 4, row: 18, code: "LDS" },
+  "cotabato": { col: 5, row: 18, code: "COT" },
+  "davao-del-norte": { col: 7, row: 18, code: "DVN" },
+  "davao-oriental": { col: 8, row: 18, code: "DOR" },
+  "zamboanga-del-sur": { col: 3, row: 19, code: "ZDS" },
+  "maguindanao": { col: 4, row: 19, code: "MAG" },
+  "sultan-kudarat": { col: 5, row: 19, code: "SKU" },
+  "davao-del-sur": { col: 6, row: 19, code: "DVS" },
+  "basilan": { col: 2, row: 20, code: "BAS" },
+  "south-cotabato": { col: 5, row: 20, code: "SCO" },
+  "davao-occidental": { col: 6, row: 20, code: "DOC" },
+  "sulu": { col: 2, row: 21, code: "SUL" },
+  "sarangani": { col: 5, row: 21, code: "SAR" },
+  "tawi-tawi": { col: 1, row: 22, code: "TAW" },
 };
 
 export default function Philippine2DMap({
@@ -258,23 +258,23 @@ export default function Philippine2DMap({
 
             {/* Hexagon Grid SVG */}
             <svg
-              viewBox="0 0 680 940"
-              className="w-full max-w-[620px] h-auto drop-shadow-md select-none"
+              viewBox="0 0 540 720"
+              className="w-full max-w-[540px] h-auto drop-shadow-md select-none"
             >
               <defs>
                 <filter id="hexShadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#0B132B" floodOpacity="0.12" />
+                  <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0B132B" floodOpacity="0.12" />
                 </filter>
               </defs>
 
               {/* Grid Background Guide */}
-              <text x="30" y="80" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest">
+              <text x="24" y="90" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
                 LUZON
               </text>
-              <text x="30" y="520" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest">
+              <text x="24" y="390" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
                 VISAYAS
               </text>
-              <text x="30" y="740" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest">
+              <text x="24" y="520" className="font-headline font-bold text-xs fill-slate-400 uppercase tracking-widest pointer-events-none select-none">
                 MINDANAO
               </text>
 
@@ -283,13 +283,11 @@ export default function Philippine2DMap({
                 const coord = CARTOGRAM_GRID[p.id];
                 if (!coord) return null;
 
-                // Hex dimensions
-                const hexRadius = 22;
-                const hexW = 44;
-                const hexH = 38;
-                // Offset odd columns for interlocking honeycomb
-                const x = 50 + coord.col * (hexW * 0.95);
-                const y = 50 + coord.row * hexH + (coord.col % 2 === 1 ? hexH * 0.5 : 0);
+                const hexRadius = 18.5;
+                const dx = 32.042; // Math.sqrt(3) * hexRadius
+                const dy = 27.75;  // 1.5 * hexRadius
+                const x = 100 + coord.col * dx + (coord.row % 2 !== 0 ? dx / 2 : 0);
+                const y = 45 + coord.row * dy;
 
                 const color = getCandidateColor(p);
                 const isSelected = selectedProvinceId === p.id;
@@ -297,18 +295,18 @@ export default function Philippine2DMap({
 
                 // Calculate regular hexagon points
                 const points = [
-                  `${x},${y - hexRadius}`,
-                  `${x + hexRadius * 0.866},${y - hexRadius * 0.5}`,
-                  `${x + hexRadius * 0.866},${y + hexRadius * 0.5}`,
-                  `${x},${y + hexRadius}`,
-                  `${x - hexRadius * 0.866},${y + hexRadius * 0.5}`,
-                  `${x - hexRadius * 0.866},${y - hexRadius * 0.5}`,
+                  `${x},${(y - hexRadius).toFixed(2)}`,
+                  `${(x + hexRadius * 0.866).toFixed(2)},${(y - hexRadius * 0.5).toFixed(2)}`,
+                  `${(x + hexRadius * 0.866).toFixed(2)},${(y + hexRadius * 0.5).toFixed(2)}`,
+                  `${x},${(y + hexRadius).toFixed(2)}`,
+                  `${(x - hexRadius * 0.866).toFixed(2)},${(y + hexRadius * 0.5).toFixed(2)}`,
+                  `${(x - hexRadius * 0.866).toFixed(2)},${(y - hexRadius * 0.5).toFixed(2)}`,
                 ].join(" ");
 
                 return (
                   <g
                     key={p.id}
-                    className="cursor-pointer transition-transform duration-100 hover:scale-110 transform-gpu"
+                    className="cursor-pointer"
                     onClick={() => onSelectProvince(p)}
                     onMouseEnter={() => setHovered(p)}
                     onMouseLeave={() => setHovered(null)}
@@ -320,14 +318,15 @@ export default function Philippine2DMap({
                       stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
                       strokeWidth={isSelected ? 3.5 : isHovered ? 2.5 : 1.5}
                       filter="url(#hexShadow)"
+                      className="transition-colors duration-75"
                     />
 
                     {/* 3-letter province code in bold white */}
                     <text
                       x={x}
-                      y={y + 4}
+                      y={y + 3.5}
                       textAnchor="middle"
-                      className="font-headline font-bold text-[10px] fill-white pointer-events-none drop-shadow select-none tracking-tight"
+                      className="font-headline font-bold text-[9px] fill-white pointer-events-none drop-shadow select-none tracking-tight"
                     >
                       {coord.code}
                     </text>

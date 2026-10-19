@@ -22,6 +22,31 @@ interface GMATripleLeaderboardProps {
   lastUpdated?: string;
 }
 
+function getDisplayParty(party?: string | null): string {
+  if (!party) return "";
+  const trimmed = party.trim();
+
+  // Specific mappings for known Philippine political parties and coalitions
+  if (/akbayan/i.test(trimmed)) return "Akbayan";
+  if (/magdalo/i.test(trimmed)) return "Magdalo";
+  if (/nacionalista/i.test(trimmed)) return "NP";
+  if (/promdi/i.test(trimmed)) return "PROMDI";
+  if (/act-cis/i.test(trimmed)) return "ACT-CIS";
+  if (/^independent$/i.test(trimmed)) return "IND";
+  if (/independent.*fpj/i.test(trimmed)) return "FPJ / IND";
+  if (/pdp/i.test(trimmed)) return "PDP";
+  if (/liberal/i.test(trimmed)) return "Liberal";
+  if (/lakas.*hnp/i.test(trimmed)) return "Lakas/HNP";
+  if (/npc.*lakas/i.test(trimmed)) return "NPC/Lakas";
+
+  // If acronym in parentheses e.g. "Nationalist People's Coalition (NPC)"
+  const match = trimmed.match(/\(([^)]+)\)/);
+  if (match && match[1]) return match[1].trim();
+
+  if (trimmed.length <= 10) return trimmed;
+  return trimmed.slice(0, 8) + "...";
+}
+
 export default function GMATripleLeaderboard({
   presidentialRankings = [],
   vicePresidentialRankings = [],
@@ -81,13 +106,16 @@ export default function GMATripleLeaderboard({
 
                     {/* Candidate Name, Party, & Progress Bar */}
                     <div className="flex-1 min-w-0 pr-1">
-                      <div className="flex items-baseline gap-1.5 truncate">
-                        <span className="font-headline font-bold text-sm text-[#0B132B] truncate uppercase tracking-tight">
+                      <div
+                        className="flex items-baseline gap-1.5 min-w-0 overflow-hidden"
+                        title={c.party ? `${c.name} (${c.party})` : c.name}
+                      >
+                        <span className="font-headline font-bold text-xs sm:text-sm text-[#0B132B] truncate uppercase tracking-tight flex-shrink-0 max-w-full">
                           {c.name}
                         </span>
                         {c.party && (
-                          <span className="text-[10px] text-slate-500 font-semibold uppercase flex-shrink-0">
-                            {c.party}
+                          <span className="text-[10px] text-slate-400 font-semibold uppercase flex-shrink min-w-0 truncate">
+                            {getDisplayParty(c.party)}
                           </span>
                         )}
                       </div>
@@ -155,13 +183,16 @@ export default function GMATripleLeaderboard({
 
                     {/* Candidate Name, Party, & Progress Bar */}
                     <div className="flex-1 min-w-0 pr-1">
-                      <div className="flex items-baseline gap-1.5 truncate">
-                        <span className="font-headline font-bold text-sm text-[#0B132B] truncate uppercase tracking-tight">
+                      <div
+                        className="flex items-baseline gap-1.5 min-w-0 overflow-hidden"
+                        title={c.party ? `${c.name} (${c.party})` : c.name}
+                      >
+                        <span className="font-headline font-bold text-xs sm:text-sm text-[#0B132B] truncate uppercase tracking-tight flex-shrink-0 max-w-full">
                           {c.name}
                         </span>
                         {c.party && (
-                          <span className="text-[10px] text-slate-500 font-semibold uppercase flex-shrink-0">
-                            {c.party}
+                          <span className="text-[10px] text-slate-400 font-semibold uppercase flex-shrink min-w-0 truncate">
+                            {getDisplayParty(c.party)}
                           </span>
                         )}
                       </div>
@@ -230,13 +261,16 @@ export default function GMATripleLeaderboard({
 
                     {/* Candidate Name, Party, & Progress Bar */}
                     <div className="flex-1 min-w-0 pr-1">
-                      <div className="flex items-baseline gap-1.5 truncate">
-                        <span className="font-headline font-bold text-sm text-[#0B132B] truncate uppercase tracking-tight">
+                      <div
+                        className="flex items-baseline gap-1.5 min-w-0 overflow-hidden"
+                        title={c.party ? `${c.name} (${c.party})` : c.name}
+                      >
+                        <span className="font-headline font-bold text-xs sm:text-sm text-[#0B132B] truncate uppercase tracking-tight flex-shrink-0 max-w-full">
                           {c.name}
                         </span>
                         {c.party && (
-                          <span className="text-[10px] text-slate-500 font-semibold uppercase flex-shrink-0">
-                            {c.party}
+                          <span className="text-[10px] text-slate-400 font-semibold uppercase flex-shrink min-w-0 truncate">
+                            {getDisplayParty(c.party)}
                           </span>
                         )}
                       </div>

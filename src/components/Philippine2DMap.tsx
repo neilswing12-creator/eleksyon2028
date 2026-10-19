@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, Map, Hexagon, Info, ChevronRight, Layers, Sparkles } from "lucide-react";
+import { PROVINCE_GEO_PATHS } from "@/lib/ph-province-paths";
 
 import ElectionLiveBadge from "./ElectionLiveBadge";
 
@@ -339,67 +340,71 @@ export default function Philippine2DMap({
           /* MODE B: AUTHENTIC GEOGRAPHIC SHAPE OF THE PHILIPPINES */
           <div className="w-full flex flex-col items-center justify-center">
             <svg
-              viewBox="100 0 700 1150"
-              className="w-full max-w-[620px] h-auto drop-shadow-md select-none"
+              viewBox="0 0 500 920"
+              className="w-full max-w-[560px] h-auto drop-shadow-md select-none"
+              aria-label="Philippine Archipelago Province Map"
             >
               <defs>
                 <filter id="geoGlow">
-                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0B132B" floodOpacity="0.15" />
+                  <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#0B132B" floodOpacity="0.12" />
                 </filter>
               </defs>
 
-              {/* Accurate archipelagic silhouette backdrop */}
-              <g fill="#CBD5E1" stroke="#94A3B8" strokeWidth="1.5" opacity="0.6">
-                <path d="M 320 80 Q 360 40 450 60 Q 480 120 470 240 Q 420 330 380 430 Q 320 400 310 320 Q 340 180 320 80 Z" />
-                <path d="M 460 440 Q 560 480 620 540 Q 580 620 530 570 Q 480 480 460 440 Z" />
-                <ellipse cx="370" cy="535" rx="35" ry="45" transform="rotate(-20 370 535)" />
-                <path d="M 160 810 Q 230 680 270 630 Q 285 640 240 730 Q 180 830 160 810 Z" />
-                <ellipse cx="460" cy="670" rx="35" ry="30" />
-                <path d="M 500 680 Q 535 710 525 790 Q 500 790 500 710 Z" />
-                <path d="M 555 700 Q 575 730 560 780 Q 550 760 555 700 Z" />
-                <ellipse cx="600" cy="770" rx="22" ry="18" />
-                <path d="M 640 600 Q 690 640 660 710 Q 630 670 640 600 Z" />
-                <path d="M 645 700 Q 665 740 655 780 Q 635 740 645 700 Z" />
-                <path d="M 420 880 Q 500 840 660 840 Q 710 930 660 1020 Q 580 1050 510 960 Q 430 940 420 880 Z" />
-              </g>
+              {/* Water / Ocean Background */}
+              <rect x="0" y="0" width="500" height="920" fill="#E2F1F8" rx="6" />
 
-              {/* Dynamic Interactive Province Bubbles */}
+              {/* Real Province Polygons */}
               {filteredProvinces.map((p) => {
+                const geoPath = PROVINCE_GEO_PATHS[p.id];
+                if (!geoPath) return null;
+
                 const color = getCandidateColor(p);
                 const isSelected = selectedProvinceId === p.id;
                 const isHovered = hovered?.id === p.id;
-                const radius = Math.min(22, Math.max(11, (p.totalSubmissions || 1) * 3.5));
 
                 return (
-                  <g
-                    key={p.id}
-                    className="cursor-pointer transition-all duration-100"
-                    onClick={() => onSelectProvince(p)}
-                    onMouseEnter={() => setHovered(p)}
-                    onMouseLeave={() => setHovered(null)}
-                  >
-                    <circle
-                      cx={p.svgX}
-                      cy={p.svgY}
-                      r={radius}
+                  <g key={p.id}>
+                    <path
+                      d={geoPath.d}
                       fill={color}
                       stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
-                      strokeWidth={isSelected ? 3.5 : 2}
-                      filter="url(#geoGlow)"
+                      strokeWidth={isSelected ? 2.5 : isHovered ? 1.5 : 0.5}
+                      strokeLinejoin="round"
+                      className="cursor-pointer transition-colors duration-75"
+                      onClick={() => onSelectProvince(p)}
+                      onMouseEnter={() => setHovered(p)}
+                      onMouseLeave={() => setHovered(null)}
                     />
-                    {(p.totalSubmissions > 1 || p.id === "metro-manila" || p.id === "cebu" || p.id === "davao-del-sur") && (
+                    {geoPath.cx > 0 && geoPath.cy > 0 && (
                       <text
-                        x={p.svgX}
-                        y={p.svgY + radius + 11}
+                        x={geoPath.cx}
+                        y={geoPath.cy + 3}
                         textAnchor="middle"
-                        className="font-headline font-bold text-[9px] fill-[#0B132B] uppercase tracking-wider drop-shadow-sm select-none"
+                        fill={p.totalSubmissions > 0 ? "#FFFFFF" : "#64748B"}
+                        fontSize={p.id === "metro-manila" ? "6" : "5"}
+                        fontWeight="bold"
+                        fontFamily="monospace"
+                        className="pointer-events-none select-none"
+                        style={{ paintOrder: "stroke", stroke: "rgba(0,0,0,0.4)", strokeWidth: 2, strokeLinejoin: "round" }}
                       >
-                        {p.name.replace(" (NCR)", "").replace(" (Western)", "")}
+                        {CARTOGRAM_GRID[p.id]?.code || p.name.substring(0, 3).toUpperCase()}
                       </text>
                     )}
                   </g>
                 );
               })}
+
+              {/* Active Selection Highlight */}
+              {selectedProvinceId && PROVINCE_GEO_PATHS[selectedProvinceId] && (
+                <path
+                  d={PROVINCE_GEO_PATHS[selectedProvinceId].d}
+                  fill="none"
+                  stroke="#FFB703"
+                  strokeWidth={3}
+                  strokeLinejoin="round"
+                  className="pointer-events-none"
+                />
+              )}
             </svg>
           </div>
         )}

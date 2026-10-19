@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Search,
   ZoomIn,
@@ -22,6 +22,7 @@ import {
 import { PHILIPPINE_REGIONS, PHILIPPINE_PROVINCES } from "@/lib/philippines-geo";
 import { PHILIPPINE_GEO_REGIONS } from "@/lib/philippines-geo-paths";
 import { CARTOGRAM_GRID } from "./Philippine2DMap";
+import { PROVINCE_GEO_PATHS } from "@/lib/ph-province-paths";
 
 interface CandidateItem {
   id: string;
@@ -965,97 +966,31 @@ export default function GMASmartMapStation({
               className="w-full max-w-lg transition-transform duration-300"
               style={{ transform: `scale(${zoomLevel})` }}
             >
-              {/* VIEW A: AUTHENTIC GEOGRAPHIC ARCHIPELAGO (Default National View) */}
+              {/* VIEW A: REAL GEOGRAPHIC PROVINCE MAP */}
               {mapStyle === "GEOGRAPHIC" ? (
                 <svg
-                  viewBox="120 20 760 1150"
-                  className="w-full h-auto max-h-[520px] drop-shadow select-none"
+                  viewBox="0 0 500 920"
+                  className="w-full h-auto max-h-[560px] drop-shadow select-none"
+                  aria-label="Philippine Province Survey Map"
                 >
                   <defs>
-                    <filter id="geoDrop" x="-10%" y="-10%" width="120%" height="120%">
-                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0B132B" floodOpacity="0.15" />
+                    <filter id="geoDrop" x="-5%" y="-5%" width="110%" height="110%">
+                      <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#0B132B" floodOpacity="0.10" />
                     </filter>
                   </defs>
 
-                  {/* Render 17 Geographic Region Polygons with defined borders */}
-                  {PHILIPPINE_GEO_REGIONS.map((reg) => {
-                    const regData = getAggregatedRegionData(reg.id);
-                    const isRegionSelected = selectedRegionId === reg.id;
-                    const isRegionHovered = hoveredEntity?.id === reg.id;
-                    const fillColor = getEntityFillColor(regData);
+                  {/* Ocean background */}
+                  <rect x="0" y="0" width="500" height="920" fill="#D4EAF7" rx="4" />
 
-                    return (
-                      <g
-                        key={reg.id}
-                        className="cursor-pointer transition-all duration-150"
-                        onMouseEnter={() => {
-                          setHoveredEntity({
-                            id: reg.id,
-                            type: "REGION",
-                            name: reg.name,
-                            regionName: reg.name,
-                            votingPopulation: regData.registeredVoters,
-                            totalVotes: regData.totalSubmissions,
-                            leader:
-                              regData.totalSubmissions > 0
-                                ? selectedPosition === "PRESIDENTIAL"
-                                  ? regData.leadingPresident?.name || activeTally[0]?.name
-                                  : selectedPosition === "VICE_PRESIDENTIAL"
-                                  ? regData.leadingVicePresident?.name || activeTally[0]?.name
-                                  : regData.topSenators?.[0]?.name || activeTally[0]?.name
-                                : "No Responses Recorded",
-                            leaderColor:
-                              regData.totalSubmissions > 0
-                                ? selectedPosition === "PRESIDENTIAL"
-                                  ? regData.leadingPresident?.color || activeTally[0]?.color
-                                  : selectedPosition === "VICE_PRESIDENTIAL"
-                                  ? regData.leadingVicePresident?.color || activeTally[0]?.color
-                                  : regData.topSenators?.[0]?.color || activeTally[0]?.color
-                                : "#94A3B8",
-                            leaderShare:
-                              regData.totalSubmissions > 0 && selectedPosition === "PRESIDENTIAL" && regData.leadingPresident?.share
-                                ? `${regData.leadingPresident.share}%`
-                                : "",
-                          });
-                        }}
-                        onMouseLeave={() => setHoveredEntity(null)}
-                        onClick={() => {
-                          setSelectedRegionId(reg.id);
-                          setSelectedProvinceId("");
-                        }}
-                      >
-                        <path
-                          d={reg.d}
-                          fill={fillColor}
-                          stroke={isRegionSelected ? "#FFB703" : isRegionHovered ? "#0B132B" : "#94A3B8"}
-                          strokeWidth={isRegionSelected ? 3.5 : isRegionHovered ? 2.5 : 1.2}
-                          strokeLinejoin="round"
-                          strokeLinecap="round"
-                          filter="url(#geoDrop)"
-                          className="hover:brightness-105 transition-all"
-                        />
-                        {/* Region Code Label */}
-                        <text
-                          x={reg.labelX}
-                          y={reg.labelY}
-                          textAnchor="middle"
-                          fill={regData.totalSubmissions > 0 ? "#FFFFFF" : "#64748B"}
-                          fontSize="11"
-                          fontWeight="bold"
-                          fontFamily="Oswald, sans-serif"
-                          className="pointer-events-none select-none drop-shadow-sm tracking-wider"
-                        >
-                          {reg.code.replace("Region ", "R")}
-                        </text>
-                      </g>
-                    );
-                  })}
-
-                  {/* Province Interactive Bubbles Overlay */}
+                  {/* Province polygon paths — each colored by survey leader */}
                   {PHILIPPINE_PROVINCES.map((p) => {
+                    const geoPath = PROVINCE_GEO_PATHS[p.id];
+                    if (!geoPath) return null;
+
                     const pData = provinceDataMap.get(p.id) || { totalSubmissions: 0 };
                     const isSelected = selectedProvinceId === p.id;
                     const isHovered = hoveredEntity?.id === p.id;
+
                     const fillColor = getEntityFillColor({
                       id: p.id,
                       totalSubmissions: pData.totalSubmissions,
@@ -1067,57 +1002,85 @@ export default function GMASmartMapStation({
                       senVotes: pData.senVotes,
                     });
 
+                    const reg = PHILIPPINE_REGIONS.find((r) => r.id === p.regionId);
+
                     return (
-                      <g
-                        key={p.id}
-                        className="cursor-pointer transition-all"
-                        onMouseEnter={(e) => {
-                          e.stopPropagation();
-                          const reg = PHILIPPINE_REGIONS.find((r) => r.id === p.regionId);
-                          setHoveredEntity({
-                            id: p.id,
-                            type: "PROVINCE",
-                            name: p.name,
-                            regionName: reg?.name || "Region",
-                            votingPopulation: reg?.registeredVoters || 2312797,
-                            totalVotes: pData.totalSubmissions || 0,
-                            leader:
-                              pData.totalSubmissions > 0
-                                ? selectedPosition === "PRESIDENTIAL"
-                                  ? pData.leadingPresident?.name || activeTally[0]?.name
-                                  : selectedPosition === "VICE_PRESIDENTIAL"
-                                  ? pData.leadingVicePresident?.name || activeTally[0]?.name
-                                  : pData.topSenators?.[0]?.name || activeTally[0]?.name
-                                : "No Responses Recorded",
-                            leaderColor:
-                              pData.totalSubmissions > 0
-                                ? selectedPosition === "PRESIDENTIAL"
-                                  ? pData.leadingPresident?.color || activeTally[0]?.color
-                                  : selectedPosition === "VICE_PRESIDENTIAL"
-                                  ? pData.leadingVicePresident?.color || activeTally[0]?.color
-                                  : pData.topSenators?.[0]?.color || activeTally[0]?.color
-                                : "#94A3B8",
-                          });
-                        }}
-                        onMouseLeave={() => setHoveredEntity(null)}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProvinceId(p.id);
-                          if (onSelectProvince && pData) onSelectProvince(pData);
-                        }}
-                      >
-                        <circle
-                          cx={p.svgX}
-                          cy={p.svgY}
-                          r={isSelected ? 10 : isHovered ? 8 : 4.5}
+                      <g key={p.id}>
+                        <path
+                          d={geoPath.d}
                           fill={fillColor}
-                          stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
-                          strokeWidth={isSelected ? 2.5 : 1}
-                          className="transition-colors duration-75"
+                          stroke={isSelected ? "#FFB703" : isHovered ? "#1E3A8A" : "#FFFFFF"}
+                          strokeWidth={isSelected ? 2.5 : isHovered ? 1.5 : 0.5}
+                          strokeLinejoin="round"
+                          className="cursor-pointer transition-colors duration-75"
+                          onMouseEnter={() => {
+                            setHoveredEntity({
+                              id: p.id,
+                              type: "PROVINCE",
+                              name: p.name,
+                              regionName: reg?.name || "Region",
+                              votingPopulation: reg?.registeredVoters || 2312797,
+                              totalVotes: pData.totalSubmissions || 0,
+                              leader:
+                                pData.totalSubmissions > 0
+                                  ? selectedPosition === "PRESIDENTIAL"
+                                    ? pData.leadingPresident?.name || activeTally[0]?.name
+                                    : selectedPosition === "VICE_PRESIDENTIAL"
+                                    ? pData.leadingVicePresident?.name || activeTally[0]?.name
+                                    : pData.topSenators?.[0]?.name || activeTally[0]?.name
+                                  : "No Responses Recorded",
+                              leaderColor:
+                                pData.totalSubmissions > 0
+                                  ? selectedPosition === "PRESIDENTIAL"
+                                    ? pData.leadingPresident?.color || activeTally[0]?.color
+                                    : selectedPosition === "VICE_PRESIDENTIAL"
+                                    ? pData.leadingVicePresident?.color || activeTally[0]?.color
+                                    : pData.topSenators?.[0]?.color || activeTally[0]?.color
+                                  : "#94A3B8",
+                              leaderShare:
+                                pData.totalSubmissions > 0 && selectedPosition === "PRESIDENTIAL" && pData.leadingPresident?.share
+                                  ? `${pData.leadingPresident.share}%`
+                                  : "",
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredEntity(null)}
+                          onClick={() => {
+                            setSelectedProvinceId(p.id);
+                            setSelectedRegionId(p.regionId);
+                            if (onSelectProvince && pData) onSelectProvince(pData);
+                          }}
                         />
+                        {/* Province label — shown at centroid when space permits */}
+                        {geoPath.cx > 0 && geoPath.cy > 0 && (
+                          <text
+                            x={geoPath.cx}
+                            y={geoPath.cy + 3}
+                            textAnchor="middle"
+                            fill={pData.totalSubmissions > 0 ? "#FFFFFF" : "#6B7280"}
+                            fontSize={p.id === "metro-manila" ? "6" : "5"}
+                            fontWeight="bold"
+                            fontFamily="monospace"
+                            className="pointer-events-none select-none"
+                            style={{ paintOrder: "stroke", stroke: "rgba(0,0,0,0.4)", strokeWidth: 2, strokeLinejoin: "round" }}
+                          >
+                            {CARTOGRAM_GRID[p.id]?.code || p.name.substring(0, 3).toUpperCase()}
+                          </text>
+                        )}
                       </g>
                     );
                   })}
+
+                  {/* Selected province outline highlight on top */}
+                  {selectedProvinceId && PROVINCE_GEO_PATHS[selectedProvinceId] && (
+                    <path
+                      d={PROVINCE_GEO_PATHS[selectedProvinceId].d}
+                      fill="none"
+                      stroke="#FFB703"
+                      strokeWidth={3}
+                      strokeLinejoin="round"
+                      className="pointer-events-none"
+                    />
+                  )}
                 </svg>
               ) : (
                 /* VIEW B: INTERLOCKING HEXAGONAL CARTOGRAM */

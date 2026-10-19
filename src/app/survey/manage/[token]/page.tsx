@@ -13,7 +13,12 @@ import {
   MapPin,
   Vote,
   ExternalLink,
+  Share2,
 } from "lucide-react";
+import ShareVoteCardModal, {
+  ShareCandidateData,
+  CompetitorData,
+} from "@/components/ShareVoteCardModal";
 
 export default function ManageVotePage() {
   const params = useParams();
@@ -26,6 +31,103 @@ export default function ManageVotePage() {
   const [retracting, setRetracting] = useState(false);
   const [retractSuccess, setRetractSuccess] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [shareCandidate, setShareCandidate] = useState<ShareCandidateData | null>(null);
+  const [shareCompetitors, setShareCompetitors] = useState<CompetitorData[]>([]);
+
+  useEffect(() => {
+    async function loadAnalytics() {
+      try {
+        const res = await fetch("/api/analytics");
+        if (res.ok) {
+          const data = await res.json();
+          setAnalytics(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    loadAnalytics();
+  }, []);
+
+  const openShareModal = (candidate: any, position: string) => {
+    let rank = 1;
+    let votes = 0;
+    let percentage = 0;
+    let compList: CompetitorData[] = [];
+
+    if (analytics) {
+      if (position === "PRESIDENT") {
+        const rankings = analytics.presidentialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      } else if (position === "VICE_PRESIDENT") {
+        const rankings = analytics.vicePresidentialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      } else {
+        const rankings = analytics.senatorialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      }
+    }
+
+    setShareCandidate({
+      id: candidate.id,
+      name: candidate.name,
+      slug: candidate.slug,
+      position,
+      party: candidate.party,
+      color: candidate.color,
+      photoUrl: candidate.photoUrl,
+      votes,
+      percentage,
+      rank,
+    });
+    setShareCompetitors(compList);
+  };
 
   useEffect(() => {
     async function loadSubmission() {
@@ -191,7 +293,7 @@ export default function ManageVotePage() {
             </h3>
 
             {/* President */}
-            <div className="p-4 rounded-xl border border-brand-border bg-slate-50/50 flex items-center justify-between">
+            <div className="p-4 rounded-xl border border-brand-border bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-[10px] font-bold uppercase text-brand-slate">President</span>
                 {presSelection ? (
@@ -209,10 +311,19 @@ export default function ManageVotePage() {
                   <p className="text-xs text-slate-400 italic mt-1">No selection recorded</p>
                 )}
               </div>
+              {presSelection && (
+                <button
+                  onClick={() => openShareModal(presSelection.candidate, "PRESIDENT")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto"
+                >
+                  <Share2 className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Share My Vote (1080x1080)</span>
+                </button>
+              )}
             </div>
 
             {/* Vice President */}
-            <div className="p-4 rounded-xl border border-brand-border bg-slate-50/50 flex items-center justify-between">
+            <div className="p-4 rounded-xl border border-brand-border bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-[10px] font-bold uppercase text-brand-slate">Vice President</span>
                 {vpSelection ? (
@@ -230,27 +341,39 @@ export default function ManageVotePage() {
                   <p className="text-xs text-slate-400 italic mt-1">No selection recorded</p>
                 )}
               </div>
+              {vpSelection && (
+                <button
+                  onClick={() => openShareModal(vpSelection.candidate, "VICE_PRESIDENT")}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto"
+                >
+                  <Share2 className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Share My Vote (1080x1080)</span>
+                </button>
+              )}
             </div>
 
             {/* Senators */}
-            <div className="p-4 rounded-xl border border-brand-border bg-slate-50/50">
-              <div className="flex items-center justify-between mb-2">
+            <div className="p-4 rounded-xl border border-brand-border bg-slate-50/50 space-y-3">
+              <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold uppercase text-brand-slate">
                   Senatorial Slate ({senSelections.length} selected)
                 </span>
+                <span className="text-[10px] text-slate-400">Click candidate to generate 1080x1080 share card</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {senSelections.map((s: any) => (
-                  <span
+                  <button
                     key={s.candidate.id}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-brand-navy shadow-sm"
+                    onClick={() => openShareModal(s.candidate, "SENATOR")}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-400 text-xs font-semibold text-brand-navy shadow-sm transition-all group"
                   >
                     <span
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: s.candidate.color }}
                     ></span>
                     <span>{s.candidate.name}</span>
-                  </span>
+                    <Share2 className="w-3 h-3 text-slate-400 group-hover:text-amber-600 ml-1" />
+                  </button>
                 ))}
               </div>
             </div>
@@ -320,6 +443,16 @@ export default function ManageVotePage() {
           </div>
         </div>
       )}
+
+      {/* Share 1080x1080 Vote Card Modal */}
+      <ShareVoteCardModal
+        isOpen={!!shareCandidate}
+        onClose={() => setShareCandidate(null)}
+        candidate={shareCandidate}
+        competitors={shareCompetitors}
+        voterName={submission.participantName}
+        provinceName={submission.provinceName}
+      />
     </div>
   );
 }

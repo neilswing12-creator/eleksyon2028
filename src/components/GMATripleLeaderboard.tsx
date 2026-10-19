@@ -1,8 +1,10 @@
-"use client";
-
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Star, ChevronRight } from "lucide-react";
+import { Star, ChevronRight, Share2 } from "lucide-react";
+import ShareVoteCardModal, {
+  ShareCandidateData,
+  CompetitorData,
+} from "@/components/ShareVoteCardModal";
 
 interface CandidateResult {
   id: string;
@@ -53,6 +55,59 @@ export default function GMATripleLeaderboard({
   senatorialRankings = [],
   lastUpdated,
 }: GMATripleLeaderboardProps) {
+  const [shareCandidate, setShareCandidate] = useState<ShareCandidateData | null>(null);
+  const [shareCompetitors, setShareCompetitors] = useState<CompetitorData[]>([]);
+
+  const handleShare = (c: CandidateResult, position: string, rank: number) => {
+    let compList: CompetitorData[] = [];
+    if (position === "PRESIDENT") {
+      compList = presidentialRankings.map((r, i) => ({
+        id: r.id,
+        name: r.name,
+        party: r.party,
+        color: r.color,
+        photoUrl: r.photoUrl,
+        votes: r.votes,
+        percentage: r.percentage,
+        rank: i + 1,
+      }));
+    } else if (position === "VICE_PRESIDENT") {
+      compList = vicePresidentialRankings.map((r, i) => ({
+        id: r.id,
+        name: r.name,
+        party: r.party,
+        color: r.color,
+        photoUrl: r.photoUrl,
+        votes: r.votes,
+        percentage: r.percentage,
+        rank: i + 1,
+      }));
+    } else {
+      compList = senatorialRankings.map((r, i) => ({
+        id: r.id,
+        name: r.name,
+        party: r.party,
+        color: r.color,
+        photoUrl: r.photoUrl,
+        votes: r.votes,
+        percentage: r.percentage,
+        rank: i + 1,
+      }));
+    }
+
+    setShareCandidate({
+      id: c.id,
+      name: c.name,
+      position,
+      party: c.party,
+      color: c.color,
+      photoUrl: c.photoUrl,
+      votes: c.votes,
+      percentage: c.percentage,
+      rank,
+    });
+    setShareCompetitors(compList);
+  };
   const formattedDate = lastUpdated
     ? new Date(lastUpdated).toLocaleString("en-US", {
         month: "short",
@@ -132,11 +187,18 @@ export default function GMATripleLeaderboard({
                       </div>
                     </div>
 
-                    {/* Vote Count & Star Indicator */}
+                    {/* Vote Count & Star Indicator & Share Button */}
                     <div className="flex items-center gap-1.5 flex-shrink-0 text-right">
                       <span className="font-headline font-bold text-sm text-[#0B132B] tabular-nums tracking-tight">
                         {c.votes.toLocaleString()}
                       </span>
+                      <button
+                        onClick={() => handleShare(c, "PRESIDENT", rank)}
+                        title={`Share 1080x1080 vote card for ${c.name}`}
+                        className="p-1 rounded-md hover:bg-amber-100 text-slate-400 hover:text-amber-600 transition-colors"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
                       <Star
                         className={`w-3.5 h-3.5 ${
                           isLeader ? "text-amber-400 fill-amber-400" : "text-slate-300"
@@ -209,11 +271,18 @@ export default function GMATripleLeaderboard({
                       </div>
                     </div>
 
-                    {/* Vote Count & Star Indicator */}
+                    {/* Vote Count & Star Indicator & Share Button */}
                     <div className="flex items-center gap-1.5 flex-shrink-0 text-right">
                       <span className="font-headline font-bold text-sm text-[#0B132B] tabular-nums tracking-tight">
                         {c.votes.toLocaleString()}
                       </span>
+                      <button
+                        onClick={() => handleShare(c, "VICE_PRESIDENT", rank)}
+                        title={`Share 1080x1080 vote card for ${c.name}`}
+                        className="p-1 rounded-md hover:bg-amber-100 text-slate-400 hover:text-amber-600 transition-colors"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
                       <Star
                         className={`w-3.5 h-3.5 ${
                           isLeader ? "text-amber-400 fill-amber-400" : "text-slate-300"
@@ -287,11 +356,18 @@ export default function GMATripleLeaderboard({
                       </div>
                     </div>
 
-                    {/* Vote Count & Star Indicator */}
+                    {/* Vote Count & Star Indicator & Share Button */}
                     <div className="flex items-center gap-1.5 flex-shrink-0 text-right">
                       <span className="font-headline font-bold text-sm text-[#0B132B] tabular-nums tracking-tight">
                         {c.votes.toLocaleString()}
                       </span>
+                      <button
+                        onClick={() => handleShare(c, "SENATOR", rank)}
+                        title={`Share 1080x1080 vote card for ${c.name}`}
+                        className="p-1 rounded-md hover:bg-amber-100 text-slate-400 hover:text-amber-600 transition-colors"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
                       <Star
                         className={`w-3.5 h-3.5 ${
                           isMagic12 ? "text-amber-400 fill-amber-400" : "text-slate-300"
@@ -316,6 +392,14 @@ export default function GMATripleLeaderboard({
           </div>
         </div>
       </div>
+
+      {/* Share 1080x1080 Vote Card Modal */}
+      <ShareVoteCardModal
+        isOpen={!!shareCandidate}
+        onClose={() => setShareCandidate(null)}
+        candidate={shareCandidate}
+        competitors={shareCompetitors}
+      />
     </div>
   );
 }

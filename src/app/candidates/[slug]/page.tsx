@@ -18,7 +18,13 @@ import {
   Building,
   Check,
   Info,
+  Share2,
+  Sparkles,
 } from "lucide-react";
+import ShareVoteCardModal, {
+  ShareCandidateData,
+  CompetitorData,
+} from "@/components/ShareVoteCardModal";
 
 export default function CandidateDetailPage() {
   const params = useParams();
@@ -26,14 +32,24 @@ export default function CandidateDetailPage() {
 
   const [candidate, setCandidate] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [shareCandidate, setShareCandidate] = useState<ShareCandidateData | null>(null);
+  const [shareCompetitors, setShareCompetitors] = useState<CompetitorData[]>([]);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`/api/candidates?slug=${slug}`);
-        if (res.ok) {
-          const data = await res.json();
+        const [candRes, analyticsRes] = await Promise.all([
+          fetch(`/api/candidates?slug=${slug}`),
+          fetch("/api/analytics"),
+        ]);
+        if (candRes.ok) {
+          const data = await candRes.json();
           setCandidate(data.candidate);
+        }
+        if (analyticsRes.ok) {
+          const data = await analyticsRes.json();
+          setAnalytics(data);
         }
       } catch (e) {
         console.error(e);
@@ -43,6 +59,86 @@ export default function CandidateDetailPage() {
     }
     if (slug) load();
   }, [slug]);
+
+  const handleOpenShare = () => {
+    if (!candidate) return;
+    let rank = 1;
+    let votes = 0;
+    let percentage = 0;
+    let compList: CompetitorData[] = [];
+
+    if (analytics) {
+      if (candidate.position === "PRESIDENT") {
+        const rankings = analytics.presidentialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      } else if (candidate.position === "VICE_PRESIDENT") {
+        const rankings = analytics.vicePresidentialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      } else {
+        const rankings = analytics.senatorialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      }
+    }
+
+    setShareCandidate({
+      id: candidate.id,
+      name: candidate.name,
+      slug: candidate.slug,
+      position: candidate.position,
+      party: candidate.party,
+      color: candidate.color,
+      photoUrl: candidate.photoUrl,
+      votes,
+      percentage,
+      rank,
+    });
+    setShareCompetitors(compList);
+  };
 
   if (loading) {
     return (
@@ -176,6 +272,13 @@ export default function CandidateDetailPage() {
                 <Vote className="w-4 h-4" />
                 <span>Cast Survey Vote</span>
               </Link>
+              <button
+                onClick={handleOpenShare}
+                className="w-full text-center px-6 py-2.5 rounded-xl bg-gma-red text-white text-xs font-headline font-bold uppercase tracking-wider shadow-sm hover:bg-red-700 flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Share2 className="w-4 h-4 text-amber-300" />
+                <span>Share Vote Card (1080x1080)</span>
+              </button>
             </div>
           </div>
         </div>
@@ -416,6 +519,14 @@ export default function CandidateDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Share 1080x1080 Vote Card Modal */}
+      <ShareVoteCardModal
+        isOpen={!!shareCandidate}
+        onClose={() => setShareCandidate(null)}
+        candidate={shareCandidate}
+        competitors={shareCompetitors}
+      />
     </div>
   );
 }

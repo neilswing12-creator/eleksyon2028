@@ -13,7 +13,13 @@ import {
   User,
   Users,
   Flame,
+  Share2,
+  Sparkles,
 } from "lucide-react";
+import ShareVoteCardModal, {
+  ShareCandidateData,
+  CompetitorData,
+} from "@/components/ShareVoteCardModal";
 import { PHILIPPINE_REGIONS, PHILIPPINE_PROVINCES } from "@/lib/philippines-geo";
 
 interface Candidate {
@@ -58,6 +64,108 @@ export default function SurveyPage() {
     participantName: string;
   } | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Live Analytics & Share Modal State
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [shareCandidate, setShareCandidate] = useState<ShareCandidateData | null>(null);
+  const [shareCompetitors, setShareCompetitors] = useState<CompetitorData[]>([]);
+
+  useEffect(() => {
+    async function loadAnalytics() {
+      try {
+        const res = await fetch("/api/analytics");
+        if (res.ok) {
+          const data = await res.json();
+          setAnalytics(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    loadAnalytics();
+  }, []);
+
+  const openShareModal = (candidateId: string, position: string) => {
+    const candidate = candidates.find((c) => c.id === candidateId);
+    if (!candidate) return;
+
+    let rank = 1;
+    let votes = 0;
+    let percentage = 0;
+    let compList: CompetitorData[] = [];
+
+    if (analytics) {
+      if (position === "PRESIDENT") {
+        const rankings = analytics.presidentialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      } else if (position === "VICE_PRESIDENT") {
+        const rankings = analytics.vicePresidentialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      } else {
+        const rankings = analytics.senatorialRankings || [];
+        const idx = rankings.findIndex((r: any) => r.id === candidate.id);
+        if (idx !== -1) {
+          rank = idx + 1;
+          votes = rankings[idx].votes;
+          percentage = rankings[idx].percentage;
+        }
+        compList = rankings.map((r: any, i: number) => ({
+          id: r.id,
+          name: r.name,
+          party: r.party,
+          color: r.color,
+          photoUrl: r.photoUrl,
+          votes: r.votes,
+          percentage: r.percentage,
+          rank: i + 1,
+        }));
+      }
+    }
+
+    setShareCandidate({
+      id: candidate.id,
+      name: candidate.name,
+      slug: candidate.slug,
+      position,
+      party: candidate.party,
+      color: candidate.color,
+      photoUrl: candidate.photoUrl,
+      votes,
+      percentage,
+      rank,
+    });
+    setShareCompetitors(compList);
+  };
 
   // Fetch candidates
   useEffect(() => {
@@ -915,6 +1023,85 @@ export default function SurveyPage() {
               </div>
             </div>
 
+            {/* Share Your Vote 1080x1080 Banner */}
+            <div className="bg-gradient-to-r from-[#0B132B] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-5 text-left text-white shadow-xl space-y-3 font-sans">
+              <div className="flex items-center justify-between font-headline">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
+                  <span className="text-sm font-black uppercase tracking-wider text-amber-300">
+                    SHARE WHO YOU VOTED FOR (1080x1080)
+                  </span>
+                </div>
+                <span className="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  VIRAL CAMPAIGN CARD
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Generate a premium 1080x1080 election card with your candidate&apos;s official colors, live ranking,
+                vote tally vs competitors, and an instant voting QR code for your social media.
+              </p>
+
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-headline">
+                {presidentialChoice && (
+                  <button
+                    onClick={() => openShareModal(presidentialChoice, "PRESIDENT")}
+                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left flex items-center justify-between transition-all group"
+                  >
+                    <div>
+                      <span className="text-[10px] font-bold text-amber-300 uppercase block">Presidential Choice</span>
+                      <span className="text-xs font-bold text-white uppercase group-hover:text-amber-200">
+                        {candidates.find((c) => c.id === presidentialChoice)?.name || "President"}
+                      </span>
+                    </div>
+                    <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                  </button>
+                )}
+
+                {vicePresidentialChoice && (
+                  <button
+                    onClick={() => openShareModal(vicePresidentialChoice, "VICE_PRESIDENT")}
+                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left flex items-center justify-between transition-all group"
+                  >
+                    <div>
+                      <span className="text-[10px] font-bold text-amber-300 uppercase block">Vice President Choice</span>
+                      <span className="text-xs font-bold text-white uppercase group-hover:text-amber-200">
+                        {candidates.find((c) => c.id === vicePresidentialChoice)?.name || "Vice President"}
+                      </span>
+                    </div>
+                    <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                  </button>
+                )}
+              </div>
+
+              {senatorialChoices.length > 0 && (
+                <div className="pt-2 border-t border-white/10">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2 font-headline">
+                    Senatorial Slate ({senatorialChoices.length} candidates) - Click to generate share card:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {senatorialChoices.map((sId) => {
+                      const senCand = candidates.find((c) => c.id === sId);
+                      if (!senCand) return null;
+                      return (
+                        <button
+                          key={sId}
+                          onClick={() => openShareModal(sId, "SENATOR")}
+                          className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-400/20 border border-white/10 hover:border-amber-400 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center gap-1 transition-all"
+                        >
+                          <span
+                            className="w-2 h-2 rounded-full inline-block"
+                            style={{ backgroundColor: senCand.color }}
+                          ></span>
+                          <span>{senCand.name}</span>
+                          <Share2 className="w-3 h-3 text-amber-400 ml-0.5" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/survey/manage/${submissionResult.managementToken}`}
@@ -937,6 +1124,18 @@ export default function SurveyPage() {
             </div>
           </div>
         )}
+
+        {/* Share 1080x1080 Vote Card Modal */}
+        <ShareVoteCardModal
+          isOpen={!!shareCandidate}
+          onClose={() => setShareCandidate(null)}
+          candidate={shareCandidate}
+          competitors={shareCompetitors}
+          voterName={participantName}
+          provinceName={
+            PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name || ""
+          }
+        />
       </div>
     </div>
   );

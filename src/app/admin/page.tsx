@@ -381,8 +381,13 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
+        const data = await res.json();
         setShowCandidateModal(false);
-        showNotify("success", `Candidate ${candidateForm.name} saved successfully.`);
+        const syncMsg =
+          data.syncedSiblingsCount > 0
+            ? ` (automatically synchronized across ${data.syncedSiblingsCount + 1} ballot positions)`
+            : "";
+        showNotify("success", `Candidate ${candidateForm.name} saved successfully${syncMsg}.`);
         loadAdminData();
       } else {
         const err = await res.json();
@@ -1953,8 +1958,8 @@ export default function AdminPage() {
                     <option value="VICE_PRESIDENT">Vice President of the Philippines</option>
                     <option value="SENATOR">Senator of the Philippines</option>
                   </select>
-                  <p className="text-[10px] text-slate-400 mt-1">
-                    Tip: Candidates can be entered in multiple survey positions (e.g. both Presidential &amp; Senatorial) with unique URL slugs.
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    Tip: Candidates can run across multiple survey positions. Profile edits (photo, party, color, bio, education, platforms, sources) automatically reflect across all ballot slots.
                   </p>
                 </div>
 

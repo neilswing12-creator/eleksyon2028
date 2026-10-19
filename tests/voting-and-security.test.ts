@@ -10,6 +10,7 @@ import {
   hashPassword,
   verifyPassword,
 } from "../src/lib/security";
+import { PUT as candidatePUT } from "../src/app/api/admin/candidates/route";
 
 const prisma = new PrismaClient();
 
@@ -529,6 +530,191 @@ async function runTests() {
     totalSources >= 21 && allSourcesVerified === totalSources,
     `24. Source Citations Integrity: ${totalSources} primary government and legislative source records verified`
   );
+
+  // TEST 25: Bidirectional Cross-Position Candidate Information Sync (Pres <-> Sen vice versa)
+  const adminToken = signAdminSession({
+    id: "admin-test-id",
+    email: "admin@survey2028.ph",
+    role: "SUPER_ADMIN",
+    name: "Test Admin",
+  });
+
+  // Clean up any stale test records first
+  await prisma.candidate.deleteMany({
+    where: { slug: { in: ["dual-test-candidate-pres", "dual-test-candidate-sen"] } },
+  });
+
+  // Create a candidate in both Presidential and Senatorial slots
+  const presSlot = await prisma.candidate.create({
+    data: {
+      name: "Dual Test Candidate",
+      slug: "dual-test-candidate-pres",
+      position: "PRESIDENT",
+      party: "Original Party",
+      color: "#1455D9",
+      bio: "Original presidential biography.",
+      isPublished: true,
+      educations: {
+        create: [{ degree: "Bachelor of Arts in Economics", displayOrder: 1 }],
+      },
+      platforms: {
+        create: [
+          {
+            title: "Universal Healthcare Expansion",
+            description: "Full PhilHealth coverage for all citizens.",
+            category: "HEALTHCARE",
+          },
+        ],
+      },
+    },
+  });
+
+  const senSlot = await prisma.candidate.create({
+    data: {
+      name: "Dual Test Candidate",
+      slug: "dual-test-candidate-sen",
+      position: "SENATOR",
+      party: "Original Party",
+      color: "#1455D9",
+      bio: "Original senatorial biography.",
+      isPublished: true,
+      educations: {
+        create: [{ degree: "Bachelor of Arts in Economics", displayOrder: 1 }],
+      },
+      platforms: {
+        create: [
+          {
+            title: "Universal Healthcare Expansion",
+            description: "Full PhilHealth coverage for all citizens.",
+            category: "HEALTHCARE",
+          },
+        ],
+      },
+    },
+  });
+
+  // 1. Edit the Presidential candidate info
+  const reqPres = new Request("http://localhost/api/admin/candidates", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${adminToken}`,
+    },
+    body: JSON.stringify({
+      id: presSlot.id,
+      name: "Dual Test Candidate",
+      position: "PRESIDENT",
+      party: "Updated Progressive Coalition",
+      color: "#059669",
+      bio: "Synchronized updated biography for 2028.",
+      educations: ["Master in Public Administration (Harvard)", "BA Economics (UP Diliman)"],
+      publicServices: ["Secretary of Finance (2022-2025)", "Undersecretary (2019-2022)"],
+      platforms: [
+        {
+          title: "Universal Basic Income",
+          description: "Monthly stipend for low-income families",
+          category: "SOCIAL_WELFARE",
+        },
+        {
+          title: "Renewable Energy Grid 2030",
+          description: "100% clean power transition",
+          category: "ENVIRONMENT",
+        },
+      ],
+      sources: [
+        {
+          category: "GENERAL",
+          title: "Official Gazette Bio",
+          url: "https://www.officialgazette.gov.ph",
+        },
+      ],
+    }),
+  });
+
+  const resPres = await candidatePUT(reqPres as any);
+  const dataPres = await resPres.json();
+
+  // Verify that the Senatorial slot reflected the exact same info!
+  const updatedSenSlot = await prisma.candidate.findUnique({
+    where: { id: senSlot.id },
+    include: { educations: true, publicServices: true, platforms: true, sources: true },
+  });
+
+  const presToSenSynced =
+    dataPres.success === true &&
+    dataPres.syncedSiblingsCount >= 1 &&
+    updatedSenSlot?.party === "Updated Progressive Coalition" &&
+    updatedSenSlot?.color === "#059669" &&
+    updatedSenSlot?.bio === "Synchronized updated biography for 2028." &&
+    updatedSenSlot?.educations.length === 2 &&
+    updatedSenSlot?.publicServices.length === 2 &&
+    updatedSenSlot?.platforms.length === 2 &&
+    updatedSenSlot?.sources.length === 1 &&
+    updatedSenSlot?.position === "SENATOR"; // position remains SENATOR
+
+  // 2. Vice versa: Edit the Senatorial candidate info
+  const reqSen = new Request("http://localhost/api/admin/candidates", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${adminToken}`,
+    },
+    body: JSON.stringify({
+      id: senSlot.id,
+      name: "Dual Test Candidate",
+      position: "SENATOR",
+      party: "Vice Versa Reflected Party",
+      color: "#DC2626",
+      bio: "Vice versa reflected biography from senate slot.",
+      educations: ["Doctor of Philosophy in Public Policy (LSE)"],
+      publicServices: ["Senator (2028-present)"],
+      platforms: [
+        {
+          title: "Anti-Corruption Integrity Act",
+          description: "Full transparency in government bids",
+          category: "GOVERNANCE",
+        },
+      ],
+      sources: [
+        {
+          category: "PLATFORM",
+          title: "Senate Legislative Record",
+          url: "https://legacy.senate.gov.ph",
+        },
+      ],
+    }),
+  });
+
+  const resSen = await candidatePUT(reqSen as any);
+  const dataSen = await resSen.json();
+
+  // Verify that the Presidential slot reflected the changes from Senatorial!
+  const updatedPresSlot = await prisma.candidate.findUnique({
+    where: { id: presSlot.id },
+    include: { educations: true, publicServices: true, platforms: true, sources: true },
+  });
+
+  const senToPresSynced =
+    dataSen.success === true &&
+    dataSen.syncedSiblingsCount >= 1 &&
+    updatedPresSlot?.party === "Vice Versa Reflected Party" &&
+    updatedPresSlot?.color === "#DC2626" &&
+    updatedPresSlot?.bio === "Vice versa reflected biography from senate slot." &&
+    updatedPresSlot?.educations.length === 1 &&
+    updatedPresSlot?.publicServices.length === 1 &&
+    updatedPresSlot?.platforms.length === 1 &&
+    updatedPresSlot?.sources.length === 1 &&
+    updatedPresSlot?.position === "PRESIDENT"; // position remains PRESIDENT
+
+  assert(
+    presToSenSynced && senToPresSynced,
+    "25. Bidirectional Cross-Position Candidate Information Sync (Pres <-> Sen vice versa)"
+  );
+
+  // Clean up test candidates
+  await prisma.candidate.deleteMany({
+    where: { slug: { in: ["dual-test-candidate-pres", "dual-test-candidate-sen"] } },
+  });
 
   console.log("\n=======================================================");
   console.log(`TOTAL TESTS: ${passedCount + failedCount} | PASSED: ${passedCount} | FAILED: ${failedCount}`);

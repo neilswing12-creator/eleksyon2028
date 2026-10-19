@@ -17,6 +17,13 @@ function getAdmin(req: NextRequest) {
   return verifyAdminSession(token);
 }
 
+function getBaseSlug(slug: string): string {
+  return slug
+    .toLowerCase()
+    .replace(/-(pres|vp|sen|president|vice-president|senator)$/i, "")
+    .trim();
+}
+
 // GET all candidates for admin table
 export async function GET(req: NextRequest) {
   try {
@@ -446,9 +453,139 @@ export async function PUT(req: NextRequest) {
         },
       });
 
+      // 6. Cross-position automatic synchronization (e.g. Presidential <-> Senatorial)
+      const siblingCandidates = await tx.candidate.findMany({
+        where: { id: { not: id } },
+      });
+
+      const existingBaseSlug = getBaseSlug(existing.slug);
+      const currentNameLower = existing.name.trim().toLowerCase();
+      const newNameLower = name ? name.trim().toLowerCase() : currentNameLower;
+
+      const matchingSiblings = siblingCandidates.filter((s) => {
+        const sNameLower = s.name.trim().toLowerCase();
+        const sBaseSlug = getBaseSlug(s.slug);
+        return (
+          sNameLower === currentNameLower ||
+          sNameLower === newNameLower ||
+          sBaseSlug === existingBaseSlug
+        );
+      });
+
+      for (const sibling of matchingSiblings) {
+        // Sync shared profile attributes (preserving slot-specific position, slug, displayOrder, isPublished)
+        const siblingUpdateData: any = {};
+        if (name !== undefined) siblingUpdateData.name = name.trim();
+        if (party !== undefined) siblingUpdateData.party = party ? party.trim() : null;
+        if (color !== undefined) siblingUpdateData.color = color;
+        if (photoUrl !== undefined) siblingUpdateData.photoUrl = normalizedPhotoUrl;
+        if (bio !== undefined) siblingUpdateData.bio = bio ? bio.trim() : null;
+        if (legacyEdu !== undefined) siblingUpdateData.education = legacyEdu;
+        if (legacyService !== undefined) siblingUpdateData.publicService = legacyService;
+        if (officialWebsite !== undefined) siblingUpdateData.officialWebsite = officialWebsite ? officialWebsite.trim() : null;
+        if (socialLinks !== undefined) {
+          siblingUpdateData.socialLinks = typeof socialLinks === "object" ? JSON.stringify(socialLinks) : socialLinks || null;
+        }
+        if (lastVerifiedAt !== undefined) {
+          siblingUpdateData.lastVerifiedAt = lastVerifiedAt ? new Date(lastVerifiedAt) : null;
+        }
+
+        if (Object.keys(siblingUpdateData).length > 0) {
+          await tx.candidate.update({
+            where: { id: sibling.id },
+            data: siblingUpdateData,
+          });
+        }
+
+        // Sync educations
+        if (Array.isArray(educations)) {
+          await tx.candidateEducation.deleteMany({ where: { candidateId: sibling.id } });
+          const validEdu = educations
+            .map((item: any) => (typeof item === "string" ? item.trim() : item.degree?.trim()))
+            .filter(Boolean);
+
+          for (let i = 0; i < validEdu.length; i++) {
+            await tx.candidateEducation.create({
+              data: {
+                candidateId: sibling.id,
+                degree: validEdu[i],
+                displayOrder: i + 1,
+              },
+            });
+          }
+        }
+
+        // Sync public services
+        if (Array.isArray(publicServices)) {
+          await tx.candidatePublicService.deleteMany({ where: { candidateId: sibling.id } });
+          const validService = publicServices
+            .map((item: any) => (typeof item === "string" ? item.trim() : item.position?.trim()))
+            .filter(Boolean);
+
+          for (let i = 0; i < validService.length; i++) {
+            await tx.candidatePublicService.create({
+              data: {
+                candidateId: sibling.id,
+                position: validService[i],
+                displayOrder: i + 1,
+              },
+            });
+          }
+        }
+
+        // Sync policy platforms
+        if (Array.isArray(platforms)) {
+          await tx.candidatePlatform.deleteMany({ where: { candidateId: sibling.id } });
+          for (let i = 0; i < platforms.length; i++) {
+            const p = platforms[i];
+            if (p && p.title) {
+              await tx.candidatePlatform.create({
+                data: {
+                  candidateId: sibling.id,
+                  title: typeof p.title === "string" ? p.title.trim() : "",
+                  description: typeof p.description === "string" ? p.description.trim() : (p.title || ""),
+                  category: p.category || "GOVERNANCE",
+                  sourceUrl: p.sourceUrl ? String(p.sourceUrl).trim() : null,
+                  sourceTitle: p.sourceTitle ? String(p.sourceTitle).trim() : null,
+                  sourceType: p.sourceType || "OFFICIAL_PLATFORM",
+                  publicationDate: p.publicationDate ? new Date(p.publicationDate) : null,
+                  verificationStatus: p.verificationStatus || "VERIFIED",
+                  verifiedAt: p.verifiedAt ? new Date(p.verifiedAt) : new Date(),
+                },
+              });
+            }
+          }
+        }
+
+        // Sync sources
+        if (Array.isArray(sources)) {
+          await tx.candidateSource.deleteMany({ where: { candidateId: sibling.id } });
+          for (let i = 0; i < sources.length; i++) {
+            const s = sources[i];
+            if (s && s.title && s.url) {
+              await tx.candidateSource.create({
+                data: {
+                  candidateId: sibling.id,
+                  category: s.category || "GENERAL",
+                  title: s.title.trim(),
+                  url: s.url.trim(),
+                  publisher: s.publisher ? s.publisher.trim() : null,
+                  publicationDate: s.publicationDate ? s.publicationDate.trim() : null,
+                  verificationStatus: s.verificationStatus || "VERIFIED",
+                  notes: s.notes ? s.notes.trim() : null,
+                  displayOrder: s.displayOrder ?? i + 1,
+                },
+              });
+            }
+          }
+        }
+      }
+
+      (cand as any).syncedSiblingsCount = matchingSiblings.length;
       return cand;
     });
 
+    const syncedCount = (updated as any).syncedSiblingsCount || 0;
     const clientIP = getClientIP(req.headers);
     await prisma.adminAuditLog.create({
       data: {
@@ -456,12 +593,18 @@ export async function PUT(req: NextRequest) {
         action: "CANDIDATE_UPDATED",
         entityType: "Candidate",
         entityId: updated.id,
-        details: `Updated candidate ${updated.name} (color: ${updated.color}, position: ${updated.position}, published: ${updated.isPublished})`,
+        details: `Updated candidate ${updated.name} (${updated.position})${
+          syncedCount > 0 ? ` [auto-synced to ${syncedCount} other ballot positions]` : ""
+        }`,
         ipAddress: clientIP,
       },
     });
 
-    return NextResponse.json({ success: true, candidate: updated });
+    return NextResponse.json({
+      success: true,
+      candidate: updated,
+      syncedSiblingsCount: syncedCount,
+    });
   } catch (error) {
     console.error("Admin candidate update error:", error);
     return NextResponse.json({ error: "Failed to update candidate." }, { status: 500 });

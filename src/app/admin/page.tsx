@@ -19,6 +19,7 @@ import {
   Palette,
   Eye,
   Archive,
+  Copy,
   BarChart2,
   Sliders,
   ArrowUp,
@@ -405,6 +406,40 @@ export default function AdminPage() {
     } else {
       alert("Failed to archive candidate.");
     }
+  };
+
+  // Add candidate to another position (Survey multi-position entry)
+  const handleAddCandidateToPosition = (c: any, targetPosition: string) => {
+    const posSuffix = targetPosition === "PRESIDENT" ? "pres" : targetPosition === "VICE_PRESIDENT" ? "vp" : "sen";
+    const baseSlug = c.slug.replace(/-(pres|vp|sen)$/, "");
+    const newSlug = `${baseSlug}-${posSuffix}`;
+
+    setCandidateForm({
+      id: null, // New candidate entry
+      name: c.name,
+      slug: newSlug,
+      position: targetPosition,
+      party: c.party || "",
+      color: c.color || "#1455D9",
+      photoUrl: c.photoUrl || "",
+      bio: c.bio || "",
+      officialWebsite: c.officialWebsite || "",
+      socialLinks: c.socialLinks || "",
+      displayOrder: (candidates?.length || 0) + 1,
+      isPublished: true,
+      educations: c.educations?.map((e: any) => e.degree) || [],
+      publicServices: c.publicServices?.map((s: any) => s.position) || [],
+      sources: c.sources || [],
+      lastVerifiedAt: new Date().toISOString(),
+      newEduInput: "",
+      newServiceInput: "",
+      newSourceTitle: "",
+      newSourceUrl: "",
+      newSourceCategory: "GENERAL",
+      newSourcePublisher: "",
+    });
+    setShowCandidateModal(true);
+    showNotify("success", `Ready to add ${c.name} as ${targetPosition.replace("_", " ")}. Click 'Save Candidate' to confirm.`);
   };
 
   // Platform Save
@@ -1448,16 +1483,48 @@ export default function AdminPage() {
                             });
                             setShowCandidateModal(true);
                           }}
-                          className="p-1 rounded hover:bg-slate-200 text-slate-600 disabled:opacity-30"
+                          className="p-1 rounded hover:bg-slate-200 text-slate-600 disabled:opacity-30 inline-flex items-center"
                           title="Edit Profile, Photo & Credentials"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
+                        {/* Quick Add To Other Position (Survey Multi-Position Support) */}
+                        {!isAnalyst && (
+                          <span className="inline-flex items-center gap-1 border-l border-slate-200 pl-2">
+                            {c.position !== "PRESIDENT" && (
+                              <button
+                                onClick={() => handleAddCandidateToPosition(c, "PRESIDENT")}
+                                className="px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-brand-blue text-[10px] font-bold"
+                                title={`Add ${c.name} as Presidential survey candidate`}
+                              >
+                                +Pres
+                              </button>
+                            )}
+                            {c.position !== "VICE_PRESIDENT" && (
+                              <button
+                                onClick={() => handleAddCandidateToPosition(c, "VICE_PRESIDENT")}
+                                className="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[10px] font-bold"
+                                title={`Add ${c.name} as Vice-Presidential survey candidate`}
+                              >
+                                +VP
+                              </button>
+                            )}
+                            {c.position !== "SENATOR" && (
+                              <button
+                                onClick={() => handleAddCandidateToPosition(c, "SENATOR")}
+                                className="px-1.5 py-0.5 rounded bg-purple-50 hover:bg-purple-100 text-purple-700 text-[10px] font-bold"
+                                title={`Add ${c.name} as Senatorial survey candidate`}
+                              >
+                                +Senator
+                              </button>
+                            )}
+                          </span>
+                        )}
                         {c.isPublished && (
                           <button
                             disabled={isAnalyst}
                             onClick={() => handleArchiveCandidate(c.id, c.name)}
-                            className="p-1 rounded hover:bg-red-50 text-red-600 disabled:opacity-30"
+                            className="p-1 rounded hover:bg-red-50 text-red-600 disabled:opacity-30 inline-flex items-center"
                             title="Archive Candidate"
                           >
                             <Archive className="w-3.5 h-3.5" />
@@ -1826,16 +1893,33 @@ export default function AdminPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-brand-navy mb-1">Election Position</label>
+                  <label className="block font-bold text-brand-navy mb-1">
+                    Election Position
+                  </label>
                   <select
                     value={candidateForm.position}
-                    onChange={(e) => setCandidateForm({ ...candidateForm, position: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-brand-border outline-none bg-white"
+                    onChange={(e) => {
+                      const newPos = e.target.value;
+                      setCandidateForm((prev: any) => {
+                        // Automatically update slug suffix if adding candidate to multiple positions
+                        const baseSlug = prev.slug ? prev.slug.replace(/-(pres|vp|sen)$/, "") : "";
+                        const posSuffix = newPos === "PRESIDENT" ? "pres" : newPos === "VICE_PRESIDENT" ? "vp" : "sen";
+                        return {
+                          ...prev,
+                          position: newPos,
+                          slug: baseSlug ? `${baseSlug}-${posSuffix}` : prev.slug,
+                        };
+                      });
+                    }}
+                    className="w-full px-3 py-2 rounded-xl border border-brand-border outline-none bg-white font-medium"
                   >
                     <option value="PRESIDENT">President of the Philippines</option>
                     <option value="VICE_PRESIDENT">Vice President of the Philippines</option>
                     <option value="SENATOR">Senator of the Philippines</option>
                   </select>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Tip: Candidates can be entered in multiple survey positions (e.g. both Presidential &amp; Senatorial) with unique URL slugs.
+                  </p>
                 </div>
 
                 <div>

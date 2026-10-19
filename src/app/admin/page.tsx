@@ -84,6 +84,7 @@ export default function AdminPage() {
     displayOrder: 1,
     educations: [] as string[],
     publicServices: [] as string[],
+    platforms: [] as any[],
     sources: [] as any[],
     lastVerifiedAt: "",
     newEduInput: "",
@@ -367,6 +368,7 @@ export default function AdminPage() {
       isPublished: candidateForm.isPublished !== false,
       educations: candidateForm.educations || [],
       publicServices: candidateForm.publicServices || [],
+      platforms: candidateForm.platforms || [],
       sources: candidateForm.sources || [],
       lastVerifiedAt: candidateForm.lastVerifiedAt || new Date().toISOString(),
     };
@@ -414,6 +416,31 @@ export default function AdminPage() {
     const baseSlug = c.slug.replace(/-(pres|vp|sen)$/, "");
     const newSlug = `${baseSlug}-${posSuffix}`;
 
+    // Cleanly copy platforms without old candidate IDs
+    const copiedPlatforms = (c.platforms || []).map((p: any) => ({
+      title: p.title,
+      description: p.description,
+      category: p.category,
+      sourceUrl: p.sourceUrl,
+      sourceTitle: p.sourceTitle,
+      sourceType: p.sourceType,
+      publicationDate: p.publicationDate,
+      verificationStatus: p.verificationStatus,
+      verifiedAt: p.verifiedAt,
+    }));
+
+    // Cleanly copy sources and citations without old candidate IDs
+    const copiedSources = (c.sources || []).map((s: any) => ({
+      category: s.category,
+      title: s.title,
+      url: s.url,
+      publisher: s.publisher,
+      publicationDate: s.publicationDate,
+      verificationStatus: s.verificationStatus,
+      notes: s.notes,
+      displayOrder: s.displayOrder,
+    }));
+
     setCandidateForm({
       id: null, // New candidate entry
       name: c.name,
@@ -427,10 +454,11 @@ export default function AdminPage() {
       socialLinks: c.socialLinks || "",
       displayOrder: (candidates?.length || 0) + 1,
       isPublished: true,
-      educations: c.educations?.map((e: any) => e.degree) || [],
-      publicServices: c.publicServices?.map((s: any) => s.position) || [],
-      sources: c.sources || [],
-      lastVerifiedAt: new Date().toISOString(),
+      educations: c.educations?.map((e: any) => (typeof e === "string" ? e : e.degree)) || [],
+      publicServices: c.publicServices?.map((s: any) => (typeof s === "string" ? s : s.position)) || [],
+      platforms: copiedPlatforms,
+      sources: copiedSources,
+      lastVerifiedAt: c.lastVerifiedAt || new Date().toISOString(),
       newEduInput: "",
       newServiceInput: "",
       newSourceTitle: "",
@@ -439,7 +467,7 @@ export default function AdminPage() {
       newSourcePublisher: "",
     });
     setShowCandidateModal(true);
-    showNotify("success", `Ready to add ${c.name} as ${targetPosition.replace("_", " ")}. Click 'Save Candidate' to confirm.`);
+    showNotify("success", `Ready to add ${c.name} as ${targetPosition.replace("_", " ")} (${copiedPlatforms.length} platforms and ${copiedSources.length} citations copied). Click 'Save Candidate' to confirm.`);
   };
 
   // Platform Save
@@ -1369,6 +1397,7 @@ export default function AdminPage() {
                     officialWebsite: "",
                     socialLinks: "",
                     displayOrder: candidates.length + 1,
+                    platforms: [],
                     sources: [],
                     lastVerifiedAt: "",
                     newEduInput: "",
@@ -1397,6 +1426,7 @@ export default function AdminPage() {
                     <th className="py-3 px-3">Assigned Map Color</th>
                     <th className="py-3 px-3">Education</th>
                     <th className="py-3 px-3">Public Service</th>
+                    <th className="py-3 px-3">Platforms</th>
                     <th className="py-3 px-3">Sources</th>
                     <th className="py-3 px-3">Status</th>
                     <th className="py-3 px-3 text-right">Actions</th>
@@ -1448,6 +1478,11 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="py-3 px-3">
+                        <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold text-[11px]">
+                          {c.platforms?.length || 0} agendas
+                        </span>
+                      </td>
+                      <td className="py-3 px-3">
                         <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-bold text-[11px] inline-flex items-center gap-1">
                           <ShieldCheck className="w-3 h-3 text-purple-600" />
                           <span>{c.sources?.length || 0} sources</span>
@@ -1470,6 +1505,7 @@ export default function AdminPage() {
                           onClick={() => {
                             setCandidateForm({
                               ...c,
+                              platforms: c.platforms || [],
                               educations: c.educations?.map((e: any) => e.degree) || [],
                               publicServices: c.publicServices?.map((s: any) => s.position) || [],
                               sources: c.sources || [],
@@ -2233,6 +2269,58 @@ export default function AdminPage() {
                     className="w-full px-3 py-2 rounded-xl border border-brand-border outline-none"
                   />
                 </div>
+              </div>
+
+              {/* POLICY PLATFORMS & AGENDAS */}
+              <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-brand-navy block uppercase text-[11px]">
+                    Policy Platforms &amp; Agendas
+                  </span>
+                  <span className="text-[10px] font-mono text-amber-900 font-bold px-2 py-0.5 rounded bg-amber-100">
+                    {candidateForm.platforms?.length || 0} attached
+                  </span>
+                </div>
+
+                {(!candidateForm.platforms || candidateForm.platforms.length === 0) ? (
+                  <div className="text-xs text-slate-500 italic p-3 bg-white rounded-lg border border-amber-200/60">
+                    No policy platforms currently attached. Any platforms added in the Platforms tab or copied from candidate cross-position assignments will appear here.
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {candidateForm.platforms.map((plat: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="p-2.5 bg-white rounded-xl border border-amber-200 text-xs shadow-2xs space-y-1"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 uppercase">
+                            {plat.category || "GOVERNANCE"}
+                          </span>
+                          {plat.verificationStatus && (
+                            <span className="text-[9px] text-emerald-700 font-bold uppercase">
+                              ✓ {plat.verificationStatus}
+                            </span>
+                          )}
+                        </div>
+                        <div className="font-bold text-brand-navy">{plat.title}</div>
+                        {plat.description && plat.description !== plat.title && (
+                          <div className="text-[11px] text-slate-600 line-clamp-2">{plat.description}</div>
+                        )}
+                        {plat.sourceUrl && (
+                          <a
+                            href={plat.sourceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10px] text-brand-blue truncate block hover:underline"
+                          >
+                            Source: {plat.sourceTitle || plat.sourceUrl}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* SOURCES & CITATIONS MANAGER */}

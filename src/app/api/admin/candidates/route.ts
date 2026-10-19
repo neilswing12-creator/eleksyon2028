@@ -79,6 +79,9 @@ export async function POST(req: NextRequest) {
       publicService,
       educations,
       publicServices,
+      platforms,
+      sources,
+      lastVerifiedAt,
       officialWebsite,
       socialLinks,
       displayOrder,
@@ -131,6 +134,7 @@ export async function POST(req: NextRequest) {
           socialLinks: typeof socialLinks === "object" ? JSON.stringify(socialLinks) : socialLinks || null,
           displayOrder: displayOrder ? parseInt(displayOrder, 10) : 0,
           isPublished: isPublished !== false,
+          lastVerifiedAt: lastVerifiedAt ? new Date(lastVerifiedAt) : new Date(),
         },
       });
 
@@ -160,7 +164,60 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      return cand;
+      // Insert policy platforms / agendas
+      if (Array.isArray(platforms) && platforms.length > 0) {
+        for (let i = 0; i < platforms.length; i++) {
+          const p = platforms[i];
+          if (p && p.title) {
+            await tx.candidatePlatform.create({
+              data: {
+                candidateId: cand.id,
+                title: typeof p.title === "string" ? p.title.trim() : "",
+                description: typeof p.description === "string" ? p.description.trim() : (p.title || ""),
+                category: p.category || "GOVERNANCE",
+                sourceUrl: p.sourceUrl ? String(p.sourceUrl).trim() : null,
+                sourceTitle: p.sourceTitle ? String(p.sourceTitle).trim() : null,
+                sourceType: p.sourceType || "OFFICIAL_PLATFORM",
+                publicationDate: p.publicationDate ? new Date(p.publicationDate) : null,
+                verificationStatus: p.verificationStatus || "VERIFIED",
+                verifiedAt: p.verifiedAt ? new Date(p.verifiedAt) : new Date(),
+              },
+            });
+          }
+        }
+      }
+
+      // Insert verified sources and citations
+      if (Array.isArray(sources) && sources.length > 0) {
+        for (let i = 0; i < sources.length; i++) {
+          const s = sources[i];
+          if (s && s.title && s.url) {
+            await tx.candidateSource.create({
+              data: {
+                candidateId: cand.id,
+                category: s.category || "GENERAL",
+                title: String(s.title).trim(),
+                url: String(s.url).trim(),
+                publisher: s.publisher ? String(s.publisher).trim() : null,
+                publicationDate: s.publicationDate ? String(s.publicationDate).trim() : null,
+                verificationStatus: s.verificationStatus || "VERIFIED",
+                notes: s.notes ? String(s.notes).trim() : null,
+                displayOrder: s.displayOrder ?? i + 1,
+              },
+            });
+          }
+        }
+      }
+
+      return await tx.candidate.findUniqueOrThrow({
+        where: { id: cand.id },
+        include: {
+          educations: { orderBy: { displayOrder: "asc" } },
+          publicServices: { orderBy: { displayOrder: "asc" } },
+          platforms: true,
+          sources: { orderBy: { displayOrder: "asc" } },
+        },
+      });
     });
 
     const clientIP = getClientIP(req.headers);
@@ -222,6 +279,7 @@ export async function PUT(req: NextRequest) {
       lastVerifiedAt,
       educations,
       publicServices,
+      platforms,
       sources,
     } = body;
 
@@ -231,7 +289,7 @@ export async function PUT(req: NextRequest) {
 
     const existing = await prisma.candidate.findUnique({
       where: { id },
-      include: { educations: true, publicServices: true, sources: true },
+      include: { educations: true, publicServices: true, platforms: true, sources: true },
     });
 
     if (!existing) {
@@ -332,7 +390,31 @@ export async function PUT(req: NextRequest) {
         }
       }
 
-      // 4. Update candidate core fields with strict whitelisted data
+      // 4. Update candidate platforms / policy agendas if provided
+      if (Array.isArray(platforms)) {
+        await tx.candidatePlatform.deleteMany({ where: { candidateId: id } });
+        for (let i = 0; i < platforms.length; i++) {
+          const p = platforms[i];
+          if (p && p.title) {
+            await tx.candidatePlatform.create({
+              data: {
+                candidateId: id,
+                title: typeof p.title === "string" ? p.title.trim() : "",
+                description: typeof p.description === "string" ? p.description.trim() : (p.title || ""),
+                category: p.category || "GOVERNANCE",
+                sourceUrl: p.sourceUrl ? String(p.sourceUrl).trim() : null,
+                sourceTitle: p.sourceTitle ? String(p.sourceTitle).trim() : null,
+                sourceType: p.sourceType || "OFFICIAL_PLATFORM",
+                publicationDate: p.publicationDate ? new Date(p.publicationDate) : null,
+                verificationStatus: p.verificationStatus || "VERIFIED",
+                verifiedAt: p.verifiedAt ? new Date(p.verifiedAt) : new Date(),
+              },
+            });
+          }
+        }
+      }
+
+      // 5. Update candidate core fields with strict whitelisted data
       const updateData: any = {};
       if (name !== undefined) updateData.name = name.trim();
       if (slug !== undefined) updateData.slug = slug.toLowerCase().replace(/[^a-z0-9-]/g, "-");
@@ -359,6 +441,7 @@ export async function PUT(req: NextRequest) {
         include: {
           educations: { orderBy: { displayOrder: "asc" } },
           publicServices: { orderBy: { displayOrder: "asc" } },
+          platforms: true,
           sources: { orderBy: { displayOrder: "asc" } },
         },
       });

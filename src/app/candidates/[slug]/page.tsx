@@ -277,7 +277,7 @@ export default function CandidateDetailPage() {
                 className="w-full text-center px-6 py-2.5 rounded-xl bg-gma-red text-white text-xs font-headline font-bold uppercase tracking-wider shadow-sm hover:bg-red-700 flex items-center justify-center gap-1.5 transition-colors"
               >
                 <Share2 className="w-4 h-4 text-amber-300" />
-                <span>Share Vote Card (1080x1080)</span>
+                <span>Share Vote Card (1080×1350)</span>
               </button>
             </div>
           </div>
@@ -520,7 +520,7 @@ export default function CandidateDetailPage() {
         </div>
       </div>
 
-      {/* Share 1080x1080 Vote Card Modal */}
+      {/* Share 1080x1350 Vote Card Modal */}
       <ShareVoteCardModal
         isOpen={!!shareCandidate}
         onClose={() => setShareCandidate(null)}

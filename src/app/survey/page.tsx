@@ -1023,21 +1023,21 @@ export default function SurveyPage() {
               </div>
             </div>
 
-            {/* Share Your Vote 1080x1080 Banner */}
+            {/* Share Your Vote 1080x1350 Banner */}
             <div className="bg-gradient-to-r from-[#0B132B] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-5 text-left text-white shadow-xl space-y-3 font-sans">
               <div className="flex items-center justify-between font-headline">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
                   <span className="text-sm font-black uppercase tracking-wider text-amber-300">
-                    SHARE WHO YOU VOTED FOR (1080x1080)
+                    SHARE WHO YOU VOTED FOR (1080×1350)
                   </span>
                 </div>
                 <span className="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  VIRAL CAMPAIGN CARD
+                  VIRAL CAMPAIGN CARD (4:5)
                 </span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Generate a premium 1080x1080 election card with your candidate&apos;s official colors, live ranking,
+                Generate a premium 1080×1350 (4:5) election card with your candidate&apos;s official colors, live ranking,
                 vote tally vs competitors, and an instant voting QR code for your social media.
               </p>
 
@@ -1125,7 +1125,7 @@ export default function SurveyPage() {
           </div>
         )}
 
-        {/* Share 1080x1080 Vote Card Modal */}
+        {/* Share 1080x1350 Vote Card Modal */}
         <ShareVoteCardModal
           isOpen={!!shareCandidate}
           onClose={() => setShareCandidate(null)}

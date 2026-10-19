@@ -317,7 +317,7 @@ export default function ManageVotePage() {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto"
                 >
                   <Share2 className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Share My Vote (1080x1080)</span>
+                  <span>Share My Vote (1080×1350)</span>
                 </button>
               )}
             </div>
@@ -347,7 +347,7 @@ export default function ManageVotePage() {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto"
                 >
                   <Share2 className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Share My Vote (1080x1080)</span>
+                  <span>Share My Vote (1080×1350)</span>
                 </button>
               )}
             </div>
@@ -358,7 +358,7 @@ export default function ManageVotePage() {
                 <span className="text-[10px] font-bold uppercase text-brand-slate">
                   Senatorial Slate ({senSelections.length} selected)
                 </span>
-                <span className="text-[10px] text-slate-400">Click candidate to generate 1080x1080 share card</span>
+                <span className="text-[10px] text-slate-400">Click candidate to generate 1080×1350 share card</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {senSelections.map((s: any) => (
@@ -444,7 +444,7 @@ export default function ManageVotePage() {
         </div>
       )}
 
-      {/* Share 1080x1080 Vote Card Modal */}
+      {/* Share 1080x1350 Vote Card Modal */}
       <ShareVoteCardModal
         isOpen={!!shareCandidate}
         onClose={() => setShareCandidate(null)}

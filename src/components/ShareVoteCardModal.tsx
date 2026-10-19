@@ -638,7 +638,7 @@ export default function ShareVoteCardModal({
                 Official Eleksyon 2028 Share Card
               </h3>
               <p className="text-[11px] text-[#9FAECB]">
-                1080 x 1350 High-Definition election card for {candidate.name}
+                1080 × 1350 (4:5) High-Definition election card for {candidate.name}
               </p>
             </div>
           </div>
@@ -663,14 +663,14 @@ export default function ShareVoteCardModal({
               </p>
             </div>
           ) : (
-            <div className="relative group max-w-md w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80">
+            <div className="relative group max-w-[420px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80 aspect-[4/5] bg-[#0A1730] flex items-center justify-center">
               <img
                 src={previewUrl}
                 alt={`Eleksyon 2028 - ${candidate.name}`}
-                className="w-full h-auto object-contain bg-black"
+                className="w-full h-full object-contain"
               />
-              <div className="absolute top-3 right-3 bg-black/60 backdrop-blur px-2.5 py-1 rounded-full text-[10px] font-bold text-amber-400 uppercase tracking-widest border border-amber-400/30">
-                1080 x 1350 HD
+              <div className="absolute top-3 right-3 bg-black/70 backdrop-blur px-2.5 py-1 rounded-full text-[10px] font-bold text-amber-400 uppercase tracking-widest border border-amber-400/30">
+                1080 × 1350 (4:5) HD
               </div>
             </div>
           )}

@@ -194,7 +194,7 @@ export default function GMATripleLeaderboard({
                       </span>
                       <button
                         onClick={() => handleShare(c, "PRESIDENT", rank)}
-                        title={`Share 1080x1080 vote card for ${c.name}`}
+                        title={`Share 1080×1350 vote card for ${c.name}`}
                         className="p-1 rounded-md hover:bg-amber-100 text-slate-400 hover:text-amber-600 transition-colors"
                       >
                         <Share2 className="w-3.5 h-3.5" />
@@ -278,7 +278,7 @@ export default function GMATripleLeaderboard({
                       </span>
                       <button
                         onClick={() => handleShare(c, "VICE_PRESIDENT", rank)}
-                        title={`Share 1080x1080 vote card for ${c.name}`}
+                        title={`Share 1080×1350 vote card for ${c.name}`}
                         className="p-1 rounded-md hover:bg-amber-100 text-slate-400 hover:text-amber-600 transition-colors"
                       >
                         <Share2 className="w-3.5 h-3.5" />
@@ -363,7 +363,7 @@ export default function GMATripleLeaderboard({
                       </span>
                       <button
                         onClick={() => handleShare(c, "SENATOR", rank)}
-                        title={`Share 1080x1080 vote card for ${c.name}`}
+                        title={`Share 1080×1350 vote card for ${c.name}`}
                         className="p-1 rounded-md hover:bg-amber-100 text-slate-400 hover:text-amber-600 transition-colors"
                       >
                         <Share2 className="w-3.5 h-3.5" />
@@ -393,7 +393,7 @@ export default function GMATripleLeaderboard({
         </div>
       </div>
 
-      {/* Share 1080x1080 Vote Card Modal */}
+      {/* Share 1080x1350 Vote Card Modal */}
       <ShareVoteCardModal
         isOpen={!!shareCandidate}
         onClose={() => setShareCandidate(null)}

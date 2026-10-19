@@ -1,6 +1,13 @@
-import { PrismaClient } from '../src/generated/prisma/index.js';
+import path from 'path';
 
-const prisma = new PrismaClient();
+const dbPath = path.resolve(process.cwd(), 'prisma', 'dev.db');
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: `file:${dbPath}`
+    }
+  }
+});
 
 function mapCategory(pillar) {
   const p = (pillar || '').toUpperCase();

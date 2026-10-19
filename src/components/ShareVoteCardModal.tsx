@@ -45,7 +45,6 @@ export default function ShareVoteCardModal({
   voterName,
   provinceName,
 }: ShareVoteCardModalProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [generating, setGenerating] = useState(true);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -61,405 +60,507 @@ export default function ShareVoteCardModal({
 
     const renderCard = async () => {
       try {
+        // Ensure web fonts are ready (Playfair Display / Serif, Inter / Sans)
+        if (typeof document !== "undefined" && document.fonts) {
+          try {
+            await document.fonts.ready;
+          } catch (e) {
+            // continue
+          }
+        }
+
         const canvas = document.createElement("canvas");
+        // Exact dimensions from FireShot template: 1080 x 1350
         canvas.width = 1080;
-        canvas.height = 1080;
+        canvas.height = 1350;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // Position name formatting
+        // Colors from template:
+        // --ink: #0A1730; --ink2: #10224A; --ivory: #F4EEDD; --mute: #9FAECB;
+        // --gold: #D4AF5A; --red: #CE1126; --blue: #0038A8; --green: #23A573;
+        const INK = "#0A1730";
+        const IVORY = "#F4EEDD";
+        const MUTE = "#9FAECB";
+        const GOLD = "#D4AF5A";
+        const RED = "#CE1126";
+        const BLUE = "#0038A8";
+        const GREEN = candidate.color || "#23A573"; // Use candidate's branding or green
+
+        // 1. Background
+        // Base fill
+        ctx.fillStyle = INK;
+        ctx.fillRect(0, 0, 1080, 1350);
+
+        // radial-gradient(900px 600px at 80% 12%, #18346e 0%, transparent 70%)
+        const rad1 = ctx.createRadialGradient(864, 162, 0, 864, 162, 600);
+        rad1.addColorStop(0, "#18346e");
+        rad1.addColorStop(0.7, "transparent");
+        ctx.fillStyle = rad1;
+        ctx.fillRect(0, 0, 1080, 1350);
+
+        // radial-gradient(700px 500px at 0% 60%, #0f2a5c55 0%, transparent 70%)
+        const rad2 = ctx.createRadialGradient(0, 810, 0, 0, 810, 500);
+        rad2.addColorStop(0, "rgba(15, 42, 92, 0.33)");
+        rad2.addColorStop(0.7, "transparent");
+        ctx.fillStyle = rad2;
+        ctx.fillRect(0, 0, 1080, 1350);
+
+        // 2. Top Color Band: 10px height
+        // linear-gradient(90deg, var(--blue) 0 40%, var(--red) 40% 80%, var(--gold) 80%)
+        ctx.fillStyle = BLUE;
+        ctx.fillRect(0, 0, 432, 10);
+        ctx.fillStyle = RED;
+        ctx.fillRect(432, 0, 432, 10);
+        ctx.fillStyle = GOLD;
+        ctx.fillRect(864, 0, 216, 10);
+
+        // Inner Padding starts at x=64, y=58 + 10 = 68
+        const inX = 64;
+        let curY = 68;
+
+        // 3. Top Header Bar
+        // .mark: background: var(--red); padding: 11px 20px; font-weight:700; font-size:26px; border-radius:3px
+        const markW = 210;
+        const markH = 48;
+        ctx.fillStyle = RED;
+        roundRect(ctx, inX, curY, markW, markH, 4);
+        ctx.fill();
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "bold 26px 'Playfair Display', Georgia, serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Eleksyon 2028", inX + markW / 2, curY + markH / 2 + 1);
+
+        // .live: display: flex; align-items: center; gap: 10px; font-size: 17px; color: var(--mute); letter-spacing: 2px; text-transform: uppercase
+        const liveDotX = inX + markW + 28;
+        const liveDotY = curY + markH / 2;
+
+        // outer glow: box-shadow: 0 0 0 5px #43b5ff33
+        ctx.fillStyle = "rgba(67, 181, 255, 0.2)";
+        ctx.beginPath();
+        ctx.arc(liveDotX, liveDotY, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // inner dot: width: 10px; height: 10px; background: #43B5FF
+        ctx.fillStyle = "#43B5FF";
+        ctx.beginPath();
+        ctx.arc(liveDotX, liveDotY, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = MUTE;
+        ctx.font = "bold 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText("LIVE VERIFIED SURVEY", liveDotX + 18, liveDotY);
+
+        // .sel: border: 1.5px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 40px; font-size: 16px; letter-spacing: 2px; font-weight: 700
+        const selW = 310;
+        const selH = 46;
+        const selX = 1080 - inX - selW;
+        ctx.strokeStyle = GOLD;
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, selX, curY, selW, selH, 23);
+        ctx.stroke();
+
+        ctx.fillStyle = GOLD;
+        ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("★ VOTED BALLOT SELECTION", selX + selW / 2, curY + selH / 2 + 1);
+
+        // 4. Position Label
+        // .lab: margin: 34px 0 18px; font-size: 16px; letter-spacing: 3px; color: var(--mute); text-transform: uppercase
+        curY += markH + 34;
         const posLabel =
           candidate.position === "PRESIDENT"
             ? "PRESIDENTIAL CONTENDER"
             : candidate.position === "VICE_PRESIDENT"
             ? "VICE PRESIDENTIAL CONTENDER"
-            : "SENATORIAL SLATE CONTENDER";
+            : "SENATORIAL CONTENDER";
 
-        const candColor = candidate.color || "#004B93";
+        ctx.fillStyle = MUTE;
+        ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(posLabel, inX, curY);
 
-        // 1. Base Background - Deep Midnight Navy Radial
-        const bgGrad = ctx.createRadialGradient(540, 420, 100, 540, 540, 780);
-        bgGrad.addColorStop(0, "#0F1A36");
-        bgGrad.addColorStop(0.7, "#090E1E");
-        bgGrad.addColorStop(1, "#05070E");
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, 1080, 1080);
+        // 5. Hero Container
+        // .hero: padding: 46px 40px; border: 1px solid #D4AF5A66; border-radius: 6px; background: linear-gradient(135deg, #ffffff0d, #ffffff03); position: relative
+        curY += 26;
+        const heroX = inX;
+        const heroY = curY;
+        const heroW = 1080 - inX * 2; // 952px
+        const heroH = 345;
 
-        // 2. Candidate Ambient Color Aura Glow in upper canvas
-        const auraGrad = ctx.createRadialGradient(540, 320, 40, 540, 320, 440);
-        auraGrad.addColorStop(0, `${candColor}55`); // 33% opacity
-        auraGrad.addColorStop(0.5, `${candColor}22`);
-        auraGrad.addColorStop(1, "transparent");
-        ctx.fillStyle = auraGrad;
-        ctx.fillRect(0, 0, 1080, 700);
+        const heroBg = ctx.createLinearGradient(heroX, heroY, heroX + heroW, heroY + heroH);
+        heroBg.addColorStop(0, "rgba(255, 255, 255, 0.05)");
+        heroBg.addColorStop(1, "rgba(255, 255, 255, 0.01)");
+        ctx.fillStyle = heroBg;
+        roundRect(ctx, heroX, heroY, heroW, heroH, 6);
+        ctx.fill();
 
-        // 3. Subtle Geometric Tech Grid & Stripes
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+        ctx.strokeStyle = "rgba(212, 175, 90, 0.4)";
         ctx.lineWidth = 1;
-        for (let x = 60; x < 1080; x += 60) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, 1080);
-          ctx.stroke();
-        }
-        for (let y = 60; y < 1080; y += 60) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(1080, y);
-          ctx.stroke();
-        }
-
-        // Top Gold & Candidate Color Accent Bar (Double stripe)
-        ctx.fillStyle = candColor;
-        ctx.fillRect(0, 0, 1080, 10);
-        ctx.fillStyle = "#FFC82C";
-        ctx.fillRect(0, 10, 1080, 4);
-
-        // 4. Header Section: ELEKSYON 2028 Broadcast Branding
-        // Broadcast Brand Tag
-        ctx.fillStyle = "#ED1C24"; // GMA Red
-        roundRect(ctx, 60, 40, 190, 42, 8);
-        ctx.fill();
-
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = "bold 20px 'Impact', 'Arial Black', sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("ELEKSYON 2028", 155, 68);
-
-        // Verified Survey Badge
-        ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-        roundRect(ctx, 260, 40, 240, 42, 8);
-        ctx.fill();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+        roundRect(ctx, heroX, heroY, heroW, heroH, 6);
         ctx.stroke();
 
-        ctx.fillStyle = "#38BDF8";
-        ctx.beginPath();
-        ctx.arc(280, 61, 6, 0, Math.PI * 2);
+        // Left gold border stripe: width: 6px; background: var(--gold)
+        ctx.fillStyle = GOLD;
+        roundRect(ctx, heroX, heroY, 6, heroH, { tl: 6, bl: 6, tr: 0, br: 0 });
         ctx.fill();
 
-        ctx.fillStyle = "#E2E8F0";
-        ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.textAlign = "left";
-        ctx.fillText("LIVE VERIFIED SURVEY", 298, 67);
+        // Portrait: .ph: width: 260px; height: 260px;
+        // border: 5px solid var(--gold); outline: 2px solid #D4AF5A55; outline-offset: 8px; border-radius: 50%
+        const photoCenterX = heroX + 40 + 130;
+        const photoCenterY = heroY + 46 + 130;
+        const photoRadius = 125;
 
-        // Right side: Official Voter Stance Stamp
-        ctx.fillStyle = "rgba(255, 200, 44, 0.12)";
-        roundRect(ctx, 770, 40, 250, 42, 21);
-        ctx.fill();
-        ctx.strokeStyle = "rgba(255, 200, 44, 0.4)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        ctx.fillStyle = "#FFC82C";
-        ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("★ VOTED BALLOT SELECTION", 895, 67);
-
-        // Position Sub-Header
-        ctx.fillStyle = "#94A3B8";
-        ctx.font = "bold 15px 'Impact', sans-serif";
-        ctx.textAlign = "left";
-        ctx.fillText(posLabel, 60, 122);
-
-        // 5. Candidate Big Showcase Card (Hero Section)
-        // Background container
-        const heroBoxGrad = ctx.createLinearGradient(60, 140, 1020, 430);
-        heroBoxGrad.addColorStop(0, "rgba(255, 255, 255, 0.06)");
-        heroBoxGrad.addColorStop(1, "rgba(255, 255, 255, 0.02)");
-        ctx.fillStyle = heroBoxGrad;
-        roundRect(ctx, 60, 140, 960, 290, 24);
-        ctx.fill();
-        ctx.strokeStyle = `${candColor}88`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Left Glow Border Indicator
-        ctx.fillStyle = candColor;
-        roundRect(ctx, 60, 140, 12, 290, { tl: 24, bl: 24, tr: 0, br: 0 });
-        ctx.fill();
-
-        // Candidate Portrait Avatar with circular glow ring
-        const avatarX = 200;
-        const avatarY = 285;
-        const avatarRadius = 105;
-
-        // Outer Aura Ring
-        ctx.strokeStyle = candColor;
-        ctx.lineWidth = 6;
-        ctx.beginPath();
-        ctx.arc(avatarX, avatarY, avatarRadius + 6, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Inner Gold Halo
-        ctx.strokeStyle = "#FFC82C";
+        // Outline ring
+        ctx.strokeStyle = "rgba(212, 175, 90, 0.33)";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(avatarX, avatarY, avatarRadius + 11, 0, Math.PI * 2);
+        ctx.arc(photoCenterX, photoCenterY, photoRadius + 12, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Load & Draw Photo
+        // Solid gold border ring
+        ctx.strokeStyle = GOLD;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(photoCenterX, photoCenterY, photoRadius + 2.5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Draw candidate portrait image
         const photoImg = await loadImage(candidate.photoUrl || "");
         ctx.save();
         ctx.beginPath();
-        ctx.arc(avatarX, avatarY, avatarRadius, 0, Math.PI * 2);
+        ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI * 2);
         ctx.clip();
         if (photoImg) {
           ctx.drawImage(
             photoImg,
-            avatarX - avatarRadius,
-            avatarY - avatarRadius,
-            avatarRadius * 2,
-            avatarRadius * 2
+            photoCenterX - photoRadius,
+            photoCenterY - photoRadius,
+            photoRadius * 2,
+            photoRadius * 2
           );
         } else {
-          ctx.fillStyle = "#1E293B";
+          ctx.fillStyle = "#16284F";
           ctx.fill();
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = "bold 60px 'Arial Black', sans-serif";
+          ctx.fillStyle = IVORY;
+          ctx.font = "bold 64px 'Playfair Display', Georgia, serif";
           ctx.textAlign = "center";
-          ctx.fillText(candidate.name.slice(0, 2).toUpperCase(), avatarX, avatarY + 20);
+          ctx.textBaseline = "middle";
+          ctx.fillText(candidate.name.slice(0, 2).toUpperCase(), photoCenterX, photoCenterY);
         }
         ctx.restore();
 
-        // Candidate Rank Badge overlay on photo
-        if (candidate.rank) {
-          const rankX = avatarX + 75;
-          const rankY = avatarY + 75;
-          ctx.fillStyle = candidate.rank === 1 ? "#FFC82C" : candColor;
-          ctx.beginPath();
-          ctx.arc(rankX, rankY, 28, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = "#0B132B";
-          ctx.lineWidth = 4;
-          ctx.stroke();
+        // Rank Badge: .bd: width: 74px; height: 74px; border-radius: 50%; background: var(--green); border: 5px solid var(--ink); font-weight: 800; font-size: 26px
+        const bdCenterX = photoCenterX + 130 - 15;
+        const bdCenterY = photoCenterY + 130 - 18;
+        const bdRadius = 37;
 
-          ctx.fillStyle = candidate.rank === 1 ? "#0B132B" : "#FFFFFF";
-          ctx.font = "black 22px 'Arial Black', sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(`#${candidate.rank}`, rankX, rankY + 8);
-        }
-
-        // Candidate Name & Details
-        ctx.textAlign = "left";
-
-        // "I VOTED FOR" Tag
-        ctx.fillStyle = "#FFC82C";
-        ctx.font = "black 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("OFFICIAL CITIZEN VOTE • 2028 RUNNER", 345, 190);
-
-        // Candidate Name (Auto fit font size)
-        ctx.fillStyle = "#FFFFFF";
-        let nameFontSize = 46;
-        if (candidate.name.length > 24) nameFontSize = 36;
-        if (candidate.name.length > 32) nameFontSize = 30;
-        ctx.font = `black ${nameFontSize}px 'Impact', 'Arial Black', sans-serif`;
-        ctx.fillText(candidate.name.toUpperCase(), 345, 238);
-
-        // Party Tag
-        ctx.fillStyle = "#94A3B8";
-        ctx.font = "bold 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText(candidate.party ? `Party: ${candidate.party}` : "Independent Candidate", 345, 272);
-
-        // Metric Pill: Live Vote Count
-        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-        roundRect(ctx, 345, 295, 290, 105, 14);
+        ctx.fillStyle = GREEN;
+        ctx.beginPath();
+        ctx.arc(bdCenterX, bdCenterY, bdRadius, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
-        ctx.lineWidth = 1;
+
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(bdCenterX, bdCenterY, bdRadius, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.fillStyle = "#94A3B8";
-        ctx.font = "bold 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("LIVE VERIFIED VOTES", 365, 324);
-
         ctx.fillStyle = "#FFFFFF";
-        ctx.font = "black 42px 'Impact', 'Arial Black', sans-serif";
-        ctx.fillText(candidate.votes.toLocaleString(), 365, 375);
+        ctx.font = "bold 26px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`#${candidate.rank || 1}`, bdCenterX, bdCenterY);
 
-        // Metric Pill: Overall Percentage / Share
-        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-        roundRect(ctx, 655, 295, 335, 105, 14);
-        ctx.fill();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
-        ctx.lineWidth = 1;
+        // Right details in Hero
+        const infoX = heroX + 40 + 260 + 44; // 408px
+        let infoY = heroY + 46;
+
+        // .kick: color: var(--gold); font-size: 16px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700
+        ctx.fillStyle = GOLD;
+        ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText("OFFICIAL CITIZEN VOTE • 2028 RUNNER", infoX, infoY);
+
+        // h1: font-size: 64px; line-height: 1.02; margin: 12px 0 12px; font-weight: 700; font-family: serif
+        infoY += 28;
+        ctx.fillStyle = IVORY;
+        let candFontSize = 58;
+        if (candidate.name.length > 22) candFontSize = 46;
+        if (candidate.name.length > 30) candFontSize = 38;
+        ctx.font = `bold ${candFontSize}px 'Playfair Display', Georgia, serif`;
+        ctx.fillText(candidate.name, infoX, infoY);
+
+        // .party: color: var(--mute); font-size: 21px; margin-bottom: 26px
+        infoY += candFontSize + 12;
+        ctx.fillStyle = MUTE;
+        ctx.font = "21px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        const partyStr = candidate.party ? `Party: ${candidate.party}` : "Independent Candidate";
+        ctx.fillText(partyStr, infoX, infoY);
+
+        // .stats: display: flex; gap: 16px
+        // .st: flex: 1; border-top: 2px solid #D4AF5A88; padding-top: 12px
+        infoY += 34;
+        const st1X = infoX;
+        const st1W = 230;
+        const st2X = infoX + st1W + 24;
+        const st2W = 240;
+
+        // Stat 1: Live Verified Votes
+        ctx.strokeStyle = "rgba(212, 175, 90, 0.53)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(st1X, infoY);
+        ctx.lineTo(st1X + st1W, infoY);
         ctx.stroke();
 
-        ctx.fillStyle = "#94A3B8";
-        ctx.font = "bold 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("NATIONAL VOTE SHARE", 675, 324);
+        ctx.fillStyle = MUTE;
+        ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("LIVE VERIFIED VOTES", st1X, infoY + 12);
 
-        ctx.fillStyle = candColor;
-        ctx.font = "black 42px 'Impact', 'Arial Black', sans-serif";
-        const pctText =
-          candidate.percentage !== undefined ? `${candidate.percentage}%` : "LEADING";
-        ctx.fillText(pctText, 675, 375);
+        ctx.fillStyle = IVORY;
+        ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
+        ctx.fillText(candidate.votes.toLocaleString(), st1X, infoY + 36);
 
-        if (candidate.rank) {
-          ctx.fillStyle = "#FFC82C";
-          ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, sans-serif";
-          ctx.fillText(`RANK #${candidate.rank}`, 860, 370);
-        }
+        // Stat 2: National Vote Share
+        ctx.strokeStyle = "rgba(212, 175, 90, 0.53)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(st2X, infoY);
+        ctx.lineTo(st2X + st2W, infoY);
+        ctx.stroke();
 
-        // 6. Comparative Live Leaderboard Section (vs Top Contenders)
-        ctx.fillStyle = "#E2E8F0";
-        ctx.font = "bold 20px 'Impact', 'Arial Black', sans-serif";
-        ctx.textAlign = "left";
-        ctx.fillText("LIVE TALLY COMPARISON vs CONTENDERS", 60, 475);
+        ctx.fillStyle = MUTE;
+        ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("NATIONAL VOTE SHARE", st2X, infoY + 12);
 
-        ctx.fillStyle = "#94A3B8";
-        ctx.font = "14px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillStyle = IVORY;
+        ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
+        const pctStr = candidate.percentage !== undefined ? `${candidate.percentage}%` : "0.0%";
+        ctx.fillText(pctStr, st2X, infoY + 36);
+
+        // Rank subtitle inside stat 2: em { font-size: 20px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase }
+        ctx.fillStyle = GOLD;
+        ctx.font = "bold 20px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         ctx.textAlign = "right";
-        ctx.fillText("Real-time nationwide aggregated ballot counts", 1020, 475);
+        ctx.fillText(`RANK #${candidate.rank || 1}`, st2X + st2W, infoY + 70);
 
-        // Competitor rows (up to 4 rows)
+        // 6. Section Header for Comparison: .th
+        // margin: 56px 0 16px; h2: font-size: 30px; span: color: var(--mute); font-size: 17px
+        curY = heroY + heroH + 52;
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = IVORY;
+        ctx.font = "bold 30px 'Playfair Display', Georgia, serif";
+        ctx.fillText("Live Tally Comparison vs Contenders", inX, curY);
+
+        ctx.textAlign = "right";
+        ctx.fillStyle = MUTE;
+        ctx.font = "17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("Real-time nationwide aggregated ballot counts", 1080 - inX, curY + 6);
+
+        // 7. Comparison Rows
+        // .row: height: 86px; padding: 0 20px; border-bottom: 1px solid #ffffff1c; font-size: 23px
+        // grid: 36px 20px 1fr 250px 56px 84px
+        curY += 24;
         const displayList = buildComparisonList(candidate, competitors);
-        const maxListVotes = Math.max(...displayList.map((c) => c.votes), 1);
+        const maxVotes = Math.max(...displayList.map((c) => c.votes), 1);
 
-        let rowY = 500;
         displayList.forEach((c) => {
-          const isSelected = c.id === candidate.id;
-          const rowHeight = 62;
+          const isMe = c.id === candidate.id;
+          const rowH = 80;
+          const rowX = inX;
+          const rowW = 1080 - inX * 2;
 
-          // Row background
-          ctx.fillStyle = isSelected
-            ? "rgba(255, 200, 44, 0.1)"
-            : "rgba(255, 255, 255, 0.03)";
-          roundRect(ctx, 60, rowY, 960, rowHeight, 12);
-          ctx.fill();
+          // Background & Border
+          if (isMe) {
+            // .row.me: border: 1.5px solid var(--gold); border-radius: 6px; background: #D4AF5A14; margin-top: 6px
+            ctx.fillStyle = "rgba(212, 175, 90, 0.08)";
+            roundRect(ctx, rowX, curY, rowW, rowH, 6);
+            ctx.fill();
 
-          if (isSelected) {
-            ctx.strokeStyle = "rgba(255, 200, 44, 0.6)";
+            ctx.strokeStyle = GOLD;
             ctx.lineWidth = 1.5;
+            roundRect(ctx, rowX, curY, rowW, rowH, 6);
+            ctx.stroke();
+          } else {
+            // border-bottom: 1px solid #ffffff1c
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.11)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(rowX + 20, curY + rowH);
+            ctx.lineTo(rowX + rowW - 20, curY + rowH);
             ctx.stroke();
           }
 
-          // Rank number
-          ctx.fillStyle = isSelected ? "#FFC82C" : "#94A3B8";
-          ctx.font = "black 20px 'Impact', 'Arial Black', sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(`${c.rank || "-"}`, 95, rowY + 39);
+          const midY = curY + rowH / 2;
 
-          // Color pip
-          ctx.fillStyle = c.color || "#64748B";
+          // 1. Rank: .n { color: var(--mute) / var(--gold); font-size: 19px; }
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = isMe ? GOLD : MUTE;
+          ctx.font = isMe
+            ? "bold 20px -apple-system, BlinkMacSystemFont, sans-serif"
+            : "19px -apple-system, BlinkMacSystemFont, sans-serif";
+          ctx.fillText(`${c.rank || 1}`, rowX + 38, midY);
+
+          // 2. Color Dot: .d { width: 16px; height: 16px; border-radius: 50%; }
+          const dotColor = isMe ? GREEN : c.color || "#8795B3";
+          ctx.fillStyle = dotColor;
           ctx.beginPath();
-          ctx.arc(135, rowY + 31, 8, 0, Math.PI * 2);
+          ctx.arc(rowX + 72, midY, 8, 0, Math.PI * 2);
           ctx.fill();
 
-          // Name & Party
+          // 3. Name: .nm { font-weight: 600; font-size: 23px; }
           ctx.textAlign = "left";
-          ctx.fillStyle = isSelected ? "#FFFFFF" : "#CBD5E1";
-          ctx.font = `bold 18px 'Impact', 'Arial Black', sans-serif`;
-          ctx.fillText(c.name.toUpperCase(), 160, rowY + 38);
+          ctx.fillStyle = IVORY;
+          ctx.font = "bold 23px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+          ctx.fillText(c.name, rowX + 96, midY);
 
-          if (isSelected) {
-            ctx.fillStyle = "#FFC82C";
-            ctx.font = "bold 12px sans-serif";
-            ctx.fillText("★ MY CHOICE", 440, rowY + 37);
+          // If isMe: u { text-decoration: none; color: var(--gold); font-size: 14px; letter-spacing: 1.5px; font-weight: 700 }
+          if (isMe) {
+            const nameWidth = ctx.measureText(c.name).width;
+            ctx.fillStyle = GOLD;
+            ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, sans-serif";
+            ctx.fillText("★ MY CHOICE", rowX + 96 + nameWidth + 14, midY);
           }
 
-          // Horizontal Progress Bar
-          const barX = 560;
-          const barWidth = 230;
-          const barProgress = Math.max(8, Math.round((c.votes / maxListVotes) * barWidth));
-
-          ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-          roundRect(ctx, barX, rowY + 22, barWidth, 18, 9);
+          // 4. Progress Track: .tr { height: 10px; border-radius: 5px; background: #ffffff18 }
+          // .tr i { height: 100%; border-radius: 5px; background: #8795B3 / var(--green) }
+          const trX = rowX + 540;
+          const trW = 230;
+          const trH = 10;
+          ctx.fillStyle = "rgba(255, 255, 255, 0.09)";
+          roundRect(ctx, trX, midY - trH / 2, trW, trH, 5);
           ctx.fill();
 
-          ctx.fillStyle = isSelected ? candColor : "#64748B";
-          roundRect(ctx, barX, rowY + 22, barProgress, 18, 9);
+          const fillProgress = Math.max(6, Math.round((c.votes / maxVotes) * trW));
+          ctx.fillStyle = isMe ? GREEN : "#8795B3";
+          roundRect(ctx, trX, midY - trH / 2, fillProgress, trH, 5);
           ctx.fill();
 
-          // Votes & Share Text
+          // 5. Vote count: .c { text-align: right; font-weight: 700; font-size: 26px }
           ctx.textAlign = "right";
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = "black 18px 'Impact', 'Arial Black', sans-serif";
-          ctx.fillText(`${c.votes.toLocaleString()}`, 900, rowY + 38);
+          ctx.fillStyle = IVORY;
+          ctx.font = "bold 26px 'Playfair Display', Georgia, serif";
+          ctx.fillText(c.votes.toLocaleString(), rowX + trW + 575, midY);
 
-          ctx.fillStyle = isSelected ? "#FFC82C" : "#94A3B8";
-          ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, sans-serif";
-          ctx.fillText(c.percentage !== undefined ? `${c.percentage}%` : "", 1000, rowY + 38);
+          // 6. Percentage: .p { text-align: right; color: var(--mute) / var(--gold); font-size: 20px }
+          ctx.fillStyle = isMe ? GOLD : MUTE;
+          ctx.font = isMe
+            ? "bold 20px -apple-system, BlinkMacSystemFont, sans-serif"
+            : "20px -apple-system, BlinkMacSystemFont, sans-serif";
+          const pText = c.percentage !== undefined ? `${c.percentage}%` : "0.0%";
+          ctx.fillText(pText, rowX + rowW - 20, midY);
 
-          rowY += rowHeight + 12;
+          curY += rowH + (isMe ? 8 : 4);
         });
 
-        // 7. Footer Call-to-Action Bar with QR Code & Ballot Verification
-        const footerY = 825;
-        const footerHeight = 215;
+        // 8. Footer: .ft
+        // margin: 44px 64px 0; background: var(--ivory); color: var(--ink); border-radius: 6px; display: flex; align-items: center; gap: 36px; padding: 28px 36px
+        curY = 1085;
+        const ftX = inX;
+        const ftY = curY;
+        const ftW = 1080 - inX * 2;
+        const ftH = 200;
 
-        // Footer Card Container
-        const footerGrad = ctx.createLinearGradient(60, footerY, 1020, footerY + footerHeight);
-        footerGrad.addColorStop(0, "rgba(15, 23, 42, 0.95)");
-        footerGrad.addColorStop(1, "rgba(30, 41, 59, 0.95)");
-        ctx.fillStyle = footerGrad;
-        roundRect(ctx, 60, footerY, 960, footerHeight, 20);
+        ctx.fillStyle = IVORY;
+        roundRect(ctx, ftX, ftY, ftW, ftH, 6);
         ctx.fill();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
 
-        // Left Voter Certificate Stamp
+        const textX = ftX + 36;
+        let textY = ftY + 36;
+
+        // .ft .k: font-size: 15px; letter-spacing: 2.5px; font-weight: 700; color: var(--blue); text-transform: uppercase
         ctx.textAlign = "left";
-        ctx.fillStyle = "#38BDF8";
-        ctx.font = "black 16px 'Impact', 'Arial Black', sans-serif";
-        ctx.fillText("CERTIFIED CITIZEN SURVEY SUBMISSION", 95, footerY + 45);
+        ctx.textBaseline = "top";
+        ctx.fillStyle = BLUE;
+        ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("CERTIFIED CITIZEN SURVEY SUBMISSION", textX, textY);
 
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = "bold 26px 'Impact', sans-serif";
-        const voterDisplay = voterName ? `BALLOT CAST BY: ${voterName.toUpperCase()}` : "ANONYMOUS VERIFIED FILIPINO VOTER";
-        ctx.fillText(voterDisplay, 95, footerY + 85);
+        // .ft h3: font-size: 36px; margin: 8px 0 8px; font-weight: 700; font-family: serif; color: var(--ink)
+        textY += 26;
+        ctx.fillStyle = INK;
+        ctx.font = "bold 36px 'Playfair Display', Georgia, serif";
+        const voterDisplay = voterName
+          ? `Ballot Cast By: ${voterName}`
+          : "Anonymous Verified Filipino Voter";
+        ctx.fillText(voterDisplay, textX, textY);
 
-        ctx.fillStyle = "#94A3B8";
-        ctx.font = "14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        const locationText = provinceName ? `Location Reporting: ${provinceName} • 100% Tamper-Proof HMAC Verified` : "Nationwide Geographic Network • 100% Tamper-Proof HMAC Verified";
-        ctx.fillText(locationText, 95, footerY + 115);
+        // .ft p: font-size: 17px; color: #41506f
+        textY += 46;
+        ctx.fillStyle = "#41506F";
+        ctx.font = "17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        const locDisplay = provinceName
+          ? `Reporting: ${provinceName} • 100% Tamper-Proof HMAC Verified`
+          : "Nationwide Geographic Network • 100% Tamper-Proof HMAC Verified";
+        ctx.fillText(locDisplay, textX, textY);
 
-        // Vote URL Callout
-        const originUrl = typeof window !== "undefined" ? window.location.origin : "https://eleksyon2028.ph";
+        // .ft .cta: margin-top: 16px; font-size: 19px; font-weight: 700; color: var(--ink); border-left: 4px solid var(--red); padding-left: 12px
+        textY += 28;
+        ctx.fillStyle = RED;
+        ctx.fillRect(textX, textY, 4, 24);
+
+        ctx.fillStyle = INK;
+        ctx.font = "bold 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("Cast your vote now: ", textX + 16, textY + 2);
+
+        // span: color: var(--red); font-family: monospace
+        const originUrl =
+          typeof window !== "undefined" ? window.location.origin : "https://eleksyon2028.ph";
         const voteUrl = `${originUrl}/survey`;
+        const prefixWidth = ctx.measureText("Cast your vote now: ").width;
 
-        ctx.fillStyle = "#FFC82C";
-        ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, monospace";
-        ctx.fillText(`CAST YOUR VOTE NOW: ${voteUrl}`, 95, footerY + 160);
+        ctx.fillStyle = RED;
+        ctx.font = "bold 19px 'Courier New', Courier, monospace";
+        ctx.fillText(voteUrl, textX + 16 + prefixWidth, textY + 2);
 
-        ctx.fillStyle = "#64748B";
-        ctx.font = "12px sans-serif";
-        ctx.fillText("Scan QR code with phone camera to participate instantly", 95, footerY + 185);
+        // .ft .s: font-size: 14px; color: #5b6987; margin-top: 6px
+        textY += 28;
+        ctx.fillStyle = "#5B6987";
+        ctx.font = "14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("Scan QR code with phone camera to participate instantly", textX, textY);
 
-        // 8. Generate & Draw QR Code on the right of footer
+        // QR Code on right: .ft img { width: 176px; height: 176px; border: 3px solid var(--ink); padding: 6px; background: #fff; border-radius: 4px }
         const qrCanvas = document.createElement("canvas");
         await QRCode.toCanvas(qrCanvas, voteUrl, {
-          width: 165,
+          width: 148,
           margin: 1,
           color: {
-            dark: "#0B132B",
+            dark: INK,
             light: "#FFFFFF",
           },
         });
 
-        // QR Code backing card
-        const qrX = 825;
-        const qrY = footerY + 25;
-        ctx.fillStyle = "#FFFFFF";
-        roundRect(ctx, qrX - 8, qrY - 8, 181, 181, 12);
-        ctx.fill();
-        ctx.drawImage(qrCanvas, qrX, qrY, 165, 165);
+        const qrBoxX = ftX + ftW - 36 - 160;
+        const qrBoxY = ftY + (ftH - 160) / 2;
+        const qrBoxSize = 160;
 
-        // Clean border around QR
-        ctx.strokeStyle = "#FFC82C";
-        ctx.lineWidth = 2;
-        roundRect(ctx, qrX - 8, qrY - 8, 181, 181, 12);
+        ctx.fillStyle = "#FFFFFF";
+        roundRect(ctx, qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 4);
+        ctx.fill();
+
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        roundRect(ctx, qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 4);
         ctx.stroke();
 
-        // 9. Watermark Bottom Edge
-        ctx.fillStyle = "#475569";
-        ctx.font = "11px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.drawImage(qrCanvas, qrBoxX + 6, qrBoxY + 6, 148, 148);
+
+        // 9. Copyright / Watermark Footer: .cr
+        // text-align: center; color: #7d8bab; font-size: 14px; margin-top: 30px; letter-spacing: .5px
         ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#7D8BAB";
+        ctx.font = "14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         ctx.fillText(
           "Eleksyon 2028 Digital Survey Initiative • Real-time Civic Data • Independent and Non-Partisan",
           540,
-          1065
+          1316
         );
 
         if (isMounted) {
@@ -485,7 +586,7 @@ export default function ShareVoteCardModal({
     const a = document.createElement("a");
     a.href = previewUrl;
     const candSlug = candidate.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    a.download = `eleksyon2028-voted-${candSlug}.png`;
+    a.download = `eleksyon2028-${candSlug}-card.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -494,7 +595,8 @@ export default function ShareVoteCardModal({
   const handleShare = async () => {
     if (!previewUrl || !candidate) return;
     const shareText = `I voted for ${candidate.name} in the Eleksyon 2028 Survey! See live rankings and cast your vote here:`;
-    const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/survey` : "https://eleksyon2028.ph/survey";
+    const shareUrl =
+      typeof window !== "undefined" ? `${window.location.origin}/survey` : "https://eleksyon2028.ph/survey";
 
     if (navigator.share && navigator.canShare) {
       try {
@@ -514,7 +616,6 @@ export default function ShareVoteCardModal({
       }
     }
 
-    // Fallback: Copy link & download image
     navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
@@ -525,19 +626,19 @@ export default function ShareVoteCardModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-[#0B132B] border-2 border-slate-700 rounded-3xl max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl">
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+      <div className="bg-[#0A1730] border-2 border-slate-700 rounded-3xl max-w-xl w-full max-h-[94vh] flex flex-col overflow-hidden shadow-2xl">
+        {/* Modal Header */}
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-[#10224A]/80">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gma-red flex items-center justify-center text-white shadow">
+            <div className="w-8 h-8 rounded-full bg-[#CE1126] flex items-center justify-center text-white shadow">
               <Sparkles className="w-4 h-4 text-amber-300" />
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-headline font-bold text-white uppercase tracking-wider">
-                Official 1080x1080 Election Share Card
+                Official Eleksyon 2028 Share Card
               </h3>
-              <p className="text-[11px] text-slate-400">
-                Premium social media graphic for {candidate.name}
+              <p className="text-[11px] text-[#9FAECB]">
+                1080 x 1350 High-Definition election card for {candidate.name}
               </p>
             </div>
           </div>
@@ -550,35 +651,35 @@ export default function ShareVoteCardModal({
         </div>
 
         {/* Card Preview Container */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 flex flex-col items-center justify-center bg-[#070B16]">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 flex flex-col items-center justify-center bg-[#050B18]">
           {generating || !previewUrl ? (
             <div className="py-24 text-center space-y-3">
               <Loader2 className="w-10 h-10 text-amber-400 animate-spin mx-auto" />
               <p className="text-xs font-headline font-bold uppercase tracking-wider text-slate-300">
-                Generating 1080x1080 Broadcast Graphic...
+                Rendering Official Eleksyon 2028 Card...
               </p>
               <p className="text-[11px] text-slate-500">
-                Rendering live rankings, candidate branding, and QR ballot code
+                Applying live candidate rankings, portrait styling, and verification stamp
               </p>
             </div>
           ) : (
-            <div className="relative group max-w-md w-full aspect-square rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80">
+            <div className="relative group max-w-md w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80">
               <img
                 src={previewUrl}
-                alt={`I voted for ${candidate.name}`}
-                className="w-full h-full object-contain bg-black"
+                alt={`Eleksyon 2028 - ${candidate.name}`}
+                className="w-full h-auto object-contain bg-black"
               />
               <div className="absolute top-3 right-3 bg-black/60 backdrop-blur px-2.5 py-1 rounded-full text-[10px] font-bold text-amber-400 uppercase tracking-widest border border-amber-400/30">
-                1080 x 1080 HD
+                1080 x 1350 HD
               </div>
             </div>
           )}
         </div>
 
         {/* Action Controls */}
-        <div className="p-4 sm:p-5 border-t border-slate-800 bg-slate-900/90 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-left text-xs text-slate-400">
-            Share on <strong className="text-white">Facebook, X, Instagram, or TikTok</strong>
+        <div className="p-4 sm:p-5 border-t border-slate-800 bg-[#10224A]/90 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-left text-xs text-slate-300">
+            Share on <strong className="text-white">Facebook, Instagram, X, or TikTok</strong>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
@@ -592,7 +693,7 @@ export default function ShareVoteCardModal({
             <button
               onClick={handleShare}
               disabled={generating || !previewUrl}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-lg shadow-red-900/30 disabled:opacity-50"
+              className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-[#CE1126] hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-lg shadow-red-900/30 disabled:opacity-50"
             >
               {copied ? (
                 <>
@@ -656,7 +757,6 @@ function buildComparisonList(
   selected: ShareCandidateData,
   allCompetitors: CompetitorData[]
 ): CompetitorData[] {
-  // Ensure candidate is in the list
   const combined: CompetitorData[] = [...allCompetitors];
   const exists = combined.some((c) => c.id === selected.id);
   if (!exists) {
@@ -671,13 +771,11 @@ function buildComparisonList(
     c.rank = i + 1;
   });
 
-  // Top 3 + selected (if not in top 3)
-  const top3 = combined.slice(0, 3);
   const selectedIndex = combined.findIndex((c) => c.id === selected.id);
-
   if (selectedIndex < 3) {
     return combined.slice(0, 4);
   }
 
+  const top3 = combined.slice(0, 3);
   return [...top3, combined[selectedIndex]];
 }

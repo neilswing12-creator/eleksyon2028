@@ -286,19 +286,22 @@ export default function ShareVoteCardModal({
         ctx.textBaseline = "top";
         ctx.fillText("OFFICIAL CITIZEN VOTE • 2028 RUNNER", infoX, infoY);
 
-        // h1: font-size: 64px; line-height: 1.02; margin: 12px 0 12px; font-weight: 700; font-family: serif
+        // h1: font-size: 54px with auto-fit so long names never clip or overflow the card
         infoY += 28;
         ctx.fillStyle = IVORY;
-        let candFontSize = 58;
-        if (candidate.name.length > 22) candFontSize = 46;
-        if (candidate.name.length > 30) candFontSize = 38;
+        const maxHeroW = heroW - 40 - 260 - 44 - 36; // 572px
+        let candFontSize = 54;
         ctx.font = `bold ${candFontSize}px 'Playfair Display', Georgia, serif`;
+        while (candFontSize > 26 && ctx.measureText(candidate.name).width > maxHeroW) {
+          candFontSize -= 2;
+          ctx.font = `bold ${candFontSize}px 'Playfair Display', Georgia, serif`;
+        }
         ctx.fillText(candidate.name, infoX, infoY);
 
-        // .party: color: var(--mute); font-size: 21px; margin-bottom: 26px
+        // .party: color: var(--mute); font-size: 20px
         infoY += candFontSize + 12;
         ctx.fillStyle = MUTE;
-        ctx.font = "21px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.font = "20px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         const partyStr = candidate.party ? `Party: ${candidate.party}` : "Independent Candidate";
         ctx.fillText(partyStr, infoX, infoY);
 
@@ -424,9 +427,9 @@ export default function ShareVoteCardModal({
           ctx.fill();
 
           // 3. Right-Aligned Columns:
-          const rightEdge = rowX + rowW - 24; // 992
+          const rightEdge = rowX + rowW - 20; // 996
 
-          // Percentage: width 84px, right-aligned at rightEdge
+          // Percentage: width 75px, right-aligned at rightEdge
           ctx.textAlign = "right";
           ctx.fillStyle = isMe ? GOLD : MUTE;
           ctx.font = isMe
@@ -435,16 +438,16 @@ export default function ShareVoteCardModal({
           const pText = c.percentage !== undefined ? `${c.percentage}%` : "0.0%";
           ctx.fillText(pText, rightEdge, midY);
 
-          // Vote Count: width 64px, right-aligned 16px before percentage (rightEdge - 100)
-          const votesX = rightEdge - 100;
+          // Vote Count: width 58px, right-aligned 12px before percentage
+          const votesX = rightEdge - 82;
           ctx.fillStyle = IVORY;
           ctx.font = "bold 26px 'Playfair Display', Georgia, serif";
           ctx.fillText(c.votes.toLocaleString(), votesX, midY);
 
-          // Progress Track: width 250px, ending 16px before votes (rightEdge - 180)
-          const trW = 250;
+          // Progress Track: width 180px, ending 16px before votes
+          const trW = 180;
           const trH = 10;
-          const trRight = votesX - 70;
+          const trRight = votesX - 68;
           const trX = trRight - trW;
 
           ctx.fillStyle = "rgba(255, 255, 255, 0.09)";
@@ -456,28 +459,42 @@ export default function ShareVoteCardModal({
           roundRect(ctx, trX, midY - trH / 2, fillProgress, trH, 5);
           ctx.fill();
 
-          // 4. Candidate Name & Choice Badge: from rowX + 108 to trX - 20
-          const nameLeft = rowX + 108;
+          // 4. Candidate Name & Choice Badge: from rowX + 102 to trX - 16 (up to 470px width!)
+          const nameLeft = rowX + 102;
+          const choiceBadgeW = isMe ? 104 : 0;
+          const maxNameW = trX - 16 - nameLeft - choiceBadgeW;
+
+          let nameFontSize = 21;
+          ctx.font = `bold ${nameFontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+          while (nameFontSize > 15 && ctx.measureText(c.name).width > maxNameW) {
+            nameFontSize -= 1;
+            ctx.font = `bold ${nameFontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+          }
+
           ctx.textAlign = "left";
           ctx.fillStyle = IVORY;
-          ctx.font = "bold 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+          ctx.fillText(c.name, nameLeft, midY);
 
-          // Long name protection
-          let displayName = c.name;
-          if (ctx.measureText(displayName).width > trX - nameLeft - (isMe ? 120 : 10)) {
-            while (displayName.length > 10 && ctx.measureText(displayName + "…").width > trX - nameLeft - (isMe ? 120 : 10)) {
-              displayName = displayName.slice(0, -1);
-            }
-            displayName += "…";
-          }
-          ctx.fillText(displayName, nameLeft, midY);
-
-          // If isMe: u { text-decoration: none; color: var(--gold); font-size: 13px; letter-spacing: 1.5px; font-weight: 700 }
+          // If isMe: draw pill badge "★ MY CHOICE" right beside the candidate's full name
           if (isMe) {
-            const nameWidth = ctx.measureText(displayName).width;
+            const nameWidth = ctx.measureText(c.name).width;
+            const badgeX = nameLeft + nameWidth + 10;
+            const badgeW = 98;
+            const badgeH = 22;
+
+            ctx.fillStyle = "rgba(212, 175, 90, 0.15)";
+            roundRect(ctx, badgeX, midY - badgeH / 2, badgeW, badgeH, 4);
+            ctx.fill();
+
+            ctx.strokeStyle = "rgba(212, 175, 90, 0.4)";
+            ctx.lineWidth = 1;
+            roundRect(ctx, badgeX, midY - badgeH / 2, badgeW, badgeH, 4);
+            ctx.stroke();
+
             ctx.fillStyle = GOLD;
-            ctx.font = "bold 13px -apple-system, BlinkMacSystemFont, sans-serif";
-            ctx.fillText("★ MY CHOICE", nameLeft + nameWidth + 12, midY);
+            ctx.font = "bold 11px -apple-system, BlinkMacSystemFont, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("★ MY CHOICE", badgeX + badgeW / 2, midY + 1);
           }
 
           curY += rowH + rowGap;

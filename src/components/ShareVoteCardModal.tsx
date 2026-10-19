@@ -308,7 +308,7 @@ export default function ShareVoteCardModal({
         const st1X = infoX;
         const st1W = 230;
         const st2X = infoX + st1W + 24;
-        const st2W = 240;
+        const st2W = 250;
 
         // Stat 1: Live Verified Votes
         ctx.strokeStyle = "rgba(212, 175, 90, 0.53)";
@@ -320,11 +320,9 @@ export default function ShareVoteCardModal({
 
         ctx.fillStyle = MUTE;
         ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
         ctx.fillText("LIVE VERIFIED VOTES", st1X, infoY + 12);
-
-        ctx.fillStyle = IVORY;
-        ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
-        ctx.fillText(candidate.votes.toLocaleString(), st1X, infoY + 36);
 
         // Stat 2: National Vote Share
         ctx.strokeStyle = "rgba(212, 175, 90, 0.53)";
@@ -338,21 +336,31 @@ export default function ShareVoteCardModal({
         ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         ctx.fillText("NATIONAL VOTE SHARE", st2X, infoY + 12);
 
+        // Unified baseline for numbers so stats are perfectly aligned without colliding
+        const statBaseline = infoY + 84;
+        ctx.textBaseline = "alphabetic";
+
+        // Stat 1 Number
+        ctx.fillStyle = IVORY;
+        ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
+        ctx.fillText(candidate.votes.toLocaleString(), st1X, statBaseline);
+
+        // Stat 2 Number + Rank (sitting side-by-side on the same baseline like template flex)
         ctx.fillStyle = IVORY;
         ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
         const pctStr = candidate.percentage !== undefined ? `${candidate.percentage}%` : "0.0%";
-        ctx.fillText(pctStr, st2X, infoY + 36);
+        ctx.fillText(pctStr, st2X, statBaseline);
 
-        // Rank subtitle inside stat 2: em { font-size: 20px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase }
+        const pctMeasure = ctx.measureText(pctStr).width;
         ctx.fillStyle = GOLD;
         ctx.font = "bold 20px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.textAlign = "right";
-        ctx.fillText(`RANK #${candidate.rank || 1}`, st2X + st2W, infoY + 70);
+        ctx.fillText(`Rank #${candidate.rank || 1}`, st2X + pctMeasure + 18, statBaseline - 4);
 
         // 6. Section Header for Comparison: .th
         // margin: 56px 0 16px; h2: font-size: 30px; span: color: var(--mute); font-size: 17px
-        curY = heroY + heroH + 52;
+        curY = heroY + heroH + 46;
 
+        ctx.textBaseline = "middle";
         ctx.textAlign = "left";
         ctx.fillStyle = IVORY;
         ctx.font = "bold 30px 'Playfair Display', Georgia, serif";
@@ -360,26 +368,26 @@ export default function ShareVoteCardModal({
 
         ctx.textAlign = "right";
         ctx.fillStyle = MUTE;
-        ctx.font = "17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-        ctx.fillText("Real-time nationwide aggregated ballot counts", 1080 - inX, curY + 6);
+        ctx.font = "16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.fillText("Real-time nationwide aggregated ballot counts", 1080 - inX, curY + 2);
 
-        // 7. Comparison Rows
-        // .row: height: 86px; padding: 0 20px; border-bottom: 1px solid #ffffff1c; font-size: 23px
-        // grid: 36px 20px 1fr 250px 56px 84px
-        curY += 24;
+        // 7. Comparison Rows (4 rows with exact grid columns and balanced vertical spacing)
+        curY += 38;
         const displayList = buildComparisonList(candidate, competitors);
         const maxVotes = Math.max(...displayList.map((c) => c.votes), 1);
 
+        const rowH = 88;
+        const rowGap = 10;
+        const rowX = inX;
+        const rowW = 1080 - inX * 2; // 952px
+
         displayList.forEach((c) => {
           const isMe = c.id === candidate.id;
-          const rowH = 80;
-          const rowX = inX;
-          const rowW = 1080 - inX * 2;
 
           // Background & Border
           if (isMe) {
-            // .row.me: border: 1.5px solid var(--gold); border-radius: 6px; background: #D4AF5A14; margin-top: 6px
-            ctx.fillStyle = "rgba(212, 175, 90, 0.08)";
+            // .row.me: border: 1.5px solid var(--gold); border-radius: 6px; background: #D4AF5A14
+            ctx.fillStyle = "rgba(212, 175, 90, 0.1)";
             roundRect(ctx, rowX, curY, rowW, rowH, 6);
             ctx.fill();
 
@@ -392,88 +400,102 @@ export default function ShareVoteCardModal({
             ctx.strokeStyle = "rgba(255, 255, 255, 0.11)";
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(rowX + 20, curY + rowH);
-            ctx.lineTo(rowX + rowW - 20, curY + rowH);
+            ctx.moveTo(rowX + 24, curY + rowH);
+            ctx.lineTo(rowX + rowW - 24, curY + rowH);
             ctx.stroke();
           }
 
           const midY = curY + rowH / 2;
 
-          // 1. Rank: .n { color: var(--mute) / var(--gold); font-size: 19px; }
+          // 1. Rank: .n { color: var(--mute) / var(--gold); font-size: 19px; } (centered in 36px col)
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillStyle = isMe ? GOLD : MUTE;
           ctx.font = isMe
             ? "bold 20px -apple-system, BlinkMacSystemFont, sans-serif"
             : "19px -apple-system, BlinkMacSystemFont, sans-serif";
-          ctx.fillText(`${c.rank || 1}`, rowX + 38, midY);
+          ctx.fillText(`${c.rank || 1}`, rowX + 42, midY);
 
-          // 2. Color Dot: .d { width: 16px; height: 16px; border-radius: 50%; }
+          // 2. Color Dot: .d { width: 16px; height: 16px; border-radius: 50%; } (centered in 20px col)
           const dotColor = isMe ? GREEN : c.color || "#8795B3";
           ctx.fillStyle = dotColor;
           ctx.beginPath();
-          ctx.arc(rowX + 72, midY, 8, 0, Math.PI * 2);
+          ctx.arc(rowX + 84, midY, 8, 0, Math.PI * 2);
           ctx.fill();
 
-          // 3. Name: .nm { font-weight: 600; font-size: 23px; }
-          ctx.textAlign = "left";
-          ctx.fillStyle = IVORY;
-          ctx.font = "bold 23px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-          ctx.fillText(c.name, rowX + 96, midY);
+          // 3. Right-Aligned Columns:
+          const rightEdge = rowX + rowW - 24; // 992
 
-          // If isMe: u { text-decoration: none; color: var(--gold); font-size: 14px; letter-spacing: 1.5px; font-weight: 700 }
-          if (isMe) {
-            const nameWidth = ctx.measureText(c.name).width;
-            ctx.fillStyle = GOLD;
-            ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, sans-serif";
-            ctx.fillText("★ MY CHOICE", rowX + 96 + nameWidth + 14, midY);
-          }
-
-          // 4. Progress Track: .tr { height: 10px; border-radius: 5px; background: #ffffff18 }
-          // .tr i { height: 100%; border-radius: 5px; background: #8795B3 / var(--green) }
-          const trX = rowX + 540;
-          const trW = 230;
-          const trH = 10;
-          ctx.fillStyle = "rgba(255, 255, 255, 0.09)";
-          roundRect(ctx, trX, midY - trH / 2, trW, trH, 5);
-          ctx.fill();
-
-          const fillProgress = Math.max(6, Math.round((c.votes / maxVotes) * trW));
-          ctx.fillStyle = isMe ? GREEN : "#8795B3";
-          roundRect(ctx, trX, midY - trH / 2, fillProgress, trH, 5);
-          ctx.fill();
-
-          // 5. Vote count: .c { text-align: right; font-weight: 700; font-size: 26px }
+          // Percentage: width 84px, right-aligned at rightEdge
           ctx.textAlign = "right";
-          ctx.fillStyle = IVORY;
-          ctx.font = "bold 26px 'Playfair Display', Georgia, serif";
-          ctx.fillText(c.votes.toLocaleString(), rowX + trW + 575, midY);
-
-          // 6. Percentage: .p { text-align: right; color: var(--mute) / var(--gold); font-size: 20px }
           ctx.fillStyle = isMe ? GOLD : MUTE;
           ctx.font = isMe
             ? "bold 20px -apple-system, BlinkMacSystemFont, sans-serif"
             : "20px -apple-system, BlinkMacSystemFont, sans-serif";
           const pText = c.percentage !== undefined ? `${c.percentage}%` : "0.0%";
-          ctx.fillText(pText, rowX + rowW - 20, midY);
+          ctx.fillText(pText, rightEdge, midY);
 
-          curY += rowH + (isMe ? 8 : 4);
+          // Vote Count: width 64px, right-aligned 16px before percentage (rightEdge - 100)
+          const votesX = rightEdge - 100;
+          ctx.fillStyle = IVORY;
+          ctx.font = "bold 26px 'Playfair Display', Georgia, serif";
+          ctx.fillText(c.votes.toLocaleString(), votesX, midY);
+
+          // Progress Track: width 250px, ending 16px before votes (rightEdge - 180)
+          const trW = 250;
+          const trH = 10;
+          const trRight = votesX - 70;
+          const trX = trRight - trW;
+
+          ctx.fillStyle = "rgba(255, 255, 255, 0.09)";
+          roundRect(ctx, trX, midY - trH / 2, trW, trH, 5);
+          ctx.fill();
+
+          const fillProgress = Math.max(8, Math.round((c.votes / maxVotes) * trW));
+          ctx.fillStyle = isMe ? GREEN : "#8795B3";
+          roundRect(ctx, trX, midY - trH / 2, fillProgress, trH, 5);
+          ctx.fill();
+
+          // 4. Candidate Name & Choice Badge: from rowX + 108 to trX - 20
+          const nameLeft = rowX + 108;
+          ctx.textAlign = "left";
+          ctx.fillStyle = IVORY;
+          ctx.font = "bold 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+          // Long name protection
+          let displayName = c.name;
+          if (ctx.measureText(displayName).width > trX - nameLeft - (isMe ? 120 : 10)) {
+            while (displayName.length > 10 && ctx.measureText(displayName + "…").width > trX - nameLeft - (isMe ? 120 : 10)) {
+              displayName = displayName.slice(0, -1);
+            }
+            displayName += "…";
+          }
+          ctx.fillText(displayName, nameLeft, midY);
+
+          // If isMe: u { text-decoration: none; color: var(--gold); font-size: 13px; letter-spacing: 1.5px; font-weight: 700 }
+          if (isMe) {
+            const nameWidth = ctx.measureText(displayName).width;
+            ctx.fillStyle = GOLD;
+            ctx.font = "bold 13px -apple-system, BlinkMacSystemFont, sans-serif";
+            ctx.fillText("★ MY CHOICE", nameLeft + nameWidth + 12, midY);
+          }
+
+          curY += rowH + rowGap;
         });
 
-        // 8. Footer: .ft
-        // margin: 44px 64px 0; background: var(--ivory); color: var(--ink); border-radius: 6px; display: flex; align-items: center; gap: 36px; padding: 28px 36px
-        curY = 1085;
+        // 8. Footer: .ft (positioned cleanly after comparison rows with balanced 46px gap)
+        curY = 1040;
         const ftX = inX;
         const ftY = curY;
         const ftW = 1080 - inX * 2;
-        const ftH = 200;
+        const ftH = 220;
 
         ctx.fillStyle = IVORY;
         roundRect(ctx, ftX, ftY, ftW, ftH, 6);
         ctx.fill();
 
         const textX = ftX + 36;
-        let textY = ftY + 36;
+        let textY = ftY + 34;
 
         // .ft .k: font-size: 15px; letter-spacing: 2.5px; font-weight: 700; color: var(--blue); text-transform: uppercase
         ctx.textAlign = "left";
@@ -482,31 +504,31 @@ export default function ShareVoteCardModal({
         ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         ctx.fillText("CERTIFIED CITIZEN SURVEY SUBMISSION", textX, textY);
 
-        // .ft h3: font-size: 36px; margin: 8px 0 8px; font-weight: 700; font-family: serif; color: var(--ink)
+        // .ft h3: font-size: 34px; margin: 8px 0 8px; font-weight: 700; font-family: serif; color: var(--ink)
         textY += 26;
         ctx.fillStyle = INK;
-        ctx.font = "bold 36px 'Playfair Display', Georgia, serif";
+        ctx.font = "bold 34px 'Playfair Display', Georgia, serif";
         const voterDisplay = voterName
           ? `Ballot Cast By: ${voterName}`
           : "Anonymous Verified Filipino Voter";
         ctx.fillText(voterDisplay, textX, textY);
 
-        // .ft p: font-size: 17px; color: #41506f
+        // .ft p: font-size: 16px; color: #41506f
         textY += 46;
         ctx.fillStyle = "#41506F";
-        ctx.font = "17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.font = "16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         const locDisplay = provinceName
           ? `Reporting: ${provinceName} • 100% Tamper-Proof HMAC Verified`
           : "Nationwide Geographic Network • 100% Tamper-Proof HMAC Verified";
         ctx.fillText(locDisplay, textX, textY);
 
-        // .ft .cta: margin-top: 16px; font-size: 19px; font-weight: 700; color: var(--ink); border-left: 4px solid var(--red); padding-left: 12px
+        // .ft .cta: margin-top: 16px; font-size: 18px; font-weight: 700; color: var(--ink); border-left: 4px solid var(--red); padding-left: 12px
         textY += 28;
         ctx.fillStyle = RED;
         ctx.fillRect(textX, textY, 4, 24);
 
         ctx.fillStyle = INK;
-        ctx.font = "bold 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        ctx.font = "bold 18px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         ctx.fillText("Cast your vote now: ", textX + 16, textY + 2);
 
         // span: color: var(--red); font-family: monospace
@@ -516,7 +538,7 @@ export default function ShareVoteCardModal({
         const prefixWidth = ctx.measureText("Cast your vote now: ").width;
 
         ctx.fillStyle = RED;
-        ctx.font = "bold 19px 'Courier New', Courier, monospace";
+        ctx.font = "bold 18px 'Courier New', Courier, monospace";
         ctx.fillText(voteUrl, textX + 16 + prefixWidth, textY + 2);
 
         // .ft .s: font-size: 14px; color: #5b6987; margin-top: 6px
@@ -528,7 +550,7 @@ export default function ShareVoteCardModal({
         // QR Code on right: .ft img { width: 176px; height: 176px; border: 3px solid var(--ink); padding: 6px; background: #fff; border-radius: 4px }
         const qrCanvas = document.createElement("canvas");
         await QRCode.toCanvas(qrCanvas, voteUrl, {
-          width: 148,
+          width: 152,
           margin: 1,
           color: {
             dark: INK,
@@ -536,9 +558,9 @@ export default function ShareVoteCardModal({
           },
         });
 
-        const qrBoxX = ftX + ftW - 36 - 160;
-        const qrBoxY = ftY + (ftH - 160) / 2;
-        const qrBoxSize = 160;
+        const qrBoxSize = 164;
+        const qrBoxX = ftX + ftW - 36 - qrBoxSize;
+        const qrBoxY = ftY + (ftH - qrBoxSize) / 2;
 
         ctx.fillStyle = "#FFFFFF";
         roundRect(ctx, qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 4);
@@ -549,7 +571,7 @@ export default function ShareVoteCardModal({
         roundRect(ctx, qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 4);
         ctx.stroke();
 
-        ctx.drawImage(qrCanvas, qrBoxX + 6, qrBoxY + 6, 148, 148);
+        ctx.drawImage(qrCanvas, qrBoxX + 6, qrBoxY + 6, 152, 152);
 
         // 9. Copyright / Watermark Footer: .cr
         // text-align: center; color: #7d8bab; font-size: 14px; margin-top: 30px; letter-spacing: .5px
@@ -560,7 +582,7 @@ export default function ShareVoteCardModal({
         ctx.fillText(
           "Eleksyon 2028 Digital Survey Initiative • Real-time Civic Data • Independent and Non-Partisan",
           540,
-          1316
+          1308
         );
 
         if (isMounted) {
@@ -634,11 +656,16 @@ export default function ShareVoteCardModal({
               <Sparkles className="w-4 h-4 text-amber-300" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-headline font-bold text-white uppercase tracking-wider">
-                Official Eleksyon 2028 Share Card
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-headline font-bold text-white uppercase tracking-wider">
+                  Official Eleksyon 2028 Share Card
+                </h3>
+                <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-400/30">
+                  1080 × 1350 (4:5)
+                </span>
+              </div>
               <p className="text-[11px] text-[#9FAECB]">
-                1080 × 1350 (4:5) High-Definition election card for {candidate.name}
+                High-Definition verified election card for {candidate.name}
               </p>
             </div>
           </div>
@@ -669,9 +696,6 @@ export default function ShareVoteCardModal({
                 alt={`Eleksyon 2028 - ${candidate.name}`}
                 className="w-full h-full object-contain"
               />
-              <div className="absolute top-3 right-3 bg-black/70 backdrop-blur px-2.5 py-1 rounded-full text-[10px] font-bold text-amber-400 uppercase tracking-widest border border-amber-400/30">
-                1080 × 1350 (4:5) HD
-              </div>
             </div>
           )}
         </div>

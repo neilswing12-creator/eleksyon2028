@@ -1,6 +1,21 @@
 import React from "react";
 import Link from "next/link";
+import { Metadata } from "next";
 import { ShieldCheck, Lock, AlertTriangle, FileText, Vote, MapPin, Users } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Survey Methodology & Integrity Framework | Eleksyon 2028",
+  description:
+    "Detailed disclosure of sampling parameters, abuse deterrence mechanisms, cryptographic HMAC token validation, IP hashing rules, and vote retraction architecture.",
+  alternates: {
+    canonical: "https://eleksyon.swingneil.com/methodology",
+  },
+  openGraph: {
+    title: "Survey Methodology & Integrity Framework | Eleksyon 2028",
+    description: "Detailed disclosure of survey sampling, security, and verification architecture.",
+    url: "https://eleksyon.swingneil.com/methodology",
+  },
+};
 
 export default function MethodologyPage() {
   return (

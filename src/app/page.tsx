@@ -377,11 +377,18 @@ export default function HomePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   {c.photoUrl ? (
-                    <img
-                      src={c.photoUrl}
-                      alt={c.name}
-                      className="w-12 h-12 rounded-full object-cover border border-slate-200 shadow-xs"
-                    />
+                    <picture className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 shadow-xs flex-shrink-0 bg-slate-100">
+                      <source srcSet={c.photoUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp")} type="image/webp" />
+                      <img
+                        src={c.photoUrl}
+                        alt={c.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-top"
+                        width={48}
+                        height={48}
+                      />
+                    </picture>
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
                       {c.name.slice(0, 2)}

@@ -283,11 +283,17 @@ export default function CandidateDetailPage() {
 
           <div className="p-6 sm:p-8 flex flex-col md:flex-row items-start gap-6">
             {candidate.photoUrl ? (
-              <img
-                src={candidate.photoUrl}
-                alt={candidate.name}
-                className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl object-cover object-top border border-slate-200 shadow-sm flex-shrink-0"
-              />
+              <picture className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex-shrink-0 bg-slate-100">
+                <source srcSet={candidate.photoUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp")} type="image/webp" />
+                <img
+                  src={candidate.photoUrl}
+                  alt={candidate.name}
+                  loading="eager"
+                  className="w-full h-full object-cover object-top"
+                  width={144}
+                  height={144}
+                />
+              </picture>
             ) : (
               <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-slate-100 flex items-center justify-center font-bold text-2xl text-slate-600 flex-shrink-0">
                 {candidate.name.slice(0, 2)}

@@ -1,6 +1,21 @@
 import React from "react";
 import Link from "next/link";
+import { Metadata } from "next";
 import { ShieldCheck, Lock, EyeOff, Server, FileText } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy & Data Ethics | Eleksyon 2028",
+  description:
+    "How voter data is protected under Republic Act No. 10173 (Data Privacy Act of 2012), why no registration is required, and how irreversible cryptographic HMAC hashing guarantees anonymity.",
+  alternates: {
+    canonical: "https://eleksyon.swingneil.com/privacy",
+  },
+  openGraph: {
+    title: "Privacy Policy & Data Ethics | Eleksyon 2028",
+    description: "Voter anonymity safeguards, zero personally identifiable information collection, and RA 10173 compliance.",
+    url: "https://eleksyon.swingneil.com/privacy",
+  },
+};
 
 export default function PrivacyPage() {
   return (

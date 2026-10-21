@@ -113,11 +113,18 @@ export default function CandidatesPage() {
                   <div className="p-5 space-y-4">
                     <div className="flex items-start gap-3.5">
                       {c.photoUrl ? (
-                        <img
-                          src={c.photoUrl}
-                          alt={c.name}
-                          className="w-14 h-14 rounded-full object-cover border border-slate-200 flex-shrink-0"
-                        />
+                        <picture className="w-14 h-14 rounded-full overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-100">
+                          <source srcSet={c.photoUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp")} type="image/webp" />
+                          <img
+                            src={c.photoUrl}
+                            alt={c.name}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover object-top"
+                            width={56}
+                            height={56}
+                          />
+                        </picture>
                       ) : (
                         <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center font-bold text-sm text-slate-600 flex-shrink-0">
                           {c.name.slice(0, 2)}

@@ -43,6 +43,7 @@ import {
   ChevronDown,
   TrendingUp,
   Activity,
+  Layers,
   RotateCcw,
   CheckCircle,
   Landmark,
@@ -190,6 +191,16 @@ export default function AdminPage() {
   const [importResult, setImportResult] = useState<any | null>(null);
   const [importError, setImportError] = useState("");
 
+  // Storage Audit State
+  const [storageAudit, setStorageAudit] = useState<any | null>(null);
+  const [optimizingImages, setOptimizingImages] = useState(false);
+
+  // Assisted File Upload State
+  const [showFileImportModal, setShowFileImportModal] = useState(false);
+  const [fileImportPreview, setFileImportPreview] = useState<any | null>(null);
+  const [fileImportError, setFileImportError] = useState("");
+  const [processingFileImport, setProcessingFileImport] = useState(false);
+
   const [selectedLegCandidateId, setSelectedLegCandidateId] = useState<string>("");
   const [legRecords, setLegRecords] = useState<any[]>([]);
   const [legSummary, setLegSummary] = useState<any | null>(null);
@@ -258,6 +269,7 @@ export default function AdminPage() {
         setCandidateSummaries(adjData.candidateSummaries || []);
       }
       if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
+      await loadStorageAudit();
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setSurveyStats(statsData.statistics || null);
@@ -601,6 +613,104 @@ export default function AdminPage() {
   };
 
   // Legislative Records Handlers
+  const loadStorageAudit = async () => {
+    try {
+      const res = await fetch("/api/admin/storage");
+      if (res.ok) {
+        const data = await res.json();
+        setStorageAudit(data.audit);
+      }
+    } catch (e) {
+      console.error("Failed to load storage audit:", e);
+    }
+  };
+
+  const triggerOptimizeImages = async () => {
+    if (isAnalyst) return;
+    setOptimizingImages(true);
+    try {
+      const res = await fetch("/api/admin/storage", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setStorageAudit(data.result.audit);
+        showNotify("success", `Optimized ${data.result.processed} portraits. Saved ${data.result.audit.savingsPercent} disk storage!`);
+      } else {
+        showNotify("error", data.error || "Optimization failed.");
+      }
+    } catch (e: any) {
+      showNotify("error", e.message || "Optimization failed.");
+    } finally {
+      setOptimizingImages(false);
+    }
+  };
+
+  const handleFileSelectForPreview = async (e: React.ChangeEvent<HTMLInputElement>, candId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const format = file.name.endsWith(".json") ? "json" : "csv";
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      const rawContent = evt.target?.result as string;
+      setProcessingFileImport(true);
+      setFileImportError("");
+      try {
+        const res = await fetch(`/api/admin/candidates/${candId}/import-legislative`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "PREVIEW_FILE", rawContent, fileFormat: format }),
+        });
+        const data = await res.json();
+        if (res.ok && data.validation) {
+          setFileImportPreview({
+            filename: file.name,
+            format,
+            rawContent,
+            validation: data.validation,
+          });
+        } else {
+          setFileImportError(data.error || "Failed to parse file.");
+        }
+      } catch (err: any) {
+        setFileImportError(err.message || "Failed to parse file.");
+      } finally {
+        setProcessingFileImport(false);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleConfirmFileImport = async (candId: string) => {
+    if (!fileImportPreview?.rawContent) return;
+    setProcessingFileImport(true);
+    try {
+      const res = await fetch(`/api/admin/candidates/${candId}/import-legislative`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rawContent: fileImportPreview.rawContent,
+          fileFormat: fileImportPreview.format,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setImportResult(data.result);
+        setShowFileImportModal(false);
+        setFileImportPreview(null);
+        showNotify("success", `Imported ${data.result.insertedCount} measures from ${fileImportPreview.filename}`);
+        await loadAdminData();
+        if (selectedLegCandidateId === candId) {
+          await loadCandidateLegislativeRecords(candId);
+        }
+      } else {
+        setFileImportError(data.error || "Failed to commit import.");
+      }
+    } catch (err: any) {
+      setFileImportError(err.message || "Failed to commit import.");
+    } finally {
+      setProcessingFileImport(false);
+    }
+  };
+
   const triggerImportLegislative = async (cand: any) => {
     if (isAnalyst) {
       showNotify("error", "Analyst role is read-only.");
@@ -3192,6 +3302,40 @@ export default function AdminPage() {
         {/* ========================================================= */}
         {activeTab === "CANDIDATES" && (
           <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-6">
+            {/* Storage Optimization Audit Panel */}
+            {storageAudit && (
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center flex-shrink-0">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-[#0B1E36] flex items-center gap-2">
+                      <span>Candidate Media Storage &amp; Optimization</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        {storageAudit.savingsPercent} Saved
+                      </span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Original Storage: <strong>{storageAudit.totalOriginalMB}</strong> ({storageAudit.originalCount} portraits) &bull; 
+                      Optimized WebP: <strong>{storageAudit.totalOptimizedMB}</strong> ({storageAudit.optimizedCount} WebP) &bull; 
+                      Net Saved: <strong>{((storageAudit.savingsBytes || 0) / (1024 * 1024)).toFixed(2)} MB</strong>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={isAnalyst || optimizingImages}
+                  onClick={triggerOptimizeImages}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white font-semibold text-xs shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-40 flex-shrink-0"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${optimizingImages ? "animate-spin" : ""}`} />
+                  <span>{optimizingImages ? "Compressing Images..." : "Re-optimize Candidate Media"}</span>
+                </button>
+              </div>
+            )}
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold text-brand-navy">Candidate Profiles &amp; Photographs</h2>
@@ -5126,22 +5270,30 @@ export default function AdminPage() {
                 )}
 
                 {/* Metrics Breakdown */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 text-center">
-                    <div className="text-lg font-bold text-[#0B1E36]">{importResult.totalFound}</div>
-                    <div className="text-[10px] font-bold text-slate-500 uppercase">Found</div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                  <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200/80 text-center">
+                    <div className="text-base font-bold text-[#0B1E36]">{importResult.totalFound}</div>
+                    <div className="text-[9px] font-bold text-slate-500 uppercase">Discovered</div>
                   </div>
-                  <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100 text-center">
-                    <div className="text-lg font-bold text-emerald-800">{importResult.insertedCount}</div>
-                    <div className="text-[10px] font-bold text-emerald-700 uppercase">Inserted</div>
+                  <div className="bg-emerald-50 rounded-xl p-2.5 border border-emerald-100 text-center">
+                    <div className="text-base font-bold text-emerald-800">{importResult.insertedCount}</div>
+                    <div className="text-[9px] font-bold text-emerald-700 uppercase">Inserted</div>
                   </div>
-                  <div className="bg-sky-50 rounded-xl p-3 border border-sky-100 text-center">
-                    <div className="text-lg font-bold text-sky-800">{importResult.updatedCount}</div>
-                    <div className="text-[10px] font-bold text-sky-700 uppercase">Updated</div>
+                  <div className="bg-sky-50 rounded-xl p-2.5 border border-sky-100 text-center">
+                    <div className="text-base font-bold text-sky-800">{importResult.updatedCount}</div>
+                    <div className="text-[9px] font-bold text-sky-700 uppercase">Updated</div>
                   </div>
-                  <div className="bg-amber-50 rounded-xl p-3 border border-amber-100 text-center">
-                    <div className="text-lg font-bold text-amber-800">{importResult.needsReviewCount}</div>
-                    <div className="text-[10px] font-bold text-amber-700 uppercase">Needs Review</div>
+                  <div className="bg-slate-100 rounded-xl p-2.5 border border-slate-200 text-center">
+                    <div className="text-base font-bold text-slate-700">{importResult.skippedCount || 0}</div>
+                    <div className="text-[9px] font-bold text-slate-500 uppercase">Duplicates</div>
+                  </div>
+                  <div className="bg-amber-50 rounded-xl p-2.5 border border-amber-100 text-center">
+                    <div className="text-base font-bold text-amber-800">{importResult.needsReviewCount}</div>
+                    <div className="text-[9px] font-bold text-amber-700 uppercase">Needs Review</div>
+                  </div>
+                  <div className="bg-rose-50 rounded-xl p-2.5 border border-rose-100 text-center">
+                    <div className="text-base font-bold text-rose-800">{importResult.sourcesBlockedCount || 0}</div>
+                    <div className="text-[9px] font-bold text-rose-700 uppercase">Blocked WAF</div>
                   </div>
                 </div>
 
@@ -5204,8 +5356,131 @@ export default function AdminPage() {
               </div>
             )}
 
+            {/* Assisted File Upload View */}
+            {showFileImportModal && (
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold text-[#0B1E36] flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 text-sky-600" />
+                    <span>Administrator-Assisted CSV/JSON File Import</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowFileImportModal(false);
+                      setFileImportPreview(null);
+                      setFileImportError("");
+                    }}
+                    className="text-slate-400 hover:text-slate-600 text-xs"
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Upload a certified CSV or JSON export containing legislative records for {importModalCandidate.name}. Required columns/keys: <code>billNo, title, chamber, congress, role, sourceUrl</code>.
+                </p>
+
+                <input
+                  type="file"
+                  accept=".csv,.json"
+                  onChange={(e) => handleFileSelectForPreview(e, importModalCandidate.id)}
+                  disabled={processingFileImport}
+                  className="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer"
+                />
+
+                {processingFileImport && (
+                  <div className="flex items-center gap-2 text-xs text-sky-700 py-2">
+                    <div className="w-3.5 h-3.5 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Parsing and validating records...</span>
+                  </div>
+                )}
+
+                {fileImportError && (
+                  <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+                    {fileImportError}
+                  </div>
+                )}
+
+                {fileImportPreview && (
+                  <div className="space-y-2 pt-1 border-t border-slate-200/80">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-slate-700">Preview: {fileImportPreview.filename}</span>
+                      <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        {fileImportPreview.validation.validRecords.length} Valid Records
+                      </span>
+                    </div>
+
+                    {fileImportPreview.validation.invalidRows.length > 0 && (
+                      <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] space-y-1">
+                        <span className="font-bold">{fileImportPreview.validation.invalidRows.length} Row Validation Warning(s):</span>
+                        {fileImportPreview.validation.invalidRows.slice(0, 3).map((inv: any, i: number) => (
+                          <div key={i}>Row {inv.row}: {inv.errors.join(", ")}</div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="max-h-36 overflow-y-auto border border-slate-200 rounded-lg bg-white">
+                      <table className="w-full text-left text-[11px]">
+                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
+                          <tr>
+                            <th className="p-1.5">Bill No</th>
+                            <th className="p-1.5">Title</th>
+                            <th className="p-1.5">Chamber</th>
+                            <th className="p-1.5">Congress</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {fileImportPreview.validation.validRecords.slice(0, 5).map((r: any, idx: number) => (
+                            <tr key={idx}>
+                              <td className="p-1.5 font-bold font-mono text-[#0B1E36]">{r.billNo}</td>
+                              <td className="p-1.5 truncate max-w-xs">{r.title}</td>
+                              <td className="p-1.5">{r.chamber}</td>
+                              <td className="p-1.5">{r.congress}th</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        type="button"
+                        disabled={processingFileImport || fileImportPreview.validation.validRecords.length === 0}
+                        onClick={() => handleConfirmFileImport(importModalCandidate.id)}
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-40"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Confirm &amp; Import ({fileImportPreview.validation.validRecords.length} Records)</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Footer Actions */}
             <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 flex-wrap">
+              {!importingLegislative && importResult && (
+                <button
+                  type="button"
+                  onClick={() => triggerImportLegislative(importModalCandidate)}
+                  className="px-3.5 py-2 rounded-xl border border-sky-300 bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold text-xs transition-colors inline-flex items-center gap-1.5"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Retry Search</span>
+                </button>
+              )}
+              {!importingLegislative && (
+                <button
+                  type="button"
+                  onClick={() => setShowFileImportModal(!showFileImportModal)}
+                  className="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-xs transition-colors inline-flex items-center gap-1.5"
+                >
+                  <FileText className="w-3.5 h-3.5 text-sky-600" />
+                  <span>Upload CSV/JSON (Assisted)</span>
+                </button>
+              )}
               {!importingLegislative && importResult && (importResult.status === "BLOCKED_BY_SOURCE" || importResult.status === "NO_MATCHES") && (
                 <button
                   type="button"

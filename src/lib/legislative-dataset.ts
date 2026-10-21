@@ -25,6 +25,7 @@ export interface OfficialLegislativeRecord {
   pdfUrl?: string;
   matchConfidence: number;
   matchNotes?: string;
+  reviewStatus?: "CONFIRMED" | "NEEDS_REVIEW" | "REJECTED";
 }
 
 export interface CandidateLegislativeSeed {

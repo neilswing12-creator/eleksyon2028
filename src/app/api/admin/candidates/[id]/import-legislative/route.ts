@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/security";
-import { importCandidateLegislativeRecords } from "@/lib/legislative-importer";
+import {
+  importCandidateLegislativeRecords,
+  parseAndValidateLegislativeData,
+} from "@/lib/legislative-importer";
 import { OfficialLegislativeRecord } from "@/lib/legislative-dataset";
 
 export const dynamic = "force-dynamic";
@@ -26,20 +29,43 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
+    if (admin.role === "ANALYST") {
+      return NextResponse.json({ error: "Analyst role is read-only." }, { status: 403 });
+    }
+
     const { id } = params;
     if (!id) {
       return NextResponse.json({ error: "Candidate ID is required." }, { status: 400 });
     }
 
-    // Optional manual records payload (CSV/JSON fallback)
-    let manualRecords: OfficialLegislativeRecord[] | undefined;
+    let body: any = {};
     try {
-      const body = await req.json();
-      if (body?.manualRecords && Array.isArray(body.manualRecords)) {
-        manualRecords = body.manualRecords;
-      }
+      body = await req.json();
     } catch {
-      // Body is empty for regular 1-click import; ignore JSON parse error
+      // Empty body for standard 1-click import
+    }
+
+    // Handle File Preview Mode
+    if (body.action === "PREVIEW_FILE" && body.rawContent) {
+      const format = body.fileFormat === "json" ? "json" : "csv";
+      const validation = parseAndValidateLegislativeData(body.rawContent, format);
+      return NextResponse.json({
+        success: true,
+        action: "PREVIEW_FILE",
+        validation,
+      });
+    }
+
+    // Manual records payload (from verified assisted file upload or manual form)
+    let manualRecords: OfficialLegislativeRecord[] | undefined;
+    if (body.manualRecords && Array.isArray(body.manualRecords)) {
+      manualRecords = body.manualRecords;
+    } else if (body.rawContent) {
+      const format = body.fileFormat === "json" ? "json" : "csv";
+      const validation = parseAndValidateLegislativeData(body.rawContent, format);
+      if (validation.validRecords.length > 0) {
+        manualRecords = validation.validRecords;
+      }
     }
 
     const result = await importCandidateLegislativeRecords(id, admin.email, manualRecords);

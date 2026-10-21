@@ -1,6 +1,21 @@
 import React from "react";
 import Link from "next/link";
+import { Metadata } from "next";
 import { Vote, Shield, Globe, Award, ArrowRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "About Eleksyon 2028 | Philippine Civic Technology Initiative",
+  description:
+    "About the Philippine 2028 National Election Survey platform: an independent, non-partisan civic-technology initiative providing transparent public sentiment data and voter education.",
+  alternates: {
+    canonical: "https://eleksyon.swingneil.com/about",
+  },
+  openGraph: {
+    title: "About Eleksyon 2028 | Philippine Civic Technology Initiative",
+    description: "Independent civic-technology initiative providing transparent public sentiment data.",
+    url: "https://eleksyon.swingneil.com/about",
+  },
+};
 
 export default function AboutPage() {
   return (
@@ -23,66 +38,51 @@ export default function AboutPage() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
         <div className="bg-white rounded-2xl border border-brand-border p-6 sm:p-8 shadow-subtle space-y-4">
-          <h2 className="text-xl font-bold text-brand-navy">Our Mission</h2>
+          <h2 className="text-lg font-bold text-brand-navy flex items-center gap-2">
+            <Shield className="w-5 h-5 text-brand-blue" />
+            <span>Our Non-Partisan Mandate</span>
+          </h2>
           <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
-            The 2028 Philippine National Elections represent a pivotal democratic moment. This survey platform was
-            built by an independent team of civic technologists and data journalists to provide a modern,
-            accessible, and privacy-first digital polling ecosystem.
-          </p>
-          <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
-            By combining high-fidelity Three.js geographic data visualization with structured policy platform
-            comparisons, our goal is to foster informed civic discussion and help every Filipino citizen understand
-            how public preferences and policy proposals evolve across Luzon, Visayas, and Mindanao.
+            The 2028 Philippine National Pre-Election Public Opinion Poll is a non-governmental, open civic-tech
+            platform designed to measure public sentiment objectively across the archipelago. We do not endorse,
+            campaign for, or accept financial contributions from any candidate, political party, or political action
+            committee.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold">
-              <Shield className="w-5 h-5" />
+        <div className="bg-white rounded-2xl border border-brand-border p-6 sm:p-8 shadow-subtle space-y-4">
+          <h2 className="text-lg font-bold text-brand-navy flex items-center gap-2">
+            <Globe className="w-5 h-5 text-brand-blue" />
+            <span>Civic-Tech Core Pillars</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+              <h3 className="font-bold text-sm text-brand-navy">1. Complete Anonymity</h3>
+              <p className="text-xs text-brand-slate leading-relaxed">
+                Zero personal data or email collection. Submissions are secured via one-way salted HMAC hashes.
+              </p>
             </div>
-            <h3 className="font-bold text-base text-brand-navy">Strict Independence</h3>
-            <p className="text-xs text-brand-slate leading-relaxed">
-              Non-partisan and independent. We accept no political funding, endorsements, or proprietary candidate
-              sponsorships.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold">
-              <Globe className="w-5 h-5" />
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+              <h3 className="font-bold text-sm text-brand-navy">2. Open Geographic Data</h3>
+              <p className="text-xs text-brand-slate leading-relaxed">
+                Aggregated provincial and regional trends visualized transparently for all 82 Philippine provinces.
+              </p>
             </div>
-            <h3 className="font-bold text-base text-brand-navy">Open Data Journalism</h3>
-            <p className="text-xs text-brand-slate leading-relaxed">
-              All aggregated statistical tallies, geographic breakdowns, and verified policy citations are published
-              openly for public research.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold">
-              <Vote className="w-5 h-5" />
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+              <h3 className="font-bold text-sm text-brand-navy">3. Verified Platforms</h3>
+              <p className="text-xs text-brand-slate leading-relaxed">
+                Candidate policy stances and legislative records cited with direct links to primary government records.
+              </p>
             </div>
-            <h3 className="font-bold text-base text-brand-navy">Voter Respect</h3>
-            <p className="text-xs text-brand-slate leading-relaxed">
-              Zero passwords, zero tracking trackers. Full right of vote retraction anytime through private
-              cryptographic tokens.
-            </p>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-brand-navy to-slate-900 rounded-2xl p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold">Have your voice counted in the 2028 Survey</h3>
-            <p className="text-xs text-blue-200">
-              Cast your anonymous preference and view real-time nationwide results immediately.
-            </p>
-          </div>
+        <div className="flex justify-center pt-4">
           <Link
             href="/survey"
-            className="px-6 py-3 rounded-xl bg-brand-blue text-white text-xs font-bold hover:bg-blue-600 transition-colors shadow-card flex items-center gap-1.5 flex-shrink-0"
+            className="px-8 py-3.5 rounded-xl bg-brand-blue text-white font-bold text-sm shadow-md hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
           >
-            <span>Cast Your Vote</span>
+            <span>Participate in the 2028 Survey</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

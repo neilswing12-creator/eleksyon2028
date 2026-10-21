@@ -158,6 +158,10 @@ export default function AdminPage() {
   // Reversal Modal State
   const [reversalTarget, setReversalTarget] = useState<any | null>(null);
   const [reversalReason, setReversalReason] = useState("");
+
+  // Overseas / Geographic Participation Filter State
+  const [adminGeoFilter, setAdminGeoFilter] = useState<"ALL" | "DOMESTIC" | "OVERSEAS">("ALL");
+  const [adminCountrySearch, setAdminCountrySearch] = useState("");
   const [submittingReversal, setSubmittingReversal] = useState(false);
 
   // Consequential Survey Status Confirm Modal
@@ -948,7 +952,7 @@ export default function AdminPage() {
             </div>
 
             {/* Real-Time Database Metrics Ticker */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
@@ -973,13 +977,29 @@ export default function AdminPage() {
               </div>
 
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
-                  Retracted Submissions
+                <span className="text-[11px] font-bold uppercase tracking-wider text-sky-700 block truncate flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Domestic (PH)</span>
                 </span>
-                <div className="text-2xl sm:text-3xl font-black text-slate-500 mt-1 tabular-nums">
-                  {(analytics?.summary?.totalRetractedSubmissions ?? 0).toLocaleString()}
+                <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-1 tabular-nums">
+                  {(analytics?.summary?.domesticSubmissionsCount ?? 0).toLocaleString()}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-0.5">Excluded from tallies</p>
+                <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                  Philippine provinces &amp; cities
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block truncate flex items-center gap-1">
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>Overseas (OFW)</span>
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-blue-700 mt-1 tabular-nums">
+                  {(analytics?.summary?.overseasSubmissionsCount ?? 0).toLocaleString()}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                  {analytics?.overseas?.percentageOfTotal ?? 0}% of active survey responses
+                </p>
               </div>
 
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
@@ -1024,8 +1044,191 @@ export default function AdminPage() {
                 <p className="text-[10px] text-slate-400 mt-0.5 truncate">
                   {analytics?.summary?.provincesReportingOverride !== null && analytics?.summary?.provincesReportingOverride !== undefined
                     ? `Manual override: ${analytics.summary.provincesReportingOverride} / 82`
-                    : `Calculated distinct provinces`}
+                    : `Domestic provinces only`}
                 </p>
+              </div>
+            </div>
+
+            {/* Geographic & Sectoral Participation Management Card */}
+            <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-blue-700" />
+                    <h3 className="text-base font-bold text-brand-navy uppercase tracking-wide">
+                      Geographic &amp; Sectoral Participation (Domestic vs. Overseas / OFW)
+                    </h3>
+                  </div>
+                  <p className="text-xs text-brand-slate mt-0.5">
+                    Filters and aggregate breakdown of voluntary survey participation across Philippine regions and overseas diaspora destinations.
+                  </p>
+                </div>
+
+                {/* Domestic vs Overseas Sector Filters */}
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold">
+                  {(
+                    [
+                      { id: "ALL", label: "All Submissions" },
+                      { id: "DOMESTIC", label: "Domestic (PH)" },
+                      { id: "OVERSEAS", label: "Overseas (OFW)" },
+                    ] as const
+                  ).map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setAdminGeoFilter(f.id)}
+                      className={`px-3 py-1.5 rounded-lg transition-all ${
+                        adminGeoFilter === f.id
+                          ? "bg-white text-brand-navy shadow-xs font-black"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sector Summary Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Domestic Active Votes
+                  </span>
+                  <div className="text-lg font-black text-slate-800 mt-0.5 tabular-nums">
+                    {(analytics?.summary?.domesticSubmissionsCount ?? 0).toLocaleString()}
+                  </div>
+                  <span className="text-[10px] text-slate-500">
+                    {analytics?.summary?.totalActiveSubmissions > 0
+                      ? (
+                          ((analytics?.summary?.domesticSubmissionsCount || 0) /
+                            analytics?.summary?.totalActiveSubmissions) *
+                          100
+                        ).toFixed(1)
+                      : 100}
+                    % of total active votes
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 block">
+                    Overseas (OFW) Votes
+                  </span>
+                  <div className="text-lg font-black text-blue-900 mt-0.5 tabular-nums">
+                    {(analytics?.overseas?.totalSubmissions ?? 0).toLocaleString()}
+                  </div>
+                  <span className="text-[10px] text-blue-600">
+                    {analytics?.overseas?.percentageOfTotal ?? 0}% of total active votes
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Participating Countries
+                  </span>
+                  <div className="text-lg font-black text-slate-800 mt-0.5 tabular-nums">
+                    {analytics?.overseas?.countries?.length ?? 0}
+                  </div>
+                  <span className="text-[10px] text-slate-500">Active diaspora nations</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Philippine Coverage
+                  </span>
+                  <div className="text-lg font-black text-slate-800 mt-0.5 tabular-nums">
+                    {analytics?.summary?.provincesReporting ?? 0} / 82
+                  </div>
+                  <span className="text-[10px] text-slate-500">Excludes overseas from count</span>
+                </div>
+              </div>
+
+              {/* Aggregate Country Breakdown Table (Shown for ALL or OVERSEAS filter) */}
+              {(adminGeoFilter === "ALL" || adminGeoFilter === "OVERSEAS") && (
+                <div className="space-y-3 pt-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-brand-navy">
+                      Aggregate Participation by Country (Global Diaspora)
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Filter countries by name, code, or region..."
+                      value={adminCountrySearch}
+                      onChange={(e) => setAdminCountrySearch(e.target.value)}
+                      className="px-3 py-1.5 text-xs rounded-lg border border-slate-300 w-full sm:w-64 outline-none focus:ring-1 focus:ring-brand-blue"
+                    />
+                  </div>
+
+                  {!analytics?.overseas?.countries || analytics.overseas.countries.length === 0 ? (
+                    <div className="p-6 rounded-xl border border-dashed border-slate-200 text-center text-xs text-slate-400 italic">
+                      No overseas survey responses recorded yet.
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto rounded-xl border border-slate-200">
+                      <table className="w-full text-left text-xs min-w-[550px]">
+                        <thead>
+                          <tr className="bg-slate-50 border-b border-slate-200 text-slate-400 uppercase text-[10px] tracking-wider">
+                            <th className="py-2.5 px-3">Country</th>
+                            <th className="py-2.5 px-3">ISO Code</th>
+                            <th className="py-2.5 px-3">Region Abroad</th>
+                            <th className="py-2.5 px-3 text-right">Eligible Submissions</th>
+                            <th className="py-2.5 px-3 text-right">% of Overseas</th>
+                            <th className="py-2.5 px-3 text-right">% of Overall Survey</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {analytics.overseas.countries
+                            .filter((c: any) => {
+                              const q = adminCountrySearch.toLowerCase().trim();
+                              if (!q) return true;
+                              return (
+                                c.name.toLowerCase().includes(q) ||
+                                c.code.toLowerCase().includes(q) ||
+                                c.region.toLowerCase().includes(q)
+                              );
+                            })
+                            .map((c: any) => (
+                              <tr key={c.code} className="hover:bg-slate-50/50">
+                                <td className="py-2.5 px-3 font-bold text-brand-navy flex items-center gap-2">
+                                  <span className="text-base">{c.flag}</span>
+                                  <span>{c.name}</span>
+                                </td>
+                                <td className="py-2.5 px-3 font-mono text-slate-500 font-semibold">{c.code}</td>
+                                <td className="py-2.5 px-3 text-slate-600">{c.region}</td>
+                                <td className="py-2.5 px-3 text-right font-mono font-bold text-brand-navy">
+                                  {c.count.toLocaleString()}
+                                </td>
+                                <td className="py-2.5 px-3 text-right font-mono text-blue-700 font-semibold">
+                                  {c.percentage}%
+                                </td>
+                                <td className="py-2.5 px-3 text-right font-mono text-slate-500">
+                                  {c.percentageOfTotal}%
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Domestic Summary Notice (Shown for DOMESTIC filter) */}
+              {adminGeoFilter === "DOMESTIC" && (
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1">
+                  <p className="font-bold text-brand-navy">Domestic Philippine Geographic Submissions</p>
+                  <p>
+                    Showing valid resident participants residing within the 17 administrative regions and 82 Philippine provinces. All province-level cartograms, heatmaps, and regional leader calculations are derived exclusively from this domestic cohort.
+                  </p>
+                </div>
+              )}
+
+              {/* Data Privacy & Security Notice */}
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-500 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>
+                  <strong>Privacy &amp; Security Compliance (RA 10173):</strong> Individual participant ballots and private tokens remain strictly confidential. Only aggregated statistical summaries are accessible.
+                </span>
               </div>
             </div>
 

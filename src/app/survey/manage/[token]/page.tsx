@@ -11,6 +11,7 @@ import {
   ArrowLeft,
   Calendar,
   MapPin,
+  Globe,
   Vote,
   ExternalLink,
   Share2,
@@ -247,12 +248,20 @@ export default function ManageVotePage() {
                   <Calendar className="w-3.5 h-3.5 text-slate-400" />
                   {new Date(submission.createdAt).toLocaleDateString()}
                 </span>
-                {submission.provinceName && (
+                {submission.residenceType === "OVERSEAS" ? (
+                  <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[11px] font-bold">
+                    <Globe className="w-3.5 h-3.5 text-blue-600" />
+                    <span>
+                      {submission.countryName || "Overseas Filipino"} (OFW)
+                      {submission.overseasCity ? ` • ${submission.overseasCity}` : ""}
+                    </span>
+                  </span>
+                ) : submission.provinceName ? (
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5 text-slate-400" />
                     {submission.provinceName}
                   </span>
-                )}
+                ) : null}
               </div>
             </div>
 
@@ -451,7 +460,11 @@ export default function ManageVotePage() {
         candidate={shareCandidate}
         competitors={shareCompetitors}
         voterName={submission.participantName}
-        provinceName={submission.provinceName}
+        provinceName={
+          submission.residenceType === "OVERSEAS"
+            ? `${submission.countryName || "Overseas"} (OFW)`
+            : submission.provinceName || ""
+        }
       />
     </div>
   );

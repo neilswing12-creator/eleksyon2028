@@ -18,6 +18,8 @@ import {
   CheckCircle2,
   Users,
   Compass,
+  Globe,
+  Info,
 } from "lucide-react";
 
 export default function InteractiveMapPage() {
@@ -209,6 +211,79 @@ export default function InteractiveMapPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Overseas Filipino Participation (OFW & Diaspora) Summary */}
+        <div className="mt-8 bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-subtle space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-headline font-bold uppercase tracking-wider mb-1">
+                <Globe className="w-3.5 h-3.5" />
+                <span>Global Filipino Community &bull; OFW Sector</span>
+              </div>
+              <h3 className="text-base font-headline font-bold uppercase tracking-wider text-[#0B132B]">
+                Overseas Filipino Participation (Diaspora Tally)
+              </h3>
+              <p className="text-xs text-slate-500 font-sans mt-0.5">
+                Overseas Filipino survey responses are counted in national candidate standings and kept
+                separate from the 82 Philippine provincial map cartograms.
+              </p>
+            </div>
+
+            <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-right flex-shrink-0">
+              <span className="text-[10px] font-headline font-bold text-slate-400 uppercase tracking-wider block">
+                Total Overseas Votes
+              </span>
+              <div className="text-xl font-headline font-black text-blue-700 tabular-nums">
+                {(analytics?.overseas?.totalSubmissions || 0).toLocaleString()}
+              </div>
+              <span className="text-[10px] text-slate-500 font-sans">
+                {analytics?.overseas?.percentageOfTotal ?? 0}% of all active responses
+              </span>
+            </div>
+          </div>
+
+          {/* Top Participating Countries Grid */}
+          {analytics?.overseas?.countries && analytics.overseas.countries.length > 0 ? (
+            <div className="space-y-2">
+              <span className="text-[11px] font-headline font-bold uppercase tracking-wider text-slate-500 block">
+                Top Participating Countries Abroad
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {analytics.overseas.countries.slice(0, 6).map((c: any) => (
+                  <div
+                    key={c.code}
+                    className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 shadow-xs flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center gap-1.5 text-base">
+                        <span>{c.flag}</span>
+                        <span className="font-headline font-bold text-xs text-[#0B132B] truncate uppercase">
+                          {c.name}
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-semibold mt-0.5 truncate">{c.region}</div>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between">
+                      <span className="font-mono font-bold text-xs text-slate-800">{c.count} votes</span>
+                      <span className="text-[10px] text-blue-600 font-bold">{c.percentage}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 rounded-xl border border-dashed border-slate-200 text-center text-xs text-slate-400 italic">
+              No overseas submissions recorded yet. Overseas Filipinos can cast their vote by choosing &quot;Outside the Philippines (OFW)&quot; in the survey.
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <Info className="w-4 h-4 text-amber-600 flex-shrink-0" />
+            <p className="text-[11px] leading-relaxed">
+              <strong>Geographic Isolation Rule:</strong> Under our survey aggregation methodology, overseas responses are never assigned to a random or default Philippine province. Philippine map colors and leader calculations represent domestic provincial voters only.
+            </p>
           </div>
         </div>
       </div>

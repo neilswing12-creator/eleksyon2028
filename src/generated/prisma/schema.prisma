@@ -185,6 +185,11 @@ model SurveySubmission {
   campaignId       String
   campaign         SurveyCampaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   participantName  String
+  residenceType    String               @default("DOMESTIC") // DOMESTIC, OVERSEAS
+  countryCode      String? // ISO 3166-1 alpha-2, e.g. "SA", "US", "AE", "SG"
+  countryName      String? // e.g. "Saudi Arabia", "United States"
+  overseasRegion   String? // e.g. "Middle East", "Asia Pacific", "North America", "Europe"
+  overseasCity     String? // optional city or region abroad
   regionId         String?
   regionName       String?
   provinceId       String?
@@ -206,6 +211,8 @@ model SurveySubmission {
   @@index([campaignId, status])
   @@index([ipHash, campaignId, status])
   @@index([tokenHash])
+  @@index([residenceType, status])
+  @@index([countryCode, status])
   @@index([provinceName, status])
   @@index([regionName, status])
 }

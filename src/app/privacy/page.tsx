@@ -28,7 +28,12 @@ export default function PrivacyPage() {
           </p>
           <ul className="list-disc pl-5 text-xs text-brand-slate space-y-1.5">
             <li><strong>Participant Declared Name:</strong> Used to identify your submission and enable vote recovery.</li>
-            <li><strong>Voluntary Location:</strong> Optional region, province, and municipality to aggregate geographic maps.</li>
+            <li><strong>Voluntary Location:</strong>
+              <ul className="list-circle pl-5 mt-1 space-y-1 text-slate-500">
+                <li><em>Within the Philippines (Domestic):</em> Optional region, province, and municipality to aggregate geographic provincial maps.</li>
+                <li><em>Outside the Philippines (OFW / Overseas Filipino):</em> Declared country of residence and optional city abroad to aggregate global diaspora participation. Overseas responses are never assigned to Philippine provinces.</li>
+              </ul>
+            </li>
             <li><strong>Candidate Selections:</strong> Your choices for President, Vice President, and Senate.</li>
             <li><strong>Cryptographic IP Identifier:</strong> A one-way HMAC-SHA256 salted hash of your connection IP used strictly to enforce the one-vote-per-network policy. The raw IP is discarded immediately.</li>
           </ul>

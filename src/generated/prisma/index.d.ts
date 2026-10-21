@@ -10592,6 +10592,11 @@ export namespace Prisma {
     id: string | null
     campaignId: string | null
     participantName: string | null
+    residenceType: string | null
+    countryCode: string | null
+    countryName: string | null
+    overseasRegion: string | null
+    overseasCity: string | null
     regionId: string | null
     regionName: string | null
     provinceId: string | null
@@ -10614,6 +10619,11 @@ export namespace Prisma {
     id: string | null
     campaignId: string | null
     participantName: string | null
+    residenceType: string | null
+    countryCode: string | null
+    countryName: string | null
+    overseasRegion: string | null
+    overseasCity: string | null
     regionId: string | null
     regionName: string | null
     provinceId: string | null
@@ -10636,6 +10646,11 @@ export namespace Prisma {
     id: number
     campaignId: number
     participantName: number
+    residenceType: number
+    countryCode: number
+    countryName: number
+    overseasRegion: number
+    overseasCity: number
     regionId: number
     regionName: number
     provinceId: number
@@ -10660,6 +10675,11 @@ export namespace Prisma {
     id?: true
     campaignId?: true
     participantName?: true
+    residenceType?: true
+    countryCode?: true
+    countryName?: true
+    overseasRegion?: true
+    overseasCity?: true
     regionId?: true
     regionName?: true
     provinceId?: true
@@ -10682,6 +10702,11 @@ export namespace Prisma {
     id?: true
     campaignId?: true
     participantName?: true
+    residenceType?: true
+    countryCode?: true
+    countryName?: true
+    overseasRegion?: true
+    overseasCity?: true
     regionId?: true
     regionName?: true
     provinceId?: true
@@ -10704,6 +10729,11 @@ export namespace Prisma {
     id?: true
     campaignId?: true
     participantName?: true
+    residenceType?: true
+    countryCode?: true
+    countryName?: true
+    overseasRegion?: true
+    overseasCity?: true
     regionId?: true
     regionName?: true
     provinceId?: true
@@ -10799,6 +10829,11 @@ export namespace Prisma {
     id: string
     campaignId: string
     participantName: string
+    residenceType: string
+    countryCode: string | null
+    countryName: string | null
+    overseasRegion: string | null
+    overseasCity: string | null
     regionId: string | null
     regionName: string | null
     provinceId: string | null
@@ -10838,6 +10873,11 @@ export namespace Prisma {
     id?: boolean
     campaignId?: boolean
     participantName?: boolean
+    residenceType?: boolean
+    countryCode?: boolean
+    countryName?: boolean
+    overseasRegion?: boolean
+    overseasCity?: boolean
     regionId?: boolean
     regionName?: boolean
     provinceId?: boolean
@@ -10863,6 +10903,11 @@ export namespace Prisma {
     id?: boolean
     campaignId?: boolean
     participantName?: boolean
+    residenceType?: boolean
+    countryCode?: boolean
+    countryName?: boolean
+    overseasRegion?: boolean
+    overseasCity?: boolean
     regionId?: boolean
     regionName?: boolean
     provinceId?: boolean
@@ -10886,6 +10931,11 @@ export namespace Prisma {
     id?: boolean
     campaignId?: boolean
     participantName?: boolean
+    residenceType?: boolean
+    countryCode?: boolean
+    countryName?: boolean
+    overseasRegion?: boolean
+    overseasCity?: boolean
     regionId?: boolean
     regionName?: boolean
     provinceId?: boolean
@@ -10923,6 +10973,11 @@ export namespace Prisma {
       id: string
       campaignId: string
       participantName: string
+      residenceType: string
+      countryCode: string | null
+      countryName: string | null
+      overseasRegion: string | null
+      overseasCity: string | null
       regionId: string | null
       regionName: string | null
       provinceId: string | null
@@ -11337,6 +11392,11 @@ export namespace Prisma {
     readonly id: FieldRef<"SurveySubmission", 'String'>
     readonly campaignId: FieldRef<"SurveySubmission", 'String'>
     readonly participantName: FieldRef<"SurveySubmission", 'String'>
+    readonly residenceType: FieldRef<"SurveySubmission", 'String'>
+    readonly countryCode: FieldRef<"SurveySubmission", 'String'>
+    readonly countryName: FieldRef<"SurveySubmission", 'String'>
+    readonly overseasRegion: FieldRef<"SurveySubmission", 'String'>
+    readonly overseasCity: FieldRef<"SurveySubmission", 'String'>
     readonly regionId: FieldRef<"SurveySubmission", 'String'>
     readonly regionName: FieldRef<"SurveySubmission", 'String'>
     readonly provinceId: FieldRef<"SurveySubmission", 'String'>
@@ -13733,6 +13793,11 @@ export namespace Prisma {
     id: 'id',
     campaignId: 'campaignId',
     participantName: 'participantName',
+    residenceType: 'residenceType',
+    countryCode: 'countryCode',
+    countryName: 'countryName',
+    overseasRegion: 'overseasRegion',
+    overseasCity: 'overseasCity',
     regionId: 'regionId',
     regionName: 'regionName',
     provinceId: 'provinceId',
@@ -14705,6 +14770,11 @@ export namespace Prisma {
     id?: StringFilter<"SurveySubmission"> | string
     campaignId?: StringFilter<"SurveySubmission"> | string
     participantName?: StringFilter<"SurveySubmission"> | string
+    residenceType?: StringFilter<"SurveySubmission"> | string
+    countryCode?: StringNullableFilter<"SurveySubmission"> | string | null
+    countryName?: StringNullableFilter<"SurveySubmission"> | string | null
+    overseasRegion?: StringNullableFilter<"SurveySubmission"> | string | null
+    overseasCity?: StringNullableFilter<"SurveySubmission"> | string | null
     regionId?: StringNullableFilter<"SurveySubmission"> | string | null
     regionName?: StringNullableFilter<"SurveySubmission"> | string | null
     provinceId?: StringNullableFilter<"SurveySubmission"> | string | null
@@ -14729,6 +14799,11 @@ export namespace Prisma {
     id?: SortOrder
     campaignId?: SortOrder
     participantName?: SortOrder
+    residenceType?: SortOrder
+    countryCode?: SortOrderInput | SortOrder
+    countryName?: SortOrderInput | SortOrder
+    overseasRegion?: SortOrderInput | SortOrder
+    overseasCity?: SortOrderInput | SortOrder
     regionId?: SortOrderInput | SortOrder
     regionName?: SortOrderInput | SortOrder
     provinceId?: SortOrderInput | SortOrder
@@ -14756,6 +14831,11 @@ export namespace Prisma {
     NOT?: SurveySubmissionWhereInput | SurveySubmissionWhereInput[]
     campaignId?: StringFilter<"SurveySubmission"> | string
     participantName?: StringFilter<"SurveySubmission"> | string
+    residenceType?: StringFilter<"SurveySubmission"> | string
+    countryCode?: StringNullableFilter<"SurveySubmission"> | string | null
+    countryName?: StringNullableFilter<"SurveySubmission"> | string | null
+    overseasRegion?: StringNullableFilter<"SurveySubmission"> | string | null
+    overseasCity?: StringNullableFilter<"SurveySubmission"> | string | null
     regionId?: StringNullableFilter<"SurveySubmission"> | string | null
     regionName?: StringNullableFilter<"SurveySubmission"> | string | null
     provinceId?: StringNullableFilter<"SurveySubmission"> | string | null
@@ -14780,6 +14860,11 @@ export namespace Prisma {
     id?: SortOrder
     campaignId?: SortOrder
     participantName?: SortOrder
+    residenceType?: SortOrder
+    countryCode?: SortOrderInput | SortOrder
+    countryName?: SortOrderInput | SortOrder
+    overseasRegion?: SortOrderInput | SortOrder
+    overseasCity?: SortOrderInput | SortOrder
     regionId?: SortOrderInput | SortOrder
     regionName?: SortOrderInput | SortOrder
     provinceId?: SortOrderInput | SortOrder
@@ -14808,6 +14893,11 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"SurveySubmission"> | string
     campaignId?: StringWithAggregatesFilter<"SurveySubmission"> | string
     participantName?: StringWithAggregatesFilter<"SurveySubmission"> | string
+    residenceType?: StringWithAggregatesFilter<"SurveySubmission"> | string
+    countryCode?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
+    countryName?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
+    overseasRegion?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
+    overseasCity?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
     regionId?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
     regionName?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
     provinceId?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
@@ -15975,6 +16065,11 @@ export namespace Prisma {
   export type SurveySubmissionCreateInput = {
     id?: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -15999,6 +16094,11 @@ export namespace Prisma {
     id?: string
     campaignId: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -16021,6 +16121,11 @@ export namespace Prisma {
   export type SurveySubmissionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16045,6 +16150,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     campaignId?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16068,6 +16178,11 @@ export namespace Prisma {
     id?: string
     campaignId: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -16089,6 +16204,11 @@ export namespace Prisma {
   export type SurveySubmissionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16111,6 +16231,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     campaignId?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17015,6 +17140,11 @@ export namespace Prisma {
     id?: SortOrder
     campaignId?: SortOrder
     participantName?: SortOrder
+    residenceType?: SortOrder
+    countryCode?: SortOrder
+    countryName?: SortOrder
+    overseasRegion?: SortOrder
+    overseasCity?: SortOrder
     regionId?: SortOrder
     regionName?: SortOrder
     provinceId?: SortOrder
@@ -17037,6 +17167,11 @@ export namespace Prisma {
     id?: SortOrder
     campaignId?: SortOrder
     participantName?: SortOrder
+    residenceType?: SortOrder
+    countryCode?: SortOrder
+    countryName?: SortOrder
+    overseasRegion?: SortOrder
+    overseasCity?: SortOrder
     regionId?: SortOrder
     regionName?: SortOrder
     provinceId?: SortOrder
@@ -17059,6 +17194,11 @@ export namespace Prisma {
     id?: SortOrder
     campaignId?: SortOrder
     participantName?: SortOrder
+    residenceType?: SortOrder
+    countryCode?: SortOrder
+    countryName?: SortOrder
+    overseasRegion?: SortOrder
+    overseasCity?: SortOrder
     regionId?: SortOrder
     regionName?: SortOrder
     provinceId?: SortOrder
@@ -18794,6 +18934,11 @@ export namespace Prisma {
   export type SurveySubmissionCreateWithoutCampaignInput = {
     id?: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -18816,6 +18961,11 @@ export namespace Prisma {
   export type SurveySubmissionUncheckedCreateWithoutCampaignInput = {
     id?: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -18912,6 +19062,11 @@ export namespace Prisma {
     id?: StringFilter<"SurveySubmission"> | string
     campaignId?: StringFilter<"SurveySubmission"> | string
     participantName?: StringFilter<"SurveySubmission"> | string
+    residenceType?: StringFilter<"SurveySubmission"> | string
+    countryCode?: StringNullableFilter<"SurveySubmission"> | string | null
+    countryName?: StringNullableFilter<"SurveySubmission"> | string | null
+    overseasRegion?: StringNullableFilter<"SurveySubmission"> | string | null
+    overseasCity?: StringNullableFilter<"SurveySubmission"> | string | null
     regionId?: StringNullableFilter<"SurveySubmission"> | string | null
     regionName?: StringNullableFilter<"SurveySubmission"> | string | null
     provinceId?: StringNullableFilter<"SurveySubmission"> | string | null
@@ -19408,6 +19563,11 @@ export namespace Prisma {
   export type SurveySubmissionCreateWithoutSelectionsInput = {
     id?: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -19431,6 +19591,11 @@ export namespace Prisma {
     id?: string
     campaignId: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -19523,6 +19688,11 @@ export namespace Prisma {
   export type SurveySubmissionUpdateWithoutSelectionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19546,6 +19716,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     campaignId?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19952,6 +20127,11 @@ export namespace Prisma {
   export type SurveySubmissionCreateManyCampaignInput = {
     id?: string
     participantName: string
+    residenceType?: string
+    countryCode?: string | null
+    countryName?: string | null
+    overseasRegion?: string | null
+    overseasCity?: string | null
     regionId?: string | null
     regionName?: string | null
     provinceId?: string | null
@@ -19991,6 +20171,11 @@ export namespace Prisma {
   export type SurveySubmissionUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20013,6 +20198,11 @@ export namespace Prisma {
   export type SurveySubmissionUncheckedUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20035,6 +20225,11 @@ export namespace Prisma {
   export type SurveySubmissionUncheckedUpdateManyWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
     participantName?: StringFieldUpdateOperationsInput | string
+    residenceType?: StringFieldUpdateOperationsInput | string
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    countryName?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasRegion?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasCity?: NullableStringFieldUpdateOperationsInput | string | null
     regionId?: NullableStringFieldUpdateOperationsInput | string | null
     regionName?: NullableStringFieldUpdateOperationsInput | string | null
     provinceId?: NullableStringFieldUpdateOperationsInput | string | null

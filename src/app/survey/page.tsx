@@ -14,12 +14,22 @@ import {
   Users,
   Flame,
   Share2,
+  Globe,
+  Search,
+  Building2,
+  MapPin,
 } from "lucide-react";
 import ShareVoteCardModal, {
   ShareCandidateData,
   CompetitorData,
 } from "@/components/ShareVoteCardModal";
 import { PHILIPPINE_REGIONS, PHILIPPINE_PROVINCES } from "@/lib/philippines-geo";
+import {
+  OVERSEAS_COUNTRIES,
+  searchOverseasCountries,
+  getCountryByCode,
+  OverseasCountry,
+} from "@/lib/overseas-geo";
 
 interface Candidate {
   id: string;
@@ -39,6 +49,10 @@ export default function SurveyPage() {
 
   // Form State
   const [participantName, setParticipantName] = useState("");
+  const [residenceType, setResidenceType] = useState<"DOMESTIC" | "OVERSEAS">("DOMESTIC");
+  const [selectedCountryCode, setSelectedCountryCode] = useState("");
+  const [overseasCity, setOverseasCity] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState("");
   const [selectedProvinceId, setSelectedProvinceId] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -207,12 +221,20 @@ export default function SurveyPage() {
     }
   };
 
+  const filteredCountries = searchOverseasCountries(countrySearch);
+
   const handleSubmit = async () => {
     setSubmitting(true);
     setErrorMessage("");
     setDuplicateIPError(false);
 
     try {
+      if (residenceType === "OVERSEAS" && !selectedCountryCode) {
+        setErrorMessage("Please select your country of residence outside the Philippines (OFW / Overseas Filipino).");
+        setSubmitting(false);
+        return;
+      }
+
       const regionObj = PHILIPPINE_REGIONS.find((r) => r.id === selectedRegionId);
       const provinceObj = PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId);
 
@@ -221,12 +243,15 @@ export default function SurveyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           participantName,
-          regionId: selectedRegionId,
-          regionName: regionObj?.name,
-          provinceId: selectedProvinceId,
-          provinceName: provinceObj?.name,
-          cityId: selectedCity,
-          cityName: selectedCity,
+          residenceType,
+          countryCode: residenceType === "OVERSEAS" ? selectedCountryCode : undefined,
+          overseasCity: residenceType === "OVERSEAS" ? (overseasCity || undefined) : undefined,
+          regionId: residenceType === "DOMESTIC" ? (selectedRegionId || undefined) : undefined,
+          regionName: residenceType === "DOMESTIC" ? regionObj?.name : undefined,
+          provinceId: residenceType === "DOMESTIC" ? (selectedProvinceId || undefined) : undefined,
+          provinceName: residenceType === "DOMESTIC" ? provinceObj?.name : undefined,
+          cityId: residenceType === "DOMESTIC" ? (selectedCity || undefined) : undefined,
+          cityName: residenceType === "DOMESTIC" ? (selectedCity || undefined) : undefined,
           ageGroup: ageGroup || undefined,
           gender: gender || undefined,
           civilStatus: civilStatus || undefined,
@@ -341,71 +366,216 @@ export default function SurveyPage() {
                 </p>
               </div>
 
-              {/* Geographic Region */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
-                    Region <span className="text-slate-400 font-normal lowercase">(optional)</span>
-                  </label>
-                  <select
-                    value={selectedRegionId}
-                    onChange={(e) => {
-                      setSelectedRegionId(e.target.value);
+              {/* Location Type Selection: Domestic vs Overseas */}
+              <div>
+                <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-2">
+                  Voting Location / Sector <span className="text-gma-red">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setResidenceType("DOMESTIC");
+                      setSelectedCountryCode("");
+                      setOverseasCity("");
+                    }}
+                    className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
+                      residenceType === "DOMESTIC"
+                        ? "border-[#004B93] bg-blue-50/60 ring-2 ring-[#004B93]/20"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    }`}
+                  >
+                    <div
+                      className={`p-2 rounded-lg flex-shrink-0 ${
+                        residenceType === "DOMESTIC" ? "bg-[#004B93] text-white" : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      <MapPin className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-headline font-bold text-xs uppercase text-[#0B132B]">
+                        Within the Philippines
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-sans mt-0.5">
+                        Resident citizen residing in Philippine provinces and cities
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setResidenceType("OVERSEAS");
+                      setSelectedRegionId("");
                       setSelectedProvinceId("");
                       setSelectedCity("");
                     }}
-                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                    className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
+                      residenceType === "OVERSEAS"
+                        ? "border-[#004B93] bg-blue-50/60 ring-2 ring-[#004B93]/20"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    }`}
                   >
-                    <option value="">Select Region...</option>
-                    {PHILIPPINE_REGIONS.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.code} - {r.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Province */}
-                <div>
-                  <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
-                    Province <span className="text-slate-400 font-normal lowercase">(optional)</span>
-                  </label>
-                  <select
-                    value={selectedProvinceId}
-                    onChange={(e) => {
-                      setSelectedProvinceId(e.target.value);
-                      setSelectedCity("");
-                    }}
-                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
-                  >
-                    <option value="">Select Province...</option>
-                    {availableProvinces.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
+                    <div
+                      className={`p-2 rounded-lg flex-shrink-0 ${
+                        residenceType === "OVERSEAS" ? "bg-[#004B93] text-white" : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-headline font-bold text-xs uppercase text-[#0B132B]">
+                        Outside the Philippines (OFW / Overseas Filipino)
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-sans mt-0.5">
+                        Filipino migrant workers, permanent residents, and diaspora worldwide
+                      </div>
+                    </div>
+                  </button>
                 </div>
               </div>
 
-              {/* City / Municipality */}
-              {availableCities.length > 0 && (
-                <div>
-                  <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
-                    City / Municipality <span className="text-slate-400 font-normal lowercase">(optional)</span>
-                  </label>
-                  <select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
-                  >
-                    <option value="">Select City or Municipality...</option>
-                    {availableCities.map((city) => (
-                      <option key={city} value={city}>
-                        {city}
-                      </option>
-                    ))}
-                  </select>
+              {/* DOMESTIC: Philippine Region, Province, City */}
+              {residenceType === "DOMESTIC" ? (
+                <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[11px] font-headline font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-gma-blue" />
+                    <span>Philippine Geographic Location (Domestic)</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                        Region <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                      </label>
+                      <select
+                        value={selectedRegionId}
+                        onChange={(e) => {
+                          setSelectedRegionId(e.target.value);
+                          setSelectedProvinceId("");
+                          setSelectedCity("");
+                        }}
+                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                      >
+                        <option value="">Select Region...</option>
+                        {PHILIPPINE_REGIONS.map((r) => (
+                          <option key={r.id} value={r.id}>
+                            {r.code} - {r.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Province */}
+                    <div>
+                      <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                        Province <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                      </label>
+                      <select
+                        value={selectedProvinceId}
+                        onChange={(e) => {
+                          setSelectedProvinceId(e.target.value);
+                          setSelectedCity("");
+                        }}
+                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                      >
+                        <option value="">Select Province...</option>
+                        {availableProvinces.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* City / Municipality */}
+                  {availableCities.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                        City / Municipality <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                      </label>
+                      <select
+                        value={selectedCity}
+                        onChange={(e) => setSelectedCity(e.target.value)}
+                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                      >
+                        <option value="">Select City or Municipality...</option>
+                        {availableCities.map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* OVERSEAS: Country Selector & Optional City Abroad */
+                <div className="space-y-4 p-4 rounded-xl bg-blue-50/50 border border-blue-200">
+                  <div className="text-[11px] font-headline font-bold uppercase tracking-wider text-blue-900 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Globe className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Overseas Filipino Country of Residence</span>
+                    </span>
+                    <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">
+                      OFW / Diaspora
+                    </span>
+                  </div>
+
+                  {/* Searchable Country Selector */}
+                  <div>
+                    <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                      Country Abroad <span className="text-gma-red">*</span>
+                    </label>
+
+                    {/* Filter Input */}
+                    <div className="relative mb-2">
+                      <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Search country (e.g. Saudi Arabia, UAE, USA, Japan, Singapore, Canada)..."
+                        value={countrySearch}
+                        onChange={(e) => setCountrySearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:ring-1 focus:ring-gma-blue outline-none"
+                      />
+                    </div>
+
+                    <select
+                      value={selectedCountryCode}
+                      onChange={(e) => setSelectedCountryCode(e.target.value)}
+                      required={residenceType === "OVERSEAS"}
+                      className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none font-sans"
+                    >
+                      <option value="">Select Country Abroad...</option>
+                      {filteredCountries.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.flag} {c.name} ({c.region})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      No Philippine province is required. Overseas submissions are tallied independently under the Global Diaspora breakdown.
+                    </p>
+                  </div>
+
+                  {/* Optional City or Region Abroad */}
+                  <div>
+                    <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                      City, State, or Region Abroad <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                    </label>
+                    <div className="relative">
+                      <Building2 className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="e.g. Dubai, Riyadh, Los Angeles, Toronto, Hong Kong, Sydney"
+                        value={overseasCity}
+                        onChange={(e) => setOverseasCity(e.target.value)}
+                        maxLength={100}
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
               {/* Optional Demographic Profile for Voters Research */}
@@ -842,11 +1012,20 @@ export default function SurveyPage() {
                   {participantName}
                 </div>
                 <div className="text-slate-500 font-semibold mt-0.5">
-                  {selectedProvinceId
-                    ? `${PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name}, ${
-                        PHILIPPINE_REGIONS.find((r) => r.id === selectedRegionId)?.name
-                      }`
-                    : "No geographical location specified"}
+                  {residenceType === "OVERSEAS" ? (
+                    (() => {
+                      const c = getCountryByCode(selectedCountryCode);
+                      return `${c?.flag || "🌐"} ${c?.name || "Overseas"} (${c?.region || "Abroad"})${
+                        overseasCity ? ` • ${overseasCity}` : ""
+                      } • OFW / Overseas Filipino`;
+                    })()
+                  ) : selectedProvinceId ? (
+                    `${PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name}, ${
+                      PHILIPPINE_REGIONS.find((r) => r.id === selectedRegionId)?.name
+                    }`
+                  ) : (
+                    "No geographical location specified (Within the Philippines)"
+                  )}
                 </div>
               </div>
 
@@ -1132,7 +1311,11 @@ export default function SurveyPage() {
           competitors={shareCompetitors}
           voterName={participantName}
           provinceName={
-            PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name || ""
+            residenceType === "OVERSEAS"
+              ? `${getCountryByCode(selectedCountryCode)?.flag || "🌐"} ${
+                  getCountryByCode(selectedCountryCode)?.name || "Overseas"
+                } (OFW)`
+              : PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name || ""
           }
         />
       </div>

@@ -13,6 +13,9 @@ import {
 import { PUT as candidatePUT } from "../src/app/api/admin/candidates/route";
 import { GET as analyticsGET } from "../src/app/api/analytics/route";
 import { GET as statsGET, PUT as statsPUT } from "../src/app/api/admin/statistics/route";
+import { POST as submitPOST } from "../src/app/api/survey/submit/route";
+import { GET as manageGET, PUT as managePUT } from "../src/app/api/survey/manage/[token]/route";
+import { isValidCountryCode, getCountryByCode, OVERSEAS_COUNTRIES } from "../src/lib/overseas-geo";
 import { getStartOfManilaToday } from "../src/lib/timezone";
 
 const prisma = new PrismaClient();
@@ -904,6 +907,148 @@ async function runTests() {
   assert(
     isAdjustmentApplied && isResetSuccessful,
     "30. Statistics Calibration Lifecycle: Applied manual adjustment, verified audit logging, and restored baseline"
+  );
+
+  // =========================================================================
+  // OVERSEAS FILIPINO & OFW PARTICIPATION TESTS (TESTS 31 - 35)
+  // =========================================================================
+
+  // TEST 31: Overseas Filipino Survey Submission Validation
+  // 1. Invalid country rejection
+  const invalidOverseasReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-forwarded-for": "152.160.20.1" },
+    body: JSON.stringify({
+      participantName: "OFW Invalid Country",
+      residenceType: "OVERSEAS",
+      countryCode: "NON_EXISTENT_XYZ",
+      presidentialCandidateId: presCandidates[0].id,
+    }),
+  });
+  const invalidOverseasRes = await submitPOST(invalidOverseasReq as any);
+
+  // 2. Valid overseas submission (Saudi Arabia - Middle East, city Riyadh)
+  const validOfwIp = `152.160.20.${Date.now() % 200 + 10}`;
+  const validOverseasReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-forwarded-for": validOfwIp },
+    body: JSON.stringify({
+      participantName: "Kababayan Juan OFW",
+      residenceType: "OVERSEAS",
+      countryCode: "SA",
+      overseasCity: "Riyadh",
+      presidentialCandidateId: presCandidates[0].id,
+      vicePresidentialCandidateId: vpCandidates[0]?.id,
+      senatorialCandidateIds: [senCandidates[0]?.id].filter(Boolean),
+    }),
+  });
+  const validOverseasRes = await submitPOST(validOverseasReq as any);
+  const validOverseasData = await validOverseasRes.json();
+
+  const ofwSubInDb = await prisma.surveySubmission.findUnique({
+    where: { id: validOverseasData.submissionId },
+  });
+
+  const isOverseasSubmissionValid =
+    invalidOverseasRes.status === 400 &&
+    validOverseasRes.status === 201 &&
+    ofwSubInDb?.residenceType === "OVERSEAS" &&
+    ofwSubInDb?.countryCode === "SA" &&
+    ofwSubInDb?.countryName === "Saudi Arabia" &&
+    ofwSubInDb?.overseasRegion === "Middle East" &&
+    ofwSubInDb?.overseasCity === "Riyadh" &&
+    ofwSubInDb?.provinceId === null;
+
+  assert(
+    isOverseasSubmissionValid,
+    "31. Overseas Survey Submission Validation: Validates country code and prevents province assignment for OFW"
+  );
+
+  // TEST 32: Isolation of Overseas Responses from Philippine Province Reporting
+  const analyticsAfterOfwReq = new Request("http://localhost/api/analytics");
+  const analyticsAfterOfwRes = await analyticsGET(analyticsAfterOfwReq as any);
+  const analyticsAfterOfw = await analyticsAfterOfwRes.json();
+
+  // Distinct reporting provinces should strictly reflect Philippine provinces and exclude overseas
+  const isProvinceCountIsolated =
+    analyticsAfterOfw.summary.provincesReporting <= 82 &&
+    analyticsAfterOfw.provinces.every((p: any) => p.id !== "SA" && p.id !== "sa");
+
+  assert(
+    isProvinceCountIsolated,
+    "32. Overseas Isolation from Philippine Province Reporting: Overseas responses never alter province coverage"
+  );
+
+  // TEST 33: Overseas Filipino Analytics Aggregation & Country Breakdown
+  const saudiStat = analyticsAfterOfw.overseas?.countries?.find((c: any) => c.code === "SA");
+  const isOverseasAnalyticsAggregated =
+    analyticsAfterOfw.summary.overseasSubmissionsCount >= 1 &&
+    analyticsAfterOfw.overseas.totalSubmissions >= 1 &&
+    saudiStat &&
+    saudiStat.name === "Saudi Arabia" &&
+    saudiStat.count >= 1 &&
+    saudiStat.region === "Middle East";
+
+  assert(
+    Boolean(isOverseasAnalyticsAggregated),
+    "33. Overseas Filipino Analytics Aggregation: Accurately breaks down diaspora participation by country"
+  );
+
+  // TEST 34: Submission Management & Editing Preserves Overseas Location
+  const ofwToken = validOverseasData.managementToken;
+  const ofwManageGetReq = new Request(`http://localhost/api/survey/manage/${ofwToken}`);
+  const ofwManageGetRes = await manageGET(ofwManageGetReq as any, { params: { token: ofwToken } });
+  const ofwManageGetData = await ofwManageGetRes.json();
+
+  // Edit candidate choices via PUT
+  const ofwEditReq = new Request(`http://localhost/api/survey/manage/${ofwToken}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      presidentialCandidateId: presCandidates[1]?.id || presCandidates[0].id,
+      vicePresidentialCandidateId: vpCandidates[0]?.id,
+      senatorialCandidateIds: [senCandidates[0]?.id, senCandidates[1]?.id].filter(Boolean),
+    }),
+  });
+  const ofwEditRes = await managePUT(ofwEditReq as any, { params: { token: ofwToken } });
+
+  const ofwSubAfterEdit = await prisma.surveySubmission.findUnique({
+    where: { id: validOverseasData.submissionId },
+  });
+
+  const isLocationPreservedAfterEdit =
+    ofwManageGetData.submission.residenceType === "OVERSEAS" &&
+    ofwManageGetData.submission.countryCode === "SA" &&
+    ofwEditRes.status === 200 &&
+    ofwSubAfterEdit?.residenceType === "OVERSEAS" &&
+    ofwSubAfterEdit?.countryCode === "SA" &&
+    ofwSubAfterEdit?.overseasCity === "Riyadh" &&
+    ofwSubAfterEdit?.provinceId === null;
+
+  assert(
+    isLocationPreservedAfterEdit,
+    "34. Submission Management: Editing selections cleanly preserves overseas location fields"
+  );
+
+  // TEST 35: Global Country Registry & Validation
+  const isValidUs = isValidCountryCode("US");
+  const isValidAe = isValidCountryCode("AE");
+  const isValidSg = isValidCountryCode("SG");
+  const isInvalidFake = isValidCountryCode("FAKE_XYZ");
+  const saudiDetails = getCountryByCode("SA");
+
+  const isRegistryValid =
+    isValidUs &&
+    isValidAe &&
+    isValidSg &&
+    !isInvalidFake &&
+    saudiDetails?.name === "Saudi Arabia" &&
+    saudiDetails?.region === "Middle East" &&
+    OVERSEAS_COUNTRIES.length >= 40;
+
+  assert(
+    isRegistryValid,
+    `35. Global Country Registry & Validation: Standard ISO registry verified with ${OVERSEAS_COUNTRIES.length} countries`
   );
 
   console.log("\n=======================================================");

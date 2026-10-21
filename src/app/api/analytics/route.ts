@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS, PHILIPPINE_VOTERS_DEMOGRAPHICS } from "@/lib/philippines-geo";
 import { verifyAdminSession } from "@/lib/security";
 import { getStartOfManilaToday } from "@/lib/timezone";
+import { getCountryByCode } from "@/lib/overseas-geo";
 
 export const dynamic = "force-dynamic";
 
@@ -108,6 +109,7 @@ export async function GET(req: NextRequest) {
         submission: {
           select: {
             id: true,
+            residenceType: true,
             regionId: true,
             provinceId: true,
             provinceName: true,
@@ -306,15 +308,82 @@ export async function GET(req: NextRequest) {
       where: { status: "ACTIVE", ...(campaignId ? { campaignId } : {}) },
       select: {
         id: true,
+        residenceType: true,
+        countryCode: true,
+        countryName: true,
+        overseasRegion: true,
+        overseasCity: true,
         provinceId: true,
         provinceName: true,
         regionId: true,
       },
     });
 
-    // Count distinct provinces with active qualifying submissions
+    // 7. Overseas Filipino Participation Aggregation
+    const overseasSubmissions = activeSubmissions.filter((s) => s.residenceType === "OVERSEAS");
+    const domesticSubmissions = activeSubmissions.filter((s) => s.residenceType !== "OVERSEAS");
+    const overseasTotalCount = overseasSubmissions.length;
+    const domesticTotalCount = domesticSubmissions.length;
+
+    // Group overseas submissions by Country
+    const overseasCountryMap: Record<
+      string,
+      { code: string; name: string; region: string; flag: string; count: number }
+    > = {};
+
+    overseasSubmissions.forEach((sub) => {
+      const code = sub.countryCode || "OTHER";
+      if (!overseasCountryMap[code]) {
+        const cInfo = getCountryByCode(code);
+        overseasCountryMap[code] = {
+          code,
+          name: sub.countryName || cInfo?.name || code,
+          region: sub.overseasRegion || cInfo?.region || "Other",
+          flag: cInfo?.flag || "🌐",
+          count: 0,
+        };
+      }
+      overseasCountryMap[code].count += 1;
+    });
+
+    const overseasCountryBreakdown = Object.values(overseasCountryMap)
+      .map((item) => ({
+        ...item,
+        percentage:
+          overseasTotalCount > 0
+            ? Number(((item.count / overseasTotalCount) * 100).toFixed(1))
+            : 0,
+        percentageOfTotal:
+          activeSubmissionsCount > 0
+            ? Number(((item.count / activeSubmissionsCount) * 100).toFixed(1))
+            : 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    // Group overseas submissions by Region abroad (Middle East, Asia Pacific, etc.)
+    const overseasRegionMap: Record<string, { region: string; count: number }> = {};
+    overseasSubmissions.forEach((sub) => {
+      const reg = sub.overseasRegion || "Other";
+      if (!overseasRegionMap[reg]) {
+        overseasRegionMap[reg] = { region: reg, count: 0 };
+      }
+      overseasRegionMap[reg].count += 1;
+    });
+
+    const overseasRegionBreakdown = Object.values(overseasRegionMap)
+      .map((item) => ({
+        ...item,
+        percentage:
+          overseasTotalCount > 0
+            ? Number(((item.count / overseasTotalCount) * 100).toFixed(1))
+            : 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    // Count distinct provinces with active qualifying submissions (DOMESTIC ONLY)
     const distinctReportingProvinceIds = new Set(
       activeSubmissions
+        .filter((s) => s.residenceType !== "OVERSEAS")
         .map((s) => s.provinceId)
         .filter((pId): pId is string => Boolean(pId && PHILIPPINE_PROVINCES.some((p) => p.id === pId)))
     );
@@ -326,6 +395,8 @@ export async function GET(req: NextRequest) {
         : calculatedProvincesReporting;
 
     activeSubmissions.forEach((sub) => {
+      // Overseas responses must never be added to Philippine province tallies
+      if (sub.residenceType === "OVERSEAS") return;
       const pKey = sub.provinceId || "unspecified";
       if (!provinceDataMap[pKey]) {
         provinceDataMap[pKey] = {
@@ -339,6 +410,8 @@ export async function GET(req: NextRequest) {
     });
 
     activeSelections.forEach((s) => {
+      // Overseas responses must never be assigned to Philippine province tallies
+      if (s.submission.residenceType === "OVERSEAS") return;
       const pKey = s.submission.provinceId || "unspecified";
       if (!provinceDataMap[pKey]) {
         provinceDataMap[pKey] = {
@@ -681,6 +754,8 @@ export async function GET(req: NextRequest) {
       summary: {
         totalActiveSubmissions: displayedActiveVotes,
         rawActiveSubmissions: activeSubmissionsCount,
+        overseasSubmissionsCount: overseasTotalCount,
+        domesticSubmissionsCount: domesticTotalCount,
         activeVotesAdjustment,
         totalRetractedSubmissions: retractedSubmissionsCount,
         todaySubmissions: displayedTodayVotes,
@@ -699,6 +774,16 @@ export async function GET(req: NextRequest) {
         publicResultsVisible,
         geographicResultsVisible,
         lastUpdated: new Date().toISOString(),
+      },
+      overseas: {
+        totalSubmissions: overseasTotalCount,
+        percentageOfTotal:
+          activeSubmissionsCount > 0
+            ? Number(((overseasTotalCount / activeSubmissionsCount) * 100).toFixed(1))
+            : 0,
+        domesticSubmissions: domesticTotalCount,
+        countries: overseasCountryBreakdown,
+        regions: overseasRegionBreakdown,
       },
       presidentialRankings,
       vicePresidentialRankings,

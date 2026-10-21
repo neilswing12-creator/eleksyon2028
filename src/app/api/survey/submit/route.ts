@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getClientIP, hashIP, generateManagementToken, hashManagementToken } from "@/lib/security";
+import { isValidCountryCode, getCountryByCode } from "@/lib/overseas-geo";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
       participantName,
+      residenceType = "DOMESTIC",
+      countryCode,
+      overseasCity,
       regionId,
       regionName,
       provinceId,
@@ -29,6 +33,42 @@ export async function POST(req: NextRequest) {
         { error: "Please provide your name (minimum 2 characters) to participate in the survey." },
         { status: 400 }
       );
+    }
+
+    // 1b. Location & Overseas validation
+    const isOverseas = residenceType === "OVERSEAS";
+    let resolvedResidenceType = "DOMESTIC";
+    let resolvedCountryCode: string | null = "PH";
+    let resolvedCountryName: string | null = "Philippines";
+    let resolvedOverseasRegion: string | null = null;
+    let resolvedOverseasCity: string | null = null;
+    let resolvedRegionId: string | null = regionId || null;
+    let resolvedRegionName: string | null = regionName || null;
+    let resolvedProvinceId: string | null = provinceId || null;
+    let resolvedProvinceName: string | null = provinceName || null;
+    let resolvedCityId: string | null = cityId || null;
+    let resolvedCityName: string | null = cityName || null;
+
+    if (isOverseas) {
+      if (!countryCode || !isValidCountryCode(countryCode)) {
+        return NextResponse.json(
+          { error: "Please select a valid country of residence outside the Philippines (OFW / Overseas Filipino)." },
+          { status: 400 }
+        );
+      }
+      const country = getCountryByCode(countryCode);
+      resolvedResidenceType = "OVERSEAS";
+      resolvedCountryCode = country ? country.code : countryCode.toUpperCase();
+      resolvedCountryName = country ? country.name : countryCode;
+      resolvedOverseasRegion = country ? country.region : "Other";
+      resolvedOverseasCity = overseasCity ? String(overseasCity).trim().slice(0, 100) : null;
+      // Overseas submissions must never be assigned to a Philippine province or region
+      resolvedRegionId = null;
+      resolvedRegionName = null;
+      resolvedProvinceId = null;
+      resolvedProvinceName = null;
+      resolvedCityId = null;
+      resolvedCityName = null;
     }
 
     // 2. Check active survey campaign and schedule
@@ -158,12 +198,17 @@ export async function POST(req: NextRequest) {
         data: {
           campaignId: campaign.id,
           participantName: trimmedName,
-          regionId: regionId || null,
-          regionName: regionName || null,
-          provinceId: provinceId || null,
-          provinceName: provinceName || null,
-          cityId: cityId || null,
-          cityName: cityName || null,
+          residenceType: resolvedResidenceType,
+          countryCode: resolvedCountryCode,
+          countryName: resolvedCountryName,
+          overseasRegion: resolvedOverseasRegion,
+          overseasCity: resolvedOverseasCity,
+          regionId: resolvedRegionId,
+          regionName: resolvedRegionName,
+          provinceId: resolvedProvinceId,
+          provinceName: resolvedProvinceName,
+          cityId: resolvedCityId,
+          cityName: resolvedCityName,
           ageGroup: ageGroup || null,
           gender: gender || null,
           civilStatus: civilStatus || null,
@@ -215,6 +260,11 @@ export async function POST(req: NextRequest) {
         submissionId: submission.id,
         managementToken: rawManagementToken,
         participantName: submission.participantName,
+        residenceType: submission.residenceType,
+        countryCode: submission.countryCode,
+        countryName: submission.countryName,
+        overseasCity: submission.overseasCity,
+        provinceName: submission.provinceName,
         message: "Your survey response has been successfully submitted.",
       },
       { status: 201 }

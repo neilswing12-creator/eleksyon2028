@@ -43,6 +43,10 @@ import {
   Activity,
   RotateCcw,
   CheckCircle,
+  Landmark,
+  FileCheck,
+  Search,
+  ExternalLink,
 } from "lucide-react";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS } from "@/lib/philippines-geo";
 
@@ -56,9 +60,9 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
 
-  // Active Tab: SURVEY_MGMT | STATISTICS | ADJUSTMENTS | CANDIDATES | PLATFORMS | SETTINGS | LOGS
+  // Active Tab: SURVEY_MGMT | STATISTICS | ADJUSTMENTS | CANDIDATES | LEGISLATIVE | PLATFORMS | SETTINGS | LOGS
   const [activeTab, setActiveTab] = useState<
-    "SURVEY_MGMT" | "STATISTICS" | "ADJUSTMENTS" | "CANDIDATES" | "PLATFORMS" | "SETTINGS" | "LOGS"
+    "SURVEY_MGMT" | "STATISTICS" | "ADJUSTMENTS" | "CANDIDATES" | "LEGISLATIVE" | "PLATFORMS" | "SETTINGS" | "LOGS"
   >("SURVEY_MGMT");
 
   // Admin Data State
@@ -166,6 +170,37 @@ export default function AdminPage() {
 
   // Consequential Survey Status Confirm Modal
   const [statusChangeTarget, setStatusChangeTarget] = useState<"ACTIVE" | "PAUSED" | "CLOSED" | null>(null);
+
+  // Legislative Records Importer & Management State
+  const [importModalCandidate, setImportModalCandidate] = useState<any | null>(null);
+  const [importingLegislative, setImportingLegislative] = useState(false);
+  const [importResult, setImportResult] = useState<any | null>(null);
+  const [importError, setImportError] = useState("");
+
+  const [selectedLegCandidateId, setSelectedLegCandidateId] = useState<string>("");
+  const [legRecords, setLegRecords] = useState<any[]>([]);
+  const [legSummary, setLegSummary] = useState<any | null>(null);
+  const [loadingLegRecords, setLoadingLegRecords] = useState(false);
+  const [legFilterReviewStatus, setLegFilterReviewStatus] = useState<string>("ALL");
+  const [legFilterChamber, setLegFilterChamber] = useState<string>("ALL");
+  const [legSearchQuery, setLegSearchQuery] = useState<string>("");
+
+  const [showManualBillModal, setShowManualBillModal] = useState(false);
+  const [manualBillForm, setManualBillForm] = useState({
+    candidateId: "",
+    chamber: "SENATE",
+    congress: 19,
+    billNo: "",
+    title: "",
+    longTitle: "",
+    role: "PRINCIPAL_AUTHOR",
+    status: "PENDING",
+    republicActNo: "",
+    filedDate: "",
+    sourceUrl: "",
+    pdfUrl: "",
+  });
+  const [submittingManualBill, setSubmittingManualBill] = useState(false);
 
   const isAnalyst = adminUser?.role === "ANALYST";
 
@@ -552,6 +587,117 @@ export default function AdminPage() {
     }
   };
 
+  // Legislative Records Handlers
+  const triggerImportLegislative = async (cand: any) => {
+    if (isAnalyst) {
+      showNotify("error", "Analyst role is read-only.");
+      return;
+    }
+    setImportModalCandidate(cand);
+    setImportingLegislative(true);
+    setImportResult(null);
+    setImportError("");
+    try {
+      const res = await fetch(`/api/admin/candidates/${cand.id}/import-legislative`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to import legislative records.");
+      }
+      setImportResult(data.result);
+      showNotify("success", `Imported legislative records for ${cand.name}`);
+      await loadAdminData();
+      if (selectedLegCandidateId === cand.id) {
+        await loadCandidateLegislativeRecords(cand.id);
+      }
+    } catch (err: any) {
+      setImportError(err.message || "An unexpected error occurred during import.");
+      showNotify("error", err.message || "Failed to import legislative records.");
+    } finally {
+      setImportingLegislative(false);
+    }
+  };
+
+  const loadCandidateLegislativeRecords = async (candId: string) => {
+    if (!candId) return;
+    setLoadingLegRecords(true);
+    try {
+      const res = await fetch(`/api/admin/candidates/${candId}/legislative`);
+      if (res.ok) {
+        const data = await res.json();
+        setLegRecords(data.records || []);
+        setLegSummary(data.summary || null);
+      }
+    } catch (e) {
+      console.error("Failed to load candidate legislative records:", e);
+    } finally {
+      setLoadingLegRecords(false);
+    }
+  };
+
+  const handleUpdateRecordStatus = async (candId: string, recordId: string, reviewStatus: string) => {
+    if (isAnalyst) return;
+    try {
+      const res = await fetch(`/api/admin/candidates/${candId}/legislative`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recordId, reviewStatus }),
+      });
+      if (res.ok) {
+        showNotify("success", `Updated record status to ${reviewStatus}`);
+        await loadCandidateLegislativeRecords(candId);
+        await loadAdminData();
+      }
+    } catch (e) {
+      console.error("Failed to update legislative record status:", e);
+      showNotify("error", "Failed to update record status.");
+    }
+  };
+
+  const handleDeleteRecord = async (candId: string, recordId: string) => {
+    if (isAnalyst) return;
+    if (!confirm("Are you sure you want to delete this legislative record?")) return;
+    try {
+      const res = await fetch(`/api/admin/candidates/${candId}/legislative?recordId=${recordId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        showNotify("success", "Legislative record deleted.");
+        await loadCandidateLegislativeRecords(candId);
+        await loadAdminData();
+      }
+    } catch (e) {
+      console.error("Failed to delete record:", e);
+      showNotify("error", "Failed to delete record.");
+    }
+  };
+
+  const handleSaveManualBill = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isAnalyst) return;
+    setSubmittingManualBill(true);
+    try {
+      const res = await fetch(`/api/admin/candidates/${manualBillForm.candidateId}/legislative`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(manualBillForm),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to add legislative record.");
+      }
+      showNotify("success", "Legislative record created.");
+      setShowManualBillModal(false);
+      await loadCandidateLegislativeRecords(manualBillForm.candidateId);
+      await loadAdminData();
+    } catch (err: any) {
+      alert(err.message || "Failed to create record.");
+    } finally {
+      setSubmittingManualBill(false);
+    }
+  };
+
   // Survey Statistics Management Handlers
   const handleApplyStat = async (
     statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "PROVINCES_REPORTING",
@@ -856,6 +1002,7 @@ export default function AdminPage() {
             { id: "STATISTICS", label: "Survey Statistics Management", icon: Activity },
             { id: "ADJUSTMENTS", label: "Candidate Voting Adjustments", icon: Sliders },
             { id: "CANDIDATES", label: "Candidate Profiles & Photos", icon: Users },
+            { id: "LEGISLATIVE", label: "Legislative Records & Review", icon: Landmark },
             { id: "PLATFORMS", label: "Platforms & Agendas", icon: BookOpen },
             { id: "SETTINGS", label: "Survey Campaign Settings", icon: Settings },
             { id: "LOGS", label: "Audit Logs", icon: FileText },
@@ -865,7 +1012,14 @@ export default function AdminPage() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => {
+                  setActiveTab(tab.id as any);
+                  if (tab.id === "LEGISLATIVE" && candidates.length > 0 && !selectedLegCandidateId) {
+                    const firstId = candidates[0].id;
+                    setSelectedLegCandidateId(firstId);
+                    loadCandidateLegislativeRecords(firstId);
+                  }
+                }}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                   isActive
                     ? "bg-[#004B93] text-white shadow-sm"
@@ -2590,6 +2744,7 @@ export default function AdminPage() {
                     <th className="py-3 px-3">Education</th>
                     <th className="py-3 px-3">Public Service</th>
                     <th className="py-3 px-3">Platforms</th>
+                    <th className="py-3 px-3">Legislative Records</th>
                     <th className="py-3 px-3">Sources</th>
                     <th className="py-3 px-3">Status</th>
                     <th className="py-3 px-3 text-right">Actions</th>
@@ -2646,6 +2801,20 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="py-3 px-3">
+                        <button
+                          onClick={() => {
+                            setSelectedLegCandidateId(c.id);
+                            loadCandidateLegislativeRecords(c.id);
+                            setActiveTab("LEGISLATIVE");
+                          }}
+                          className="px-2 py-0.5 rounded bg-sky-50 text-sky-800 hover:bg-sky-100 font-bold text-[11px] inline-flex items-center gap-1 border border-sky-200/60 transition-colors"
+                          title="View & Review Legislative Records"
+                        >
+                          <Landmark className="w-3 h-3 text-sky-600" />
+                          <span>{c.legislativeRecords?.length ?? c._count?.legislativeRecords ?? 0} bills</span>
+                        </button>
+                      </td>
+                      <td className="py-3 px-3">
                         <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-bold text-[11px] inline-flex items-center gap-1">
                           <ShieldCheck className="w-3 h-3 text-purple-600" />
                           <span>{c.sources?.length || 0} sources</span>
@@ -2686,6 +2855,14 @@ export default function AdminPage() {
                           title="Edit Profile, Photo & Credentials"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          disabled={isAnalyst}
+                          onClick={() => triggerImportLegislative(c)}
+                          className="p-1 rounded hover:bg-sky-50 text-sky-700 disabled:opacity-30 inline-flex items-center"
+                          title="One-Click Import Legislative Records from Senate & House"
+                        >
+                          <Landmark className="w-3.5 h-3.5 text-sky-600" />
                         </button>
                         {/* Quick Add To Other Position (Survey Multi-Position Support) */}
                         {!isAnalyst && (
@@ -2735,6 +2912,319 @@ export default function AdminPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB: LEGISLATIVE RECORDS & REVIEW                         */}
+        {/* ========================================================= */}
+        {activeTab === "LEGISLATIVE" && (
+          <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Landmark className="w-5 h-5 text-[#004B93]" />
+                  <h2 className="text-lg font-bold text-brand-navy">
+                    Official Candidate Legislative Records
+                  </h2>
+                </div>
+                <p className="text-xs text-brand-slate mt-1">
+                  Automated one-click retrieval and verification of legislative bills, resolutions, and Republic Acts from the Senate and House of Representatives document repositories.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  disabled={isAnalyst || !selectedLegCandidateId || importingLegislative}
+                  onClick={() => {
+                    const c = candidates.find((cand) => cand.id === selectedLegCandidateId);
+                    if (c) triggerImportLegislative(c);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all disabled:opacity-40"
+                >
+                  <Landmark className="w-4 h-4 text-amber-300" />
+                  <span>One-Click Import Records</span>
+                </button>
+                <button
+                  disabled={isAnalyst || !selectedLegCandidateId}
+                  onClick={() => {
+                    setManualBillForm({
+                      candidateId: selectedLegCandidateId,
+                      chamber: "SENATE",
+                      congress: 19,
+                      billNo: "",
+                      title: "",
+                      longTitle: "",
+                      role: "PRINCIPAL_AUTHOR",
+                      status: "PENDING",
+                      republicActNo: "",
+                      filedDate: "",
+                      sourceUrl: "",
+                      pdfUrl: "",
+                    });
+                    setShowManualBillModal(true);
+                  }}
+                  className="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-1.5 transition-colors disabled:opacity-40"
+                >
+                  <Plus className="w-4 h-4 text-sky-600" />
+                  <span>Add Bill Manually</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Candidate Selector Bar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+              <label className="text-xs font-bold text-brand-navy uppercase tracking-wider flex-shrink-0">
+                Select Candidate:
+              </label>
+              <select
+                value={selectedLegCandidateId}
+                onChange={(e) => {
+                  setSelectedLegCandidateId(e.target.value);
+                  loadCandidateLegislativeRecords(e.target.value);
+                }}
+                className="w-full sm:max-w-md px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-brand-navy focus:outline-none focus:ring-2 focus:ring-sky-500"
+              >
+                {candidates.map((cand) => (
+                  <option key={cand.id} value={cand.id}>
+                    {cand.name} ({cand.position.replace("_", " ")}) — {cand.party || "Ind."} [{cand.legislativeRecords?.length ?? cand._count?.legislativeRecords ?? 0} bills]
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Selected Candidate Summary Cards */}
+            {selectedLegCandidateId && legSummary && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200/60 text-center">
+                  <div className="text-2xl font-bold text-[#0B1E36]">{legSummary.total}</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
+                    Total Bills
+                  </div>
+                </div>
+                <div className="bg-emerald-50 rounded-xl p-3.5 border border-emerald-100 text-center">
+                  <div className="text-2xl font-bold text-emerald-800">{legSummary.enacted}</div>
+                  <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mt-0.5">
+                    Republic Acts (RA)
+                  </div>
+                </div>
+                <div className="bg-sky-50 rounded-xl p-3.5 border border-sky-100 text-center">
+                  <div className="text-2xl font-bold text-sky-800">{legSummary.confirmed}</div>
+                  <div className="text-[10px] font-bold text-sky-700 uppercase tracking-wider mt-0.5">
+                    Confirmed Matches
+                  </div>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3.5 border border-amber-100 text-center">
+                  <div className="text-2xl font-bold text-amber-800">{legSummary.needsReview}</div>
+                  <div className="text-[10px] font-bold text-amber-700 uppercase tracking-wider mt-0.5">
+                    Needs Review
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Filter and Search Bar */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+              <div className="relative w-full sm:w-80">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  value={legSearchQuery}
+                  onChange={(e) => setLegSearchQuery(e.target.value)}
+                  placeholder="Filter bills by keyword, bill #, RA..."
+                  className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <select
+                  value={legFilterChamber}
+                  onChange={(e) => setLegFilterChamber(e.target.value)}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs bg-white text-slate-700"
+                >
+                  <option value="ALL">All Chambers</option>
+                  <option value="SENATE">Senate</option>
+                  <option value="HOUSE">House</option>
+                </select>
+
+                <select
+                  value={legFilterReviewStatus}
+                  onChange={(e) => setLegFilterReviewStatus(e.target.value)}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs bg-white text-slate-700"
+                >
+                  <option value="ALL">All Match Statuses</option>
+                  <option value="CONFIRMED">Confirmed</option>
+                  <option value="NEEDS_REVIEW">Needs Review</option>
+                  <option value="REJECTED">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Legislative Records Table */}
+            {loadingLegRecords ? (
+              <div className="text-center py-10 space-y-2">
+                <div className="w-6 h-6 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p className="text-xs text-slate-500 font-medium">Loading legislative records...</p>
+              </div>
+            ) : legRecords.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[800px]">
+                  <thead>
+                    <tr className="border-b border-brand-border text-brand-slate uppercase text-[10px] tracking-wider">
+                      <th className="py-2.5 px-3">Bill No.</th>
+                      <th className="py-2.5 px-3">Title &amp; Description</th>
+                      <th className="py-2.5 px-3">Chamber &amp; Congress</th>
+                      <th className="py-2.5 px-3">Role</th>
+                      <th className="py-2.5 px-3">Status / Law</th>
+                      <th className="py-2.5 px-3">Match Confidence</th>
+                      <th className="py-2.5 px-3">Review Status</th>
+                      <th className="py-2.5 px-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {legRecords
+                      .filter((r) => {
+                        if (legFilterChamber !== "ALL" && r.chamber !== legFilterChamber) return false;
+                        if (legFilterReviewStatus !== "ALL" && r.reviewStatus !== legFilterReviewStatus) return false;
+                        if (legSearchQuery.trim()) {
+                          const q = legSearchQuery.toLowerCase();
+                          return (
+                            r.title?.toLowerCase().includes(q) ||
+                            r.billNo?.toLowerCase().includes(q) ||
+                            r.republicActNo?.toLowerCase().includes(q)
+                          );
+                        }
+                        return true;
+                      })
+                      .map((rec) => (
+                        <tr key={rec.id} className="hover:bg-slate-50/50">
+                          <td className="py-3 px-3">
+                            <span className="font-mono font-bold text-[#0B1E36] block">
+                              {rec.billNo}
+                            </span>
+                            {rec.republicActNo && (
+                              <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                {rec.republicActNo}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 max-w-xs">
+                            <div className="font-semibold text-[#0B1E36] line-clamp-2 leading-snug">
+                              {rec.title}
+                            </div>
+                            {rec.sourceUrl && (
+                              <a
+                                href={rec.sourceUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-sky-700 hover:underline mt-1"
+                              >
+                                <span>Official Source Link</span>
+                                <ExternalLink className="w-2.5 h-2.5" />
+                              </a>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 font-semibold text-slate-700">
+                            {rec.chamber === "SENATE" ? "Senate" : "House"} ({rec.congress}th)
+                          </td>
+                          <td className="py-3 px-3 font-semibold text-slate-700">
+                            {rec.role.replace(/_/g, " ")}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                rec.status.includes("ENACTED") || rec.republicActNo
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : rec.status.includes("PASSED")
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-amber-100 text-amber-800"
+                              }`}
+                            >
+                              {rec.status.replace(/_/g, " ")}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className="font-mono text-[11px] font-semibold text-slate-600">
+                              {Math.round((rec.matchConfidence || 1.0) * 100)}%
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                rec.reviewStatus === "CONFIRMED"
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : rec.reviewStatus === "NEEDS_REVIEW"
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
+                              {rec.reviewStatus.replace(/_/g, " ")}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-right space-x-1.5 whitespace-nowrap">
+                            {rec.reviewStatus !== "CONFIRMED" && (
+                              <button
+                                disabled={isAnalyst}
+                                onClick={() =>
+                                  handleUpdateRecordStatus(selectedLegCandidateId, rec.id, "CONFIRMED")
+                                }
+                                className="px-2 py-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[10px] font-bold disabled:opacity-30"
+                                title="Confirm this legislative record match"
+                              >
+                                Confirm
+                              </button>
+                            )}
+                            {rec.reviewStatus !== "NEEDS_REVIEW" && (
+                              <button
+                                disabled={isAnalyst}
+                                onClick={() =>
+                                  handleUpdateRecordStatus(selectedLegCandidateId, rec.id, "NEEDS_REVIEW")
+                                }
+                                className="px-2 py-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-bold disabled:opacity-30"
+                                title="Flag for manual review"
+                              >
+                                Review
+                              </button>
+                            )}
+                            <button
+                              disabled={isAnalyst}
+                              onClick={() => handleDeleteRecord(selectedLegCandidateId, rec.id)}
+                              className="p-1 rounded hover:bg-red-50 text-red-600 disabled:opacity-30 inline-flex items-center"
+                              title="Delete record"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="p-8 rounded-xl border border-dashed border-slate-200 text-center space-y-3 bg-slate-50/50">
+                <Landmark className="w-8 h-8 text-slate-400 mx-auto" />
+                <div className="max-w-md mx-auto space-y-1">
+                  <h4 className="text-sm font-bold text-brand-navy">
+                    No Legislative Records Imported Yet
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    Click &ldquo;One-Click Import Records&rdquo; to query official Senate and House archives, or add bills manually.
+                  </p>
+                </div>
+                <button
+                  disabled={isAnalyst || importingLegislative}
+                  onClick={() => {
+                    const c = candidates.find((cand) => cand.id === selectedLegCandidateId);
+                    if (c) triggerImportLegislative(c);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                >
+                  <Landmark className="w-4 h-4 text-amber-300" />
+                  <span>Import Official Legislative Records</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -3973,6 +4463,305 @@ export default function AdminPage() {
                   className="px-5 py-2 rounded-xl bg-brand-blue text-white font-bold hover:bg-blue-700 shadow-sm disabled:opacity-40"
                 >
                   Save Platform
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: ONE-CLICK LEGISLATIVE RECORDS IMPORTER PROGRESS    */}
+      {/* ========================================================= */}
+      {importModalCandidate && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center">
+                  <Landmark className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#0B1E36]">
+                    Legislative Records Importer
+                  </h3>
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    Senate &amp; House of Representatives Registry
+                  </p>
+                </div>
+              </div>
+              {!importingLegislative && (
+                <button
+                  onClick={() => setImportModalCandidate(null)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Target Candidate Bar */}
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex items-center gap-3">
+              <div
+                className="w-3.5 h-3.5 rounded-full flex-shrink-0"
+                style={{ backgroundColor: importModalCandidate.color || "#004B93" }}
+              ></div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-bold text-[#0B1E36] truncate">
+                  {importModalCandidate.name}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  {importModalCandidate.position.replace("_", " ")} &bull; {importModalCandidate.party || "Independent"}
+                </div>
+              </div>
+            </div>
+
+            {/* In-Progress State */}
+            {importingLegislative && (
+              <div className="text-center py-6 space-y-3">
+                <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <div className="space-y-1">
+                  <p className="text-sm font-bold text-[#0B1E36]">
+                    Querying Official Legislative Archives...
+                  </p>
+                  <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                    Inspecting Senate LIS, House Bills repository, and authentic public acts archive.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Error State */}
+            {!importingLegislative && importError && (
+              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs space-y-2">
+                <div className="flex items-center gap-1.5 font-bold">
+                  <AlertTriangle className="w-4 h-4 text-red-600" />
+                  <span>Import Failed</span>
+                </div>
+                <p className="text-red-700">{importError}</p>
+              </div>
+            )}
+
+            {/* Completed Result State */}
+            {!importingLegislative && importResult && (
+              <div className="space-y-4">
+                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-xs text-emerald-900 space-y-0.5">
+                    <span className="font-bold">Sync Completed Successfully</span>
+                    <p className="text-emerald-800 text-[11px]">{importResult.coverageNotes}</p>
+                  </div>
+                </div>
+
+                {/* Metrics Breakdown */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 text-center">
+                    <div className="text-lg font-bold text-[#0B1E36]">{importResult.totalFound}</div>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase">Found</div>
+                  </div>
+                  <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100 text-center">
+                    <div className="text-lg font-bold text-emerald-800">{importResult.insertedCount}</div>
+                    <div className="text-[10px] font-bold text-emerald-700 uppercase">Inserted</div>
+                  </div>
+                  <div className="bg-sky-50 rounded-xl p-3 border border-sky-100 text-center">
+                    <div className="text-lg font-bold text-sky-800">{importResult.updatedCount}</div>
+                    <div className="text-[10px] font-bold text-sky-700 uppercase">Updated</div>
+                  </div>
+                  <div className="bg-amber-50 rounded-xl p-3 border border-amber-100 text-center">
+                    <div className="text-lg font-bold text-amber-800">{importResult.needsReviewCount}</div>
+                    <div className="text-[10px] font-bold text-amber-700 uppercase">Needs Review</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Footer Actions */}
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+              {!importingLegislative && importResult && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLegCandidateId(importModalCandidate.id);
+                    loadCandidateLegislativeRecords(importModalCandidate.id);
+                    setActiveTab("LEGISLATIVE");
+                    setImportModalCandidate(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white font-bold text-xs shadow-sm transition-colors"
+                >
+                  Review Records in Dashboard
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={importingLegislative}
+                onClick={() => setImportModalCandidate(null)}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors disabled:opacity-40"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: ADD MANUAL LEGISLATIVE RECORD                      */}
+      {/* ========================================================= */}
+      {showManualBillModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-bold text-[#0B1E36]">Add Legislative Bill Manually</h3>
+              <button
+                onClick={() => setShowManualBillModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveManualBill} className="space-y-3 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Chamber</label>
+                  <select
+                    value={manualBillForm.chamber}
+                    onChange={(e) => setManualBillForm({ ...manualBillForm, chamber: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                  >
+                    <option value="SENATE">Senate</option>
+                    <option value="HOUSE">House of Representatives</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Congress Number</label>
+                  <input
+                    type="number"
+                    value={manualBillForm.congress}
+                    onChange={(e) =>
+                      setManualBillForm({ ...manualBillForm, congress: parseInt(e.target.value, 10) })
+                    }
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                    min="1"
+                    max="25"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Bill Number (e.g. SB-1304)</label>
+                  <input
+                    type="text"
+                    value={manualBillForm.billNo}
+                    onChange={(e) => setManualBillForm({ ...manualBillForm, billNo: e.target.value })}
+                    placeholder="SB-1304"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Republic Act No. (Optional)</label>
+                  <input
+                    type="text"
+                    value={manualBillForm.republicActNo}
+                    onChange={(e) => setManualBillForm({ ...manualBillForm, republicActNo: e.target.value })}
+                    placeholder="RA 10931"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Short / Official Title</label>
+                <input
+                  type="text"
+                  value={manualBillForm.title}
+                  onChange={(e) => setManualBillForm({ ...manualBillForm, title: e.target.value })}
+                  placeholder="e.g. Universal Access to Quality Tertiary Education Act"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Long Title / Description</label>
+                <textarea
+                  value={manualBillForm.longTitle}
+                  onChange={(e) => setManualBillForm({ ...manualBillForm, longTitle: e.target.value })}
+                  placeholder="An Act promoting universal access to quality tertiary education..."
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Role</label>
+                  <select
+                    value={manualBillForm.role}
+                    onChange={(e) => setManualBillForm({ ...manualBillForm, role: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                  >
+                    <option value="PRINCIPAL_AUTHOR">Principal Author</option>
+                    <option value="CO_AUTHOR">Co-Author</option>
+                    <option value="SPONSOR">Sponsor</option>
+                    <option value="CO_SPONSOR">Co-Sponsor</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Status</label>
+                  <select
+                    value={manualBillForm.status}
+                    onChange={(e) => setManualBillForm({ ...manualBillForm, status: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                  >
+                    <option value="PENDING">Pending</option>
+                    <option value="PASSED_SENATE">Passed Senate</option>
+                    <option value="PASSED_HOUSE">Passed House</option>
+                    <option value="ENACTED_INTO_LAW">Enacted into Law</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Official Document URL</label>
+                <input
+                  type="url"
+                  value={manualBillForm.sourceUrl}
+                  onChange={(e) => setManualBillForm({ ...manualBillForm, sourceUrl: e.target.value })}
+                  placeholder="https://legacy.senate.gov.ph/lis/..."
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Official PDF Link (Optional)</label>
+                <input
+                  type="url"
+                  value={manualBillForm.pdfUrl}
+                  onChange={(e) => setManualBillForm({ ...manualBillForm, pdfUrl: e.target.value })}
+                  placeholder="https://legacy.senate.gov.ph/lisdata/..."
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowManualBillModal(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingManualBill}
+                  className="px-5 py-2 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white font-bold transition-colors disabled:opacity-40"
+                >
+                  {submittingManualBill ? "Saving..." : "Save Record"}
                 </button>
               </div>
             </form>

@@ -68,6 +68,16 @@ export type CandidateSelection = $Result.DefaultSelection<Prisma.$CandidateSelec
  * 
  */
 export type AdminAuditLog = $Result.DefaultSelection<Prisma.$AdminAuditLogPayload>
+/**
+ * Model CandidateLegislativeRecord
+ * 
+ */
+export type CandidateLegislativeRecord = $Result.DefaultSelection<Prisma.$CandidateLegislativeRecordPayload>
+/**
+ * Model LegislativeImportJob
+ * 
+ */
+export type LegislativeImportJob = $Result.DefaultSelection<Prisma.$LegislativeImportJobPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -301,6 +311,26 @@ export class PrismaClient<
     * ```
     */
   get adminAuditLog(): Prisma.AdminAuditLogDelegate<ExtArgs>;
+
+  /**
+   * `prisma.candidateLegislativeRecord`: Exposes CRUD operations for the **CandidateLegislativeRecord** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidateLegislativeRecords
+    * const candidateLegislativeRecords = await prisma.candidateLegislativeRecord.findMany()
+    * ```
+    */
+  get candidateLegislativeRecord(): Prisma.CandidateLegislativeRecordDelegate<ExtArgs>;
+
+  /**
+   * `prisma.legislativeImportJob`: Exposes CRUD operations for the **LegislativeImportJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LegislativeImportJobs
+    * const legislativeImportJobs = await prisma.legislativeImportJob.findMany()
+    * ```
+    */
+  get legislativeImportJob(): Prisma.LegislativeImportJobDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -752,7 +782,9 @@ export namespace Prisma {
     SurveyAdjustment: 'SurveyAdjustment',
     SurveySubmission: 'SurveySubmission',
     CandidateSelection: 'CandidateSelection',
-    AdminAuditLog: 'AdminAuditLog'
+    AdminAuditLog: 'AdminAuditLog',
+    CandidateLegislativeRecord: 'CandidateLegislativeRecord',
+    LegislativeImportJob: 'LegislativeImportJob'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -768,7 +800,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "adminUser" | "candidate" | "candidateEducation" | "candidatePublicService" | "candidatePlatform" | "candidateSource" | "surveyCampaign" | "surveyAdjustment" | "surveySubmission" | "candidateSelection" | "adminAuditLog"
+      modelProps: "adminUser" | "candidate" | "candidateEducation" | "candidatePublicService" | "candidatePlatform" | "candidateSource" | "surveyCampaign" | "surveyAdjustment" | "surveySubmission" | "candidateSelection" | "adminAuditLog" | "candidateLegislativeRecord" | "legislativeImportJob"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1542,6 +1574,146 @@ export namespace Prisma {
           }
         }
       }
+      CandidateLegislativeRecord: {
+        payload: Prisma.$CandidateLegislativeRecordPayload<ExtArgs>
+        fields: Prisma.CandidateLegislativeRecordFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateLegislativeRecordFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateLegislativeRecordFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateLegislativeRecordFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateLegislativeRecordFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>
+          }
+          findMany: {
+            args: Prisma.CandidateLegislativeRecordFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>[]
+          }
+          create: {
+            args: Prisma.CandidateLegislativeRecordCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>
+          }
+          createMany: {
+            args: Prisma.CandidateLegislativeRecordCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateLegislativeRecordCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateLegislativeRecordDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>
+          }
+          update: {
+            args: Prisma.CandidateLegislativeRecordUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateLegislativeRecordDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateLegislativeRecordUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CandidateLegislativeRecordUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateLegislativeRecordPayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateLegislativeRecordAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidateLegislativeRecord>
+          }
+          groupBy: {
+            args: Prisma.CandidateLegislativeRecordGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateLegislativeRecordGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateLegislativeRecordCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateLegislativeRecordCountAggregateOutputType> | number
+          }
+        }
+      }
+      LegislativeImportJob: {
+        payload: Prisma.$LegislativeImportJobPayload<ExtArgs>
+        fields: Prisma.LegislativeImportJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LegislativeImportJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LegislativeImportJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>
+          }
+          findFirst: {
+            args: Prisma.LegislativeImportJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LegislativeImportJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>
+          }
+          findMany: {
+            args: Prisma.LegislativeImportJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>[]
+          }
+          create: {
+            args: Prisma.LegislativeImportJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>
+          }
+          createMany: {
+            args: Prisma.LegislativeImportJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LegislativeImportJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>[]
+          }
+          delete: {
+            args: Prisma.LegislativeImportJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>
+          }
+          update: {
+            args: Prisma.LegislativeImportJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.LegislativeImportJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LegislativeImportJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.LegislativeImportJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LegislativeImportJobPayload>
+          }
+          aggregate: {
+            args: Prisma.LegislativeImportJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLegislativeImportJob>
+          }
+          groupBy: {
+            args: Prisma.LegislativeImportJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LegislativeImportJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LegislativeImportJobCountArgs<ExtArgs>
+            result: $Utils.Optional<LegislativeImportJobCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1708,6 +1880,8 @@ export namespace Prisma {
     educations: number
     publicServices: number
     sources: number
+    legislativeRecords: number
+    legislativeImportJobs: number
     adjustments: number
   }
 
@@ -1717,6 +1891,8 @@ export namespace Prisma {
     educations?: boolean | CandidateCountOutputTypeCountEducationsArgs
     publicServices?: boolean | CandidateCountOutputTypeCountPublicServicesArgs
     sources?: boolean | CandidateCountOutputTypeCountSourcesArgs
+    legislativeRecords?: boolean | CandidateCountOutputTypeCountLegislativeRecordsArgs
+    legislativeImportJobs?: boolean | CandidateCountOutputTypeCountLegislativeImportJobsArgs
     adjustments?: boolean | CandidateCountOutputTypeCountAdjustmentsArgs
   }
 
@@ -1764,6 +1940,20 @@ export namespace Prisma {
    */
   export type CandidateCountOutputTypeCountSourcesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CandidateSourceWhereInput
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountLegislativeRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateLegislativeRecordWhereInput
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountLegislativeImportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LegislativeImportJobWhereInput
   }
 
   /**
@@ -3048,6 +3238,8 @@ export namespace Prisma {
     educations?: boolean | Candidate$educationsArgs<ExtArgs>
     publicServices?: boolean | Candidate$publicServicesArgs<ExtArgs>
     sources?: boolean | Candidate$sourcesArgs<ExtArgs>
+    legislativeRecords?: boolean | Candidate$legislativeRecordsArgs<ExtArgs>
+    legislativeImportJobs?: boolean | Candidate$legislativeImportJobsArgs<ExtArgs>
     adjustments?: boolean | Candidate$adjustmentsArgs<ExtArgs>
     _count?: boolean | CandidateCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["candidate"]>
@@ -3098,6 +3290,8 @@ export namespace Prisma {
     educations?: boolean | Candidate$educationsArgs<ExtArgs>
     publicServices?: boolean | Candidate$publicServicesArgs<ExtArgs>
     sources?: boolean | Candidate$sourcesArgs<ExtArgs>
+    legislativeRecords?: boolean | Candidate$legislativeRecordsArgs<ExtArgs>
+    legislativeImportJobs?: boolean | Candidate$legislativeImportJobsArgs<ExtArgs>
     adjustments?: boolean | Candidate$adjustmentsArgs<ExtArgs>
     _count?: boolean | CandidateCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3111,6 +3305,8 @@ export namespace Prisma {
       educations: Prisma.$CandidateEducationPayload<ExtArgs>[]
       publicServices: Prisma.$CandidatePublicServicePayload<ExtArgs>[]
       sources: Prisma.$CandidateSourcePayload<ExtArgs>[]
+      legislativeRecords: Prisma.$CandidateLegislativeRecordPayload<ExtArgs>[]
+      legislativeImportJobs: Prisma.$LegislativeImportJobPayload<ExtArgs>[]
       adjustments: Prisma.$SurveyAdjustmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3500,6 +3696,8 @@ export namespace Prisma {
     educations<T extends Candidate$educationsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$educationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateEducationPayload<ExtArgs>, T, "findMany"> | Null>
     publicServices<T extends Candidate$publicServicesArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$publicServicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatePublicServicePayload<ExtArgs>, T, "findMany"> | Null>
     sources<T extends Candidate$sourcesArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$sourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateSourcePayload<ExtArgs>, T, "findMany"> | Null>
+    legislativeRecords<T extends Candidate$legislativeRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$legislativeRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "findMany"> | Null>
+    legislativeImportJobs<T extends Candidate$legislativeImportJobsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$legislativeImportJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "findMany"> | Null>
     adjustments<T extends Candidate$adjustmentsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$adjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyAdjustmentPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3956,6 +4154,46 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CandidateSourceScalarFieldEnum | CandidateSourceScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate.legislativeRecords
+   */
+  export type Candidate$legislativeRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    where?: CandidateLegislativeRecordWhereInput
+    orderBy?: CandidateLegislativeRecordOrderByWithRelationInput | CandidateLegislativeRecordOrderByWithRelationInput[]
+    cursor?: CandidateLegislativeRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateLegislativeRecordScalarFieldEnum | CandidateLegislativeRecordScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate.legislativeImportJobs
+   */
+  export type Candidate$legislativeImportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    where?: LegislativeImportJobWhereInput
+    orderBy?: LegislativeImportJobOrderByWithRelationInput | LegislativeImportJobOrderByWithRelationInput[]
+    cursor?: LegislativeImportJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LegislativeImportJobScalarFieldEnum | LegislativeImportJobScalarFieldEnum[]
   }
 
   /**
@@ -13613,6 +13851,2248 @@ export namespace Prisma {
 
 
   /**
+   * Model CandidateLegislativeRecord
+   */
+
+  export type AggregateCandidateLegislativeRecord = {
+    _count: CandidateLegislativeRecordCountAggregateOutputType | null
+    _avg: CandidateLegislativeRecordAvgAggregateOutputType | null
+    _sum: CandidateLegislativeRecordSumAggregateOutputType | null
+    _min: CandidateLegislativeRecordMinAggregateOutputType | null
+    _max: CandidateLegislativeRecordMaxAggregateOutputType | null
+  }
+
+  export type CandidateLegislativeRecordAvgAggregateOutputType = {
+    congress: number | null
+    matchConfidence: number | null
+    displayOrder: number | null
+  }
+
+  export type CandidateLegislativeRecordSumAggregateOutputType = {
+    congress: number | null
+    matchConfidence: number | null
+    displayOrder: number | null
+  }
+
+  export type CandidateLegislativeRecordMinAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    chamber: string | null
+    congress: number | null
+    billNo: string | null
+    title: string | null
+    longTitle: string | null
+    role: string | null
+    status: string | null
+    republicActNo: string | null
+    filedDate: Date | null
+    sourceInstitution: string | null
+    sourceUrl: string | null
+    pdfUrl: string | null
+    reviewStatus: string | null
+    matchConfidence: number | null
+    matchNotes: string | null
+    displayOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CandidateLegislativeRecordMaxAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    chamber: string | null
+    congress: number | null
+    billNo: string | null
+    title: string | null
+    longTitle: string | null
+    role: string | null
+    status: string | null
+    republicActNo: string | null
+    filedDate: Date | null
+    sourceInstitution: string | null
+    sourceUrl: string | null
+    pdfUrl: string | null
+    reviewStatus: string | null
+    matchConfidence: number | null
+    matchNotes: string | null
+    displayOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CandidateLegislativeRecordCountAggregateOutputType = {
+    id: number
+    candidateId: number
+    chamber: number
+    congress: number
+    billNo: number
+    title: number
+    longTitle: number
+    role: number
+    status: number
+    republicActNo: number
+    filedDate: number
+    sourceInstitution: number
+    sourceUrl: number
+    pdfUrl: number
+    reviewStatus: number
+    matchConfidence: number
+    matchNotes: number
+    displayOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CandidateLegislativeRecordAvgAggregateInputType = {
+    congress?: true
+    matchConfidence?: true
+    displayOrder?: true
+  }
+
+  export type CandidateLegislativeRecordSumAggregateInputType = {
+    congress?: true
+    matchConfidence?: true
+    displayOrder?: true
+  }
+
+  export type CandidateLegislativeRecordMinAggregateInputType = {
+    id?: true
+    candidateId?: true
+    chamber?: true
+    congress?: true
+    billNo?: true
+    title?: true
+    longTitle?: true
+    role?: true
+    status?: true
+    republicActNo?: true
+    filedDate?: true
+    sourceInstitution?: true
+    sourceUrl?: true
+    pdfUrl?: true
+    reviewStatus?: true
+    matchConfidence?: true
+    matchNotes?: true
+    displayOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CandidateLegislativeRecordMaxAggregateInputType = {
+    id?: true
+    candidateId?: true
+    chamber?: true
+    congress?: true
+    billNo?: true
+    title?: true
+    longTitle?: true
+    role?: true
+    status?: true
+    republicActNo?: true
+    filedDate?: true
+    sourceInstitution?: true
+    sourceUrl?: true
+    pdfUrl?: true
+    reviewStatus?: true
+    matchConfidence?: true
+    matchNotes?: true
+    displayOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CandidateLegislativeRecordCountAggregateInputType = {
+    id?: true
+    candidateId?: true
+    chamber?: true
+    congress?: true
+    billNo?: true
+    title?: true
+    longTitle?: true
+    role?: true
+    status?: true
+    republicActNo?: true
+    filedDate?: true
+    sourceInstitution?: true
+    sourceUrl?: true
+    pdfUrl?: true
+    reviewStatus?: true
+    matchConfidence?: true
+    matchNotes?: true
+    displayOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CandidateLegislativeRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateLegislativeRecord to aggregate.
+     */
+    where?: CandidateLegislativeRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateLegislativeRecords to fetch.
+     */
+    orderBy?: CandidateLegislativeRecordOrderByWithRelationInput | CandidateLegislativeRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateLegislativeRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateLegislativeRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateLegislativeRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidateLegislativeRecords
+    **/
+    _count?: true | CandidateLegislativeRecordCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CandidateLegislativeRecordAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CandidateLegislativeRecordSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateLegislativeRecordMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateLegislativeRecordMaxAggregateInputType
+  }
+
+  export type GetCandidateLegislativeRecordAggregateType<T extends CandidateLegislativeRecordAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidateLegislativeRecord]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidateLegislativeRecord[P]>
+      : GetScalarType<T[P], AggregateCandidateLegislativeRecord[P]>
+  }
+
+
+
+
+  export type CandidateLegislativeRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateLegislativeRecordWhereInput
+    orderBy?: CandidateLegislativeRecordOrderByWithAggregationInput | CandidateLegislativeRecordOrderByWithAggregationInput[]
+    by: CandidateLegislativeRecordScalarFieldEnum[] | CandidateLegislativeRecordScalarFieldEnum
+    having?: CandidateLegislativeRecordScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateLegislativeRecordCountAggregateInputType | true
+    _avg?: CandidateLegislativeRecordAvgAggregateInputType
+    _sum?: CandidateLegislativeRecordSumAggregateInputType
+    _min?: CandidateLegislativeRecordMinAggregateInputType
+    _max?: CandidateLegislativeRecordMaxAggregateInputType
+  }
+
+  export type CandidateLegislativeRecordGroupByOutputType = {
+    id: string
+    candidateId: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle: string | null
+    role: string
+    status: string
+    republicActNo: string | null
+    filedDate: Date | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl: string | null
+    reviewStatus: string
+    matchConfidence: number
+    matchNotes: string | null
+    displayOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: CandidateLegislativeRecordCountAggregateOutputType | null
+    _avg: CandidateLegislativeRecordAvgAggregateOutputType | null
+    _sum: CandidateLegislativeRecordSumAggregateOutputType | null
+    _min: CandidateLegislativeRecordMinAggregateOutputType | null
+    _max: CandidateLegislativeRecordMaxAggregateOutputType | null
+  }
+
+  type GetCandidateLegislativeRecordGroupByPayload<T extends CandidateLegislativeRecordGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateLegislativeRecordGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateLegislativeRecordGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateLegislativeRecordGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateLegislativeRecordGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateLegislativeRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    chamber?: boolean
+    congress?: boolean
+    billNo?: boolean
+    title?: boolean
+    longTitle?: boolean
+    role?: boolean
+    status?: boolean
+    republicActNo?: boolean
+    filedDate?: boolean
+    sourceInstitution?: boolean
+    sourceUrl?: boolean
+    pdfUrl?: boolean
+    reviewStatus?: boolean
+    matchConfidence?: boolean
+    matchNotes?: boolean
+    displayOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateLegislativeRecord"]>
+
+  export type CandidateLegislativeRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    chamber?: boolean
+    congress?: boolean
+    billNo?: boolean
+    title?: boolean
+    longTitle?: boolean
+    role?: boolean
+    status?: boolean
+    republicActNo?: boolean
+    filedDate?: boolean
+    sourceInstitution?: boolean
+    sourceUrl?: boolean
+    pdfUrl?: boolean
+    reviewStatus?: boolean
+    matchConfidence?: boolean
+    matchNotes?: boolean
+    displayOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateLegislativeRecord"]>
+
+  export type CandidateLegislativeRecordSelectScalar = {
+    id?: boolean
+    candidateId?: boolean
+    chamber?: boolean
+    congress?: boolean
+    billNo?: boolean
+    title?: boolean
+    longTitle?: boolean
+    role?: boolean
+    status?: boolean
+    republicActNo?: boolean
+    filedDate?: boolean
+    sourceInstitution?: boolean
+    sourceUrl?: boolean
+    pdfUrl?: boolean
+    reviewStatus?: boolean
+    matchConfidence?: boolean
+    matchNotes?: boolean
+    displayOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CandidateLegislativeRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+  export type CandidateLegislativeRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidateLegislativeRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidateLegislativeRecord"
+    objects: {
+      candidate: Prisma.$CandidatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidateId: string
+      chamber: string
+      congress: number
+      billNo: string
+      title: string
+      longTitle: string | null
+      role: string
+      status: string
+      republicActNo: string | null
+      filedDate: Date | null
+      sourceInstitution: string
+      sourceUrl: string
+      pdfUrl: string | null
+      reviewStatus: string
+      matchConfidence: number
+      matchNotes: string | null
+      displayOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["candidateLegislativeRecord"]>
+    composites: {}
+  }
+
+  type CandidateLegislativeRecordGetPayload<S extends boolean | null | undefined | CandidateLegislativeRecordDefaultArgs> = $Result.GetResult<Prisma.$CandidateLegislativeRecordPayload, S>
+
+  type CandidateLegislativeRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CandidateLegislativeRecordFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CandidateLegislativeRecordCountAggregateInputType | true
+    }
+
+  export interface CandidateLegislativeRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidateLegislativeRecord'], meta: { name: 'CandidateLegislativeRecord' } }
+    /**
+     * Find zero or one CandidateLegislativeRecord that matches the filter.
+     * @param {CandidateLegislativeRecordFindUniqueArgs} args - Arguments to find a CandidateLegislativeRecord
+     * @example
+     * // Get one CandidateLegislativeRecord
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateLegislativeRecordFindUniqueArgs>(args: SelectSubset<T, CandidateLegislativeRecordFindUniqueArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CandidateLegislativeRecord that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CandidateLegislativeRecordFindUniqueOrThrowArgs} args - Arguments to find a CandidateLegislativeRecord
+     * @example
+     * // Get one CandidateLegislativeRecord
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateLegislativeRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateLegislativeRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CandidateLegislativeRecord that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordFindFirstArgs} args - Arguments to find a CandidateLegislativeRecord
+     * @example
+     * // Get one CandidateLegislativeRecord
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateLegislativeRecordFindFirstArgs>(args?: SelectSubset<T, CandidateLegislativeRecordFindFirstArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CandidateLegislativeRecord that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordFindFirstOrThrowArgs} args - Arguments to find a CandidateLegislativeRecord
+     * @example
+     * // Get one CandidateLegislativeRecord
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateLegislativeRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateLegislativeRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CandidateLegislativeRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidateLegislativeRecords
+     * const candidateLegislativeRecords = await prisma.candidateLegislativeRecord.findMany()
+     * 
+     * // Get first 10 CandidateLegislativeRecords
+     * const candidateLegislativeRecords = await prisma.candidateLegislativeRecord.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateLegislativeRecordWithIdOnly = await prisma.candidateLegislativeRecord.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateLegislativeRecordFindManyArgs>(args?: SelectSubset<T, CandidateLegislativeRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CandidateLegislativeRecord.
+     * @param {CandidateLegislativeRecordCreateArgs} args - Arguments to create a CandidateLegislativeRecord.
+     * @example
+     * // Create one CandidateLegislativeRecord
+     * const CandidateLegislativeRecord = await prisma.candidateLegislativeRecord.create({
+     *   data: {
+     *     // ... data to create a CandidateLegislativeRecord
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateLegislativeRecordCreateArgs>(args: SelectSubset<T, CandidateLegislativeRecordCreateArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CandidateLegislativeRecords.
+     * @param {CandidateLegislativeRecordCreateManyArgs} args - Arguments to create many CandidateLegislativeRecords.
+     * @example
+     * // Create many CandidateLegislativeRecords
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateLegislativeRecordCreateManyArgs>(args?: SelectSubset<T, CandidateLegislativeRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidateLegislativeRecords and returns the data saved in the database.
+     * @param {CandidateLegislativeRecordCreateManyAndReturnArgs} args - Arguments to create many CandidateLegislativeRecords.
+     * @example
+     * // Create many CandidateLegislativeRecords
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidateLegislativeRecords and only return the `id`
+     * const candidateLegislativeRecordWithIdOnly = await prisma.candidateLegislativeRecord.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateLegislativeRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateLegislativeRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CandidateLegislativeRecord.
+     * @param {CandidateLegislativeRecordDeleteArgs} args - Arguments to delete one CandidateLegislativeRecord.
+     * @example
+     * // Delete one CandidateLegislativeRecord
+     * const CandidateLegislativeRecord = await prisma.candidateLegislativeRecord.delete({
+     *   where: {
+     *     // ... filter to delete one CandidateLegislativeRecord
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateLegislativeRecordDeleteArgs>(args: SelectSubset<T, CandidateLegislativeRecordDeleteArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CandidateLegislativeRecord.
+     * @param {CandidateLegislativeRecordUpdateArgs} args - Arguments to update one CandidateLegislativeRecord.
+     * @example
+     * // Update one CandidateLegislativeRecord
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateLegislativeRecordUpdateArgs>(args: SelectSubset<T, CandidateLegislativeRecordUpdateArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CandidateLegislativeRecords.
+     * @param {CandidateLegislativeRecordDeleteManyArgs} args - Arguments to filter CandidateLegislativeRecords to delete.
+     * @example
+     * // Delete a few CandidateLegislativeRecords
+     * const { count } = await prisma.candidateLegislativeRecord.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateLegislativeRecordDeleteManyArgs>(args?: SelectSubset<T, CandidateLegislativeRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateLegislativeRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidateLegislativeRecords
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateLegislativeRecordUpdateManyArgs>(args: SelectSubset<T, CandidateLegislativeRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CandidateLegislativeRecord.
+     * @param {CandidateLegislativeRecordUpsertArgs} args - Arguments to update or create a CandidateLegislativeRecord.
+     * @example
+     * // Update or create a CandidateLegislativeRecord
+     * const candidateLegislativeRecord = await prisma.candidateLegislativeRecord.upsert({
+     *   create: {
+     *     // ... data to create a CandidateLegislativeRecord
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidateLegislativeRecord we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateLegislativeRecordUpsertArgs>(args: SelectSubset<T, CandidateLegislativeRecordUpsertArgs<ExtArgs>>): Prisma__CandidateLegislativeRecordClient<$Result.GetResult<Prisma.$CandidateLegislativeRecordPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CandidateLegislativeRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordCountArgs} args - Arguments to filter CandidateLegislativeRecords to count.
+     * @example
+     * // Count the number of CandidateLegislativeRecords
+     * const count = await prisma.candidateLegislativeRecord.count({
+     *   where: {
+     *     // ... the filter for the CandidateLegislativeRecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateLegislativeRecordCountArgs>(
+      args?: Subset<T, CandidateLegislativeRecordCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateLegislativeRecordCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidateLegislativeRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateLegislativeRecordAggregateArgs>(args: Subset<T, CandidateLegislativeRecordAggregateArgs>): Prisma.PrismaPromise<GetCandidateLegislativeRecordAggregateType<T>>
+
+    /**
+     * Group by CandidateLegislativeRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateLegislativeRecordGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateLegislativeRecordGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateLegislativeRecordGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateLegislativeRecordGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateLegislativeRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateLegislativeRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidateLegislativeRecord model
+   */
+  readonly fields: CandidateLegislativeRecordFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidateLegislativeRecord.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateLegislativeRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidateLegislativeRecord model
+   */ 
+  interface CandidateLegislativeRecordFieldRefs {
+    readonly id: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly candidateId: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly chamber: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly congress: FieldRef<"CandidateLegislativeRecord", 'Int'>
+    readonly billNo: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly title: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly longTitle: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly role: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly status: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly republicActNo: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly filedDate: FieldRef<"CandidateLegislativeRecord", 'DateTime'>
+    readonly sourceInstitution: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly sourceUrl: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly pdfUrl: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly reviewStatus: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly matchConfidence: FieldRef<"CandidateLegislativeRecord", 'Float'>
+    readonly matchNotes: FieldRef<"CandidateLegislativeRecord", 'String'>
+    readonly displayOrder: FieldRef<"CandidateLegislativeRecord", 'Int'>
+    readonly createdAt: FieldRef<"CandidateLegislativeRecord", 'DateTime'>
+    readonly updatedAt: FieldRef<"CandidateLegislativeRecord", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidateLegislativeRecord findUnique
+   */
+  export type CandidateLegislativeRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateLegislativeRecord to fetch.
+     */
+    where: CandidateLegislativeRecordWhereUniqueInput
+  }
+
+  /**
+   * CandidateLegislativeRecord findUniqueOrThrow
+   */
+  export type CandidateLegislativeRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateLegislativeRecord to fetch.
+     */
+    where: CandidateLegislativeRecordWhereUniqueInput
+  }
+
+  /**
+   * CandidateLegislativeRecord findFirst
+   */
+  export type CandidateLegislativeRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateLegislativeRecord to fetch.
+     */
+    where?: CandidateLegislativeRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateLegislativeRecords to fetch.
+     */
+    orderBy?: CandidateLegislativeRecordOrderByWithRelationInput | CandidateLegislativeRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateLegislativeRecords.
+     */
+    cursor?: CandidateLegislativeRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateLegislativeRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateLegislativeRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateLegislativeRecords.
+     */
+    distinct?: CandidateLegislativeRecordScalarFieldEnum | CandidateLegislativeRecordScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateLegislativeRecord findFirstOrThrow
+   */
+  export type CandidateLegislativeRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateLegislativeRecord to fetch.
+     */
+    where?: CandidateLegislativeRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateLegislativeRecords to fetch.
+     */
+    orderBy?: CandidateLegislativeRecordOrderByWithRelationInput | CandidateLegislativeRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateLegislativeRecords.
+     */
+    cursor?: CandidateLegislativeRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateLegislativeRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateLegislativeRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateLegislativeRecords.
+     */
+    distinct?: CandidateLegislativeRecordScalarFieldEnum | CandidateLegislativeRecordScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateLegislativeRecord findMany
+   */
+  export type CandidateLegislativeRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateLegislativeRecords to fetch.
+     */
+    where?: CandidateLegislativeRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateLegislativeRecords to fetch.
+     */
+    orderBy?: CandidateLegislativeRecordOrderByWithRelationInput | CandidateLegislativeRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidateLegislativeRecords.
+     */
+    cursor?: CandidateLegislativeRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateLegislativeRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateLegislativeRecords.
+     */
+    skip?: number
+    distinct?: CandidateLegislativeRecordScalarFieldEnum | CandidateLegislativeRecordScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateLegislativeRecord create
+   */
+  export type CandidateLegislativeRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidateLegislativeRecord.
+     */
+    data: XOR<CandidateLegislativeRecordCreateInput, CandidateLegislativeRecordUncheckedCreateInput>
+  }
+
+  /**
+   * CandidateLegislativeRecord createMany
+   */
+  export type CandidateLegislativeRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidateLegislativeRecords.
+     */
+    data: CandidateLegislativeRecordCreateManyInput | CandidateLegislativeRecordCreateManyInput[]
+  }
+
+  /**
+   * CandidateLegislativeRecord createManyAndReturn
+   */
+  export type CandidateLegislativeRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CandidateLegislativeRecords.
+     */
+    data: CandidateLegislativeRecordCreateManyInput | CandidateLegislativeRecordCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateLegislativeRecord update
+   */
+  export type CandidateLegislativeRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidateLegislativeRecord.
+     */
+    data: XOR<CandidateLegislativeRecordUpdateInput, CandidateLegislativeRecordUncheckedUpdateInput>
+    /**
+     * Choose, which CandidateLegislativeRecord to update.
+     */
+    where: CandidateLegislativeRecordWhereUniqueInput
+  }
+
+  /**
+   * CandidateLegislativeRecord updateMany
+   */
+  export type CandidateLegislativeRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidateLegislativeRecords.
+     */
+    data: XOR<CandidateLegislativeRecordUpdateManyMutationInput, CandidateLegislativeRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateLegislativeRecords to update
+     */
+    where?: CandidateLegislativeRecordWhereInput
+  }
+
+  /**
+   * CandidateLegislativeRecord upsert
+   */
+  export type CandidateLegislativeRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidateLegislativeRecord to update in case it exists.
+     */
+    where: CandidateLegislativeRecordWhereUniqueInput
+    /**
+     * In case the CandidateLegislativeRecord found by the `where` argument doesn't exist, create a new CandidateLegislativeRecord with this data.
+     */
+    create: XOR<CandidateLegislativeRecordCreateInput, CandidateLegislativeRecordUncheckedCreateInput>
+    /**
+     * In case the CandidateLegislativeRecord was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateLegislativeRecordUpdateInput, CandidateLegislativeRecordUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidateLegislativeRecord delete
+   */
+  export type CandidateLegislativeRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+    /**
+     * Filter which CandidateLegislativeRecord to delete.
+     */
+    where: CandidateLegislativeRecordWhereUniqueInput
+  }
+
+  /**
+   * CandidateLegislativeRecord deleteMany
+   */
+  export type CandidateLegislativeRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateLegislativeRecords to delete
+     */
+    where?: CandidateLegislativeRecordWhereInput
+  }
+
+  /**
+   * CandidateLegislativeRecord without action
+   */
+  export type CandidateLegislativeRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateLegislativeRecord
+     */
+    select?: CandidateLegislativeRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateLegislativeRecordInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LegislativeImportJob
+   */
+
+  export type AggregateLegislativeImportJob = {
+    _count: LegislativeImportJobCountAggregateOutputType | null
+    _avg: LegislativeImportJobAvgAggregateOutputType | null
+    _sum: LegislativeImportJobSumAggregateOutputType | null
+    _min: LegislativeImportJobMinAggregateOutputType | null
+    _max: LegislativeImportJobMaxAggregateOutputType | null
+  }
+
+  export type LegislativeImportJobAvgAggregateOutputType = {
+    totalFound: number | null
+    insertedCount: number | null
+    updatedCount: number | null
+    skippedCount: number | null
+    needsReviewCount: number | null
+  }
+
+  export type LegislativeImportJobSumAggregateOutputType = {
+    totalFound: number | null
+    insertedCount: number | null
+    updatedCount: number | null
+    skippedCount: number | null
+    needsReviewCount: number | null
+  }
+
+  export type LegislativeImportJobMinAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    status: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    totalFound: number | null
+    insertedCount: number | null
+    updatedCount: number | null
+    skippedCount: number | null
+    needsReviewCount: number | null
+    error: string | null
+    sourcesChecked: string | null
+    coverageNotes: string | null
+    createdAt: Date | null
+  }
+
+  export type LegislativeImportJobMaxAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    status: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    totalFound: number | null
+    insertedCount: number | null
+    updatedCount: number | null
+    skippedCount: number | null
+    needsReviewCount: number | null
+    error: string | null
+    sourcesChecked: string | null
+    coverageNotes: string | null
+    createdAt: Date | null
+  }
+
+  export type LegislativeImportJobCountAggregateOutputType = {
+    id: number
+    candidateId: number
+    status: number
+    startedAt: number
+    completedAt: number
+    totalFound: number
+    insertedCount: number
+    updatedCount: number
+    skippedCount: number
+    needsReviewCount: number
+    error: number
+    sourcesChecked: number
+    coverageNotes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LegislativeImportJobAvgAggregateInputType = {
+    totalFound?: true
+    insertedCount?: true
+    updatedCount?: true
+    skippedCount?: true
+    needsReviewCount?: true
+  }
+
+  export type LegislativeImportJobSumAggregateInputType = {
+    totalFound?: true
+    insertedCount?: true
+    updatedCount?: true
+    skippedCount?: true
+    needsReviewCount?: true
+  }
+
+  export type LegislativeImportJobMinAggregateInputType = {
+    id?: true
+    candidateId?: true
+    status?: true
+    startedAt?: true
+    completedAt?: true
+    totalFound?: true
+    insertedCount?: true
+    updatedCount?: true
+    skippedCount?: true
+    needsReviewCount?: true
+    error?: true
+    sourcesChecked?: true
+    coverageNotes?: true
+    createdAt?: true
+  }
+
+  export type LegislativeImportJobMaxAggregateInputType = {
+    id?: true
+    candidateId?: true
+    status?: true
+    startedAt?: true
+    completedAt?: true
+    totalFound?: true
+    insertedCount?: true
+    updatedCount?: true
+    skippedCount?: true
+    needsReviewCount?: true
+    error?: true
+    sourcesChecked?: true
+    coverageNotes?: true
+    createdAt?: true
+  }
+
+  export type LegislativeImportJobCountAggregateInputType = {
+    id?: true
+    candidateId?: true
+    status?: true
+    startedAt?: true
+    completedAt?: true
+    totalFound?: true
+    insertedCount?: true
+    updatedCount?: true
+    skippedCount?: true
+    needsReviewCount?: true
+    error?: true
+    sourcesChecked?: true
+    coverageNotes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LegislativeImportJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LegislativeImportJob to aggregate.
+     */
+    where?: LegislativeImportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LegislativeImportJobs to fetch.
+     */
+    orderBy?: LegislativeImportJobOrderByWithRelationInput | LegislativeImportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LegislativeImportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LegislativeImportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LegislativeImportJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LegislativeImportJobs
+    **/
+    _count?: true | LegislativeImportJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LegislativeImportJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LegislativeImportJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LegislativeImportJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LegislativeImportJobMaxAggregateInputType
+  }
+
+  export type GetLegislativeImportJobAggregateType<T extends LegislativeImportJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateLegislativeImportJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLegislativeImportJob[P]>
+      : GetScalarType<T[P], AggregateLegislativeImportJob[P]>
+  }
+
+
+
+
+  export type LegislativeImportJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LegislativeImportJobWhereInput
+    orderBy?: LegislativeImportJobOrderByWithAggregationInput | LegislativeImportJobOrderByWithAggregationInput[]
+    by: LegislativeImportJobScalarFieldEnum[] | LegislativeImportJobScalarFieldEnum
+    having?: LegislativeImportJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LegislativeImportJobCountAggregateInputType | true
+    _avg?: LegislativeImportJobAvgAggregateInputType
+    _sum?: LegislativeImportJobSumAggregateInputType
+    _min?: LegislativeImportJobMinAggregateInputType
+    _max?: LegislativeImportJobMaxAggregateInputType
+  }
+
+  export type LegislativeImportJobGroupByOutputType = {
+    id: string
+    candidateId: string
+    status: string
+    startedAt: Date
+    completedAt: Date | null
+    totalFound: number
+    insertedCount: number
+    updatedCount: number
+    skippedCount: number
+    needsReviewCount: number
+    error: string | null
+    sourcesChecked: string | null
+    coverageNotes: string | null
+    createdAt: Date
+    _count: LegislativeImportJobCountAggregateOutputType | null
+    _avg: LegislativeImportJobAvgAggregateOutputType | null
+    _sum: LegislativeImportJobSumAggregateOutputType | null
+    _min: LegislativeImportJobMinAggregateOutputType | null
+    _max: LegislativeImportJobMaxAggregateOutputType | null
+  }
+
+  type GetLegislativeImportJobGroupByPayload<T extends LegislativeImportJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LegislativeImportJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LegislativeImportJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LegislativeImportJobGroupByOutputType[P]>
+            : GetScalarType<T[P], LegislativeImportJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LegislativeImportJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    status?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalFound?: boolean
+    insertedCount?: boolean
+    updatedCount?: boolean
+    skippedCount?: boolean
+    needsReviewCount?: boolean
+    error?: boolean
+    sourcesChecked?: boolean
+    coverageNotes?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["legislativeImportJob"]>
+
+  export type LegislativeImportJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    status?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalFound?: boolean
+    insertedCount?: boolean
+    updatedCount?: boolean
+    skippedCount?: boolean
+    needsReviewCount?: boolean
+    error?: boolean
+    sourcesChecked?: boolean
+    coverageNotes?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["legislativeImportJob"]>
+
+  export type LegislativeImportJobSelectScalar = {
+    id?: boolean
+    candidateId?: boolean
+    status?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    totalFound?: boolean
+    insertedCount?: boolean
+    updatedCount?: boolean
+    skippedCount?: boolean
+    needsReviewCount?: boolean
+    error?: boolean
+    sourcesChecked?: boolean
+    coverageNotes?: boolean
+    createdAt?: boolean
+  }
+
+  export type LegislativeImportJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+  export type LegislativeImportJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+
+  export type $LegislativeImportJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LegislativeImportJob"
+    objects: {
+      candidate: Prisma.$CandidatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidateId: string
+      status: string
+      startedAt: Date
+      completedAt: Date | null
+      totalFound: number
+      insertedCount: number
+      updatedCount: number
+      skippedCount: number
+      needsReviewCount: number
+      error: string | null
+      sourcesChecked: string | null
+      coverageNotes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["legislativeImportJob"]>
+    composites: {}
+  }
+
+  type LegislativeImportJobGetPayload<S extends boolean | null | undefined | LegislativeImportJobDefaultArgs> = $Result.GetResult<Prisma.$LegislativeImportJobPayload, S>
+
+  type LegislativeImportJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<LegislativeImportJobFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: LegislativeImportJobCountAggregateInputType | true
+    }
+
+  export interface LegislativeImportJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LegislativeImportJob'], meta: { name: 'LegislativeImportJob' } }
+    /**
+     * Find zero or one LegislativeImportJob that matches the filter.
+     * @param {LegislativeImportJobFindUniqueArgs} args - Arguments to find a LegislativeImportJob
+     * @example
+     * // Get one LegislativeImportJob
+     * const legislativeImportJob = await prisma.legislativeImportJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LegislativeImportJobFindUniqueArgs>(args: SelectSubset<T, LegislativeImportJobFindUniqueArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one LegislativeImportJob that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {LegislativeImportJobFindUniqueOrThrowArgs} args - Arguments to find a LegislativeImportJob
+     * @example
+     * // Get one LegislativeImportJob
+     * const legislativeImportJob = await prisma.legislativeImportJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LegislativeImportJobFindUniqueOrThrowArgs>(args: SelectSubset<T, LegislativeImportJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first LegislativeImportJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobFindFirstArgs} args - Arguments to find a LegislativeImportJob
+     * @example
+     * // Get one LegislativeImportJob
+     * const legislativeImportJob = await prisma.legislativeImportJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LegislativeImportJobFindFirstArgs>(args?: SelectSubset<T, LegislativeImportJobFindFirstArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first LegislativeImportJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobFindFirstOrThrowArgs} args - Arguments to find a LegislativeImportJob
+     * @example
+     * // Get one LegislativeImportJob
+     * const legislativeImportJob = await prisma.legislativeImportJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LegislativeImportJobFindFirstOrThrowArgs>(args?: SelectSubset<T, LegislativeImportJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more LegislativeImportJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LegislativeImportJobs
+     * const legislativeImportJobs = await prisma.legislativeImportJob.findMany()
+     * 
+     * // Get first 10 LegislativeImportJobs
+     * const legislativeImportJobs = await prisma.legislativeImportJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const legislativeImportJobWithIdOnly = await prisma.legislativeImportJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LegislativeImportJobFindManyArgs>(args?: SelectSubset<T, LegislativeImportJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a LegislativeImportJob.
+     * @param {LegislativeImportJobCreateArgs} args - Arguments to create a LegislativeImportJob.
+     * @example
+     * // Create one LegislativeImportJob
+     * const LegislativeImportJob = await prisma.legislativeImportJob.create({
+     *   data: {
+     *     // ... data to create a LegislativeImportJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends LegislativeImportJobCreateArgs>(args: SelectSubset<T, LegislativeImportJobCreateArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many LegislativeImportJobs.
+     * @param {LegislativeImportJobCreateManyArgs} args - Arguments to create many LegislativeImportJobs.
+     * @example
+     * // Create many LegislativeImportJobs
+     * const legislativeImportJob = await prisma.legislativeImportJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LegislativeImportJobCreateManyArgs>(args?: SelectSubset<T, LegislativeImportJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LegislativeImportJobs and returns the data saved in the database.
+     * @param {LegislativeImportJobCreateManyAndReturnArgs} args - Arguments to create many LegislativeImportJobs.
+     * @example
+     * // Create many LegislativeImportJobs
+     * const legislativeImportJob = await prisma.legislativeImportJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LegislativeImportJobs and only return the `id`
+     * const legislativeImportJobWithIdOnly = await prisma.legislativeImportJob.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LegislativeImportJobCreateManyAndReturnArgs>(args?: SelectSubset<T, LegislativeImportJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a LegislativeImportJob.
+     * @param {LegislativeImportJobDeleteArgs} args - Arguments to delete one LegislativeImportJob.
+     * @example
+     * // Delete one LegislativeImportJob
+     * const LegislativeImportJob = await prisma.legislativeImportJob.delete({
+     *   where: {
+     *     // ... filter to delete one LegislativeImportJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LegislativeImportJobDeleteArgs>(args: SelectSubset<T, LegislativeImportJobDeleteArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one LegislativeImportJob.
+     * @param {LegislativeImportJobUpdateArgs} args - Arguments to update one LegislativeImportJob.
+     * @example
+     * // Update one LegislativeImportJob
+     * const legislativeImportJob = await prisma.legislativeImportJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LegislativeImportJobUpdateArgs>(args: SelectSubset<T, LegislativeImportJobUpdateArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more LegislativeImportJobs.
+     * @param {LegislativeImportJobDeleteManyArgs} args - Arguments to filter LegislativeImportJobs to delete.
+     * @example
+     * // Delete a few LegislativeImportJobs
+     * const { count } = await prisma.legislativeImportJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LegislativeImportJobDeleteManyArgs>(args?: SelectSubset<T, LegislativeImportJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LegislativeImportJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LegislativeImportJobs
+     * const legislativeImportJob = await prisma.legislativeImportJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LegislativeImportJobUpdateManyArgs>(args: SelectSubset<T, LegislativeImportJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one LegislativeImportJob.
+     * @param {LegislativeImportJobUpsertArgs} args - Arguments to update or create a LegislativeImportJob.
+     * @example
+     * // Update or create a LegislativeImportJob
+     * const legislativeImportJob = await prisma.legislativeImportJob.upsert({
+     *   create: {
+     *     // ... data to create a LegislativeImportJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LegislativeImportJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LegislativeImportJobUpsertArgs>(args: SelectSubset<T, LegislativeImportJobUpsertArgs<ExtArgs>>): Prisma__LegislativeImportJobClient<$Result.GetResult<Prisma.$LegislativeImportJobPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of LegislativeImportJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobCountArgs} args - Arguments to filter LegislativeImportJobs to count.
+     * @example
+     * // Count the number of LegislativeImportJobs
+     * const count = await prisma.legislativeImportJob.count({
+     *   where: {
+     *     // ... the filter for the LegislativeImportJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends LegislativeImportJobCountArgs>(
+      args?: Subset<T, LegislativeImportJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LegislativeImportJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LegislativeImportJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LegislativeImportJobAggregateArgs>(args: Subset<T, LegislativeImportJobAggregateArgs>): Prisma.PrismaPromise<GetLegislativeImportJobAggregateType<T>>
+
+    /**
+     * Group by LegislativeImportJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LegislativeImportJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LegislativeImportJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LegislativeImportJobGroupByArgs['orderBy'] }
+        : { orderBy?: LegislativeImportJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LegislativeImportJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLegislativeImportJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LegislativeImportJob model
+   */
+  readonly fields: LegislativeImportJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LegislativeImportJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LegislativeImportJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LegislativeImportJob model
+   */ 
+  interface LegislativeImportJobFieldRefs {
+    readonly id: FieldRef<"LegislativeImportJob", 'String'>
+    readonly candidateId: FieldRef<"LegislativeImportJob", 'String'>
+    readonly status: FieldRef<"LegislativeImportJob", 'String'>
+    readonly startedAt: FieldRef<"LegislativeImportJob", 'DateTime'>
+    readonly completedAt: FieldRef<"LegislativeImportJob", 'DateTime'>
+    readonly totalFound: FieldRef<"LegislativeImportJob", 'Int'>
+    readonly insertedCount: FieldRef<"LegislativeImportJob", 'Int'>
+    readonly updatedCount: FieldRef<"LegislativeImportJob", 'Int'>
+    readonly skippedCount: FieldRef<"LegislativeImportJob", 'Int'>
+    readonly needsReviewCount: FieldRef<"LegislativeImportJob", 'Int'>
+    readonly error: FieldRef<"LegislativeImportJob", 'String'>
+    readonly sourcesChecked: FieldRef<"LegislativeImportJob", 'String'>
+    readonly coverageNotes: FieldRef<"LegislativeImportJob", 'String'>
+    readonly createdAt: FieldRef<"LegislativeImportJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LegislativeImportJob findUnique
+   */
+  export type LegislativeImportJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which LegislativeImportJob to fetch.
+     */
+    where: LegislativeImportJobWhereUniqueInput
+  }
+
+  /**
+   * LegislativeImportJob findUniqueOrThrow
+   */
+  export type LegislativeImportJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which LegislativeImportJob to fetch.
+     */
+    where: LegislativeImportJobWhereUniqueInput
+  }
+
+  /**
+   * LegislativeImportJob findFirst
+   */
+  export type LegislativeImportJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which LegislativeImportJob to fetch.
+     */
+    where?: LegislativeImportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LegislativeImportJobs to fetch.
+     */
+    orderBy?: LegislativeImportJobOrderByWithRelationInput | LegislativeImportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LegislativeImportJobs.
+     */
+    cursor?: LegislativeImportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LegislativeImportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LegislativeImportJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LegislativeImportJobs.
+     */
+    distinct?: LegislativeImportJobScalarFieldEnum | LegislativeImportJobScalarFieldEnum[]
+  }
+
+  /**
+   * LegislativeImportJob findFirstOrThrow
+   */
+  export type LegislativeImportJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which LegislativeImportJob to fetch.
+     */
+    where?: LegislativeImportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LegislativeImportJobs to fetch.
+     */
+    orderBy?: LegislativeImportJobOrderByWithRelationInput | LegislativeImportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LegislativeImportJobs.
+     */
+    cursor?: LegislativeImportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LegislativeImportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LegislativeImportJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LegislativeImportJobs.
+     */
+    distinct?: LegislativeImportJobScalarFieldEnum | LegislativeImportJobScalarFieldEnum[]
+  }
+
+  /**
+   * LegislativeImportJob findMany
+   */
+  export type LegislativeImportJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which LegislativeImportJobs to fetch.
+     */
+    where?: LegislativeImportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LegislativeImportJobs to fetch.
+     */
+    orderBy?: LegislativeImportJobOrderByWithRelationInput | LegislativeImportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LegislativeImportJobs.
+     */
+    cursor?: LegislativeImportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LegislativeImportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LegislativeImportJobs.
+     */
+    skip?: number
+    distinct?: LegislativeImportJobScalarFieldEnum | LegislativeImportJobScalarFieldEnum[]
+  }
+
+  /**
+   * LegislativeImportJob create
+   */
+  export type LegislativeImportJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LegislativeImportJob.
+     */
+    data: XOR<LegislativeImportJobCreateInput, LegislativeImportJobUncheckedCreateInput>
+  }
+
+  /**
+   * LegislativeImportJob createMany
+   */
+  export type LegislativeImportJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LegislativeImportJobs.
+     */
+    data: LegislativeImportJobCreateManyInput | LegislativeImportJobCreateManyInput[]
+  }
+
+  /**
+   * LegislativeImportJob createManyAndReturn
+   */
+  export type LegislativeImportJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many LegislativeImportJobs.
+     */
+    data: LegislativeImportJobCreateManyInput | LegislativeImportJobCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LegislativeImportJob update
+   */
+  export type LegislativeImportJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LegislativeImportJob.
+     */
+    data: XOR<LegislativeImportJobUpdateInput, LegislativeImportJobUncheckedUpdateInput>
+    /**
+     * Choose, which LegislativeImportJob to update.
+     */
+    where: LegislativeImportJobWhereUniqueInput
+  }
+
+  /**
+   * LegislativeImportJob updateMany
+   */
+  export type LegislativeImportJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LegislativeImportJobs.
+     */
+    data: XOR<LegislativeImportJobUpdateManyMutationInput, LegislativeImportJobUncheckedUpdateManyInput>
+    /**
+     * Filter which LegislativeImportJobs to update
+     */
+    where?: LegislativeImportJobWhereInput
+  }
+
+  /**
+   * LegislativeImportJob upsert
+   */
+  export type LegislativeImportJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LegislativeImportJob to update in case it exists.
+     */
+    where: LegislativeImportJobWhereUniqueInput
+    /**
+     * In case the LegislativeImportJob found by the `where` argument doesn't exist, create a new LegislativeImportJob with this data.
+     */
+    create: XOR<LegislativeImportJobCreateInput, LegislativeImportJobUncheckedCreateInput>
+    /**
+     * In case the LegislativeImportJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LegislativeImportJobUpdateInput, LegislativeImportJobUncheckedUpdateInput>
+  }
+
+  /**
+   * LegislativeImportJob delete
+   */
+  export type LegislativeImportJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+    /**
+     * Filter which LegislativeImportJob to delete.
+     */
+    where: LegislativeImportJobWhereUniqueInput
+  }
+
+  /**
+   * LegislativeImportJob deleteMany
+   */
+  export type LegislativeImportJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LegislativeImportJobs to delete
+     */
+    where?: LegislativeImportJobWhereInput
+  }
+
+  /**
+   * LegislativeImportJob without action
+   */
+  export type LegislativeImportJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LegislativeImportJob
+     */
+    select?: LegislativeImportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LegislativeImportJobInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13844,6 +16324,52 @@ export namespace Prisma {
   export type AdminAuditLogScalarFieldEnum = (typeof AdminAuditLogScalarFieldEnum)[keyof typeof AdminAuditLogScalarFieldEnum]
 
 
+  export const CandidateLegislativeRecordScalarFieldEnum: {
+    id: 'id',
+    candidateId: 'candidateId',
+    chamber: 'chamber',
+    congress: 'congress',
+    billNo: 'billNo',
+    title: 'title',
+    longTitle: 'longTitle',
+    role: 'role',
+    status: 'status',
+    republicActNo: 'republicActNo',
+    filedDate: 'filedDate',
+    sourceInstitution: 'sourceInstitution',
+    sourceUrl: 'sourceUrl',
+    pdfUrl: 'pdfUrl',
+    reviewStatus: 'reviewStatus',
+    matchConfidence: 'matchConfidence',
+    matchNotes: 'matchNotes',
+    displayOrder: 'displayOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CandidateLegislativeRecordScalarFieldEnum = (typeof CandidateLegislativeRecordScalarFieldEnum)[keyof typeof CandidateLegislativeRecordScalarFieldEnum]
+
+
+  export const LegislativeImportJobScalarFieldEnum: {
+    id: 'id',
+    candidateId: 'candidateId',
+    status: 'status',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    totalFound: 'totalFound',
+    insertedCount: 'insertedCount',
+    updatedCount: 'updatedCount',
+    skippedCount: 'skippedCount',
+    needsReviewCount: 'needsReviewCount',
+    error: 'error',
+    sourcesChecked: 'sourcesChecked',
+    coverageNotes: 'coverageNotes',
+    createdAt: 'createdAt'
+  };
+
+  export type LegislativeImportJobScalarFieldEnum = (typeof LegislativeImportJobScalarFieldEnum)[keyof typeof LegislativeImportJobScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -13991,6 +16517,8 @@ export namespace Prisma {
     educations?: CandidateEducationListRelationFilter
     publicServices?: CandidatePublicServiceListRelationFilter
     sources?: CandidateSourceListRelationFilter
+    legislativeRecords?: CandidateLegislativeRecordListRelationFilter
+    legislativeImportJobs?: LegislativeImportJobListRelationFilter
     adjustments?: SurveyAdjustmentListRelationFilter
   }
 
@@ -14017,6 +16545,8 @@ export namespace Prisma {
     educations?: CandidateEducationOrderByRelationAggregateInput
     publicServices?: CandidatePublicServiceOrderByRelationAggregateInput
     sources?: CandidateSourceOrderByRelationAggregateInput
+    legislativeRecords?: CandidateLegislativeRecordOrderByRelationAggregateInput
+    legislativeImportJobs?: LegislativeImportJobOrderByRelationAggregateInput
     adjustments?: SurveyAdjustmentOrderByRelationAggregateInput
   }
 
@@ -14046,6 +16576,8 @@ export namespace Prisma {
     educations?: CandidateEducationListRelationFilter
     publicServices?: CandidatePublicServiceListRelationFilter
     sources?: CandidateSourceListRelationFilter
+    legislativeRecords?: CandidateLegislativeRecordListRelationFilter
+    legislativeImportJobs?: LegislativeImportJobListRelationFilter
     adjustments?: SurveyAdjustmentListRelationFilter
   }, "id" | "slug">
 
@@ -15042,6 +17574,241 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AdminAuditLog"> | Date | string
   }
 
+  export type CandidateLegislativeRecordWhereInput = {
+    AND?: CandidateLegislativeRecordWhereInput | CandidateLegislativeRecordWhereInput[]
+    OR?: CandidateLegislativeRecordWhereInput[]
+    NOT?: CandidateLegislativeRecordWhereInput | CandidateLegislativeRecordWhereInput[]
+    id?: StringFilter<"CandidateLegislativeRecord"> | string
+    candidateId?: StringFilter<"CandidateLegislativeRecord"> | string
+    chamber?: StringFilter<"CandidateLegislativeRecord"> | string
+    congress?: IntFilter<"CandidateLegislativeRecord"> | number
+    billNo?: StringFilter<"CandidateLegislativeRecord"> | string
+    title?: StringFilter<"CandidateLegislativeRecord"> | string
+    longTitle?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    role?: StringFilter<"CandidateLegislativeRecord"> | string
+    status?: StringFilter<"CandidateLegislativeRecord"> | string
+    republicActNo?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    filedDate?: DateTimeNullableFilter<"CandidateLegislativeRecord"> | Date | string | null
+    sourceInstitution?: StringFilter<"CandidateLegislativeRecord"> | string
+    sourceUrl?: StringFilter<"CandidateLegislativeRecord"> | string
+    pdfUrl?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    reviewStatus?: StringFilter<"CandidateLegislativeRecord"> | string
+    matchConfidence?: FloatFilter<"CandidateLegislativeRecord"> | number
+    matchNotes?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    displayOrder?: IntFilter<"CandidateLegislativeRecord"> | number
+    createdAt?: DateTimeFilter<"CandidateLegislativeRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"CandidateLegislativeRecord"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }
+
+  export type CandidateLegislativeRecordOrderByWithRelationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    chamber?: SortOrder
+    congress?: SortOrder
+    billNo?: SortOrder
+    title?: SortOrder
+    longTitle?: SortOrderInput | SortOrder
+    role?: SortOrder
+    status?: SortOrder
+    republicActNo?: SortOrderInput | SortOrder
+    filedDate?: SortOrderInput | SortOrder
+    sourceInstitution?: SortOrder
+    sourceUrl?: SortOrder
+    pdfUrl?: SortOrderInput | SortOrder
+    reviewStatus?: SortOrder
+    matchConfidence?: SortOrder
+    matchNotes?: SortOrderInput | SortOrder
+    displayOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    candidate?: CandidateOrderByWithRelationInput
+  }
+
+  export type CandidateLegislativeRecordWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    candidateId_billNo_congress_role_sourceInstitution?: CandidateLegislativeRecordCandidateIdBillNoCongressRoleSourceInstitutionCompoundUniqueInput
+    AND?: CandidateLegislativeRecordWhereInput | CandidateLegislativeRecordWhereInput[]
+    OR?: CandidateLegislativeRecordWhereInput[]
+    NOT?: CandidateLegislativeRecordWhereInput | CandidateLegislativeRecordWhereInput[]
+    candidateId?: StringFilter<"CandidateLegislativeRecord"> | string
+    chamber?: StringFilter<"CandidateLegislativeRecord"> | string
+    congress?: IntFilter<"CandidateLegislativeRecord"> | number
+    billNo?: StringFilter<"CandidateLegislativeRecord"> | string
+    title?: StringFilter<"CandidateLegislativeRecord"> | string
+    longTitle?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    role?: StringFilter<"CandidateLegislativeRecord"> | string
+    status?: StringFilter<"CandidateLegislativeRecord"> | string
+    republicActNo?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    filedDate?: DateTimeNullableFilter<"CandidateLegislativeRecord"> | Date | string | null
+    sourceInstitution?: StringFilter<"CandidateLegislativeRecord"> | string
+    sourceUrl?: StringFilter<"CandidateLegislativeRecord"> | string
+    pdfUrl?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    reviewStatus?: StringFilter<"CandidateLegislativeRecord"> | string
+    matchConfidence?: FloatFilter<"CandidateLegislativeRecord"> | number
+    matchNotes?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    displayOrder?: IntFilter<"CandidateLegislativeRecord"> | number
+    createdAt?: DateTimeFilter<"CandidateLegislativeRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"CandidateLegislativeRecord"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }, "id" | "candidateId_billNo_congress_role_sourceInstitution">
+
+  export type CandidateLegislativeRecordOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    chamber?: SortOrder
+    congress?: SortOrder
+    billNo?: SortOrder
+    title?: SortOrder
+    longTitle?: SortOrderInput | SortOrder
+    role?: SortOrder
+    status?: SortOrder
+    republicActNo?: SortOrderInput | SortOrder
+    filedDate?: SortOrderInput | SortOrder
+    sourceInstitution?: SortOrder
+    sourceUrl?: SortOrder
+    pdfUrl?: SortOrderInput | SortOrder
+    reviewStatus?: SortOrder
+    matchConfidence?: SortOrder
+    matchNotes?: SortOrderInput | SortOrder
+    displayOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CandidateLegislativeRecordCountOrderByAggregateInput
+    _avg?: CandidateLegislativeRecordAvgOrderByAggregateInput
+    _max?: CandidateLegislativeRecordMaxOrderByAggregateInput
+    _min?: CandidateLegislativeRecordMinOrderByAggregateInput
+    _sum?: CandidateLegislativeRecordSumOrderByAggregateInput
+  }
+
+  export type CandidateLegislativeRecordScalarWhereWithAggregatesInput = {
+    AND?: CandidateLegislativeRecordScalarWhereWithAggregatesInput | CandidateLegislativeRecordScalarWhereWithAggregatesInput[]
+    OR?: CandidateLegislativeRecordScalarWhereWithAggregatesInput[]
+    NOT?: CandidateLegislativeRecordScalarWhereWithAggregatesInput | CandidateLegislativeRecordScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    candidateId?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    chamber?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    congress?: IntWithAggregatesFilter<"CandidateLegislativeRecord"> | number
+    billNo?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    title?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    longTitle?: StringNullableWithAggregatesFilter<"CandidateLegislativeRecord"> | string | null
+    role?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    status?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    republicActNo?: StringNullableWithAggregatesFilter<"CandidateLegislativeRecord"> | string | null
+    filedDate?: DateTimeNullableWithAggregatesFilter<"CandidateLegislativeRecord"> | Date | string | null
+    sourceInstitution?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    sourceUrl?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    pdfUrl?: StringNullableWithAggregatesFilter<"CandidateLegislativeRecord"> | string | null
+    reviewStatus?: StringWithAggregatesFilter<"CandidateLegislativeRecord"> | string
+    matchConfidence?: FloatWithAggregatesFilter<"CandidateLegislativeRecord"> | number
+    matchNotes?: StringNullableWithAggregatesFilter<"CandidateLegislativeRecord"> | string | null
+    displayOrder?: IntWithAggregatesFilter<"CandidateLegislativeRecord"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"CandidateLegislativeRecord"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CandidateLegislativeRecord"> | Date | string
+  }
+
+  export type LegislativeImportJobWhereInput = {
+    AND?: LegislativeImportJobWhereInput | LegislativeImportJobWhereInput[]
+    OR?: LegislativeImportJobWhereInput[]
+    NOT?: LegislativeImportJobWhereInput | LegislativeImportJobWhereInput[]
+    id?: StringFilter<"LegislativeImportJob"> | string
+    candidateId?: StringFilter<"LegislativeImportJob"> | string
+    status?: StringFilter<"LegislativeImportJob"> | string
+    startedAt?: DateTimeFilter<"LegislativeImportJob"> | Date | string
+    completedAt?: DateTimeNullableFilter<"LegislativeImportJob"> | Date | string | null
+    totalFound?: IntFilter<"LegislativeImportJob"> | number
+    insertedCount?: IntFilter<"LegislativeImportJob"> | number
+    updatedCount?: IntFilter<"LegislativeImportJob"> | number
+    skippedCount?: IntFilter<"LegislativeImportJob"> | number
+    needsReviewCount?: IntFilter<"LegislativeImportJob"> | number
+    error?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    sourcesChecked?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    coverageNotes?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    createdAt?: DateTimeFilter<"LegislativeImportJob"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }
+
+  export type LegislativeImportJobOrderByWithRelationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    status?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+    error?: SortOrderInput | SortOrder
+    sourcesChecked?: SortOrderInput | SortOrder
+    coverageNotes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    candidate?: CandidateOrderByWithRelationInput
+  }
+
+  export type LegislativeImportJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LegislativeImportJobWhereInput | LegislativeImportJobWhereInput[]
+    OR?: LegislativeImportJobWhereInput[]
+    NOT?: LegislativeImportJobWhereInput | LegislativeImportJobWhereInput[]
+    candidateId?: StringFilter<"LegislativeImportJob"> | string
+    status?: StringFilter<"LegislativeImportJob"> | string
+    startedAt?: DateTimeFilter<"LegislativeImportJob"> | Date | string
+    completedAt?: DateTimeNullableFilter<"LegislativeImportJob"> | Date | string | null
+    totalFound?: IntFilter<"LegislativeImportJob"> | number
+    insertedCount?: IntFilter<"LegislativeImportJob"> | number
+    updatedCount?: IntFilter<"LegislativeImportJob"> | number
+    skippedCount?: IntFilter<"LegislativeImportJob"> | number
+    needsReviewCount?: IntFilter<"LegislativeImportJob"> | number
+    error?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    sourcesChecked?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    coverageNotes?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    createdAt?: DateTimeFilter<"LegislativeImportJob"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }, "id">
+
+  export type LegislativeImportJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    status?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+    error?: SortOrderInput | SortOrder
+    sourcesChecked?: SortOrderInput | SortOrder
+    coverageNotes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: LegislativeImportJobCountOrderByAggregateInput
+    _avg?: LegislativeImportJobAvgOrderByAggregateInput
+    _max?: LegislativeImportJobMaxOrderByAggregateInput
+    _min?: LegislativeImportJobMinOrderByAggregateInput
+    _sum?: LegislativeImportJobSumOrderByAggregateInput
+  }
+
+  export type LegislativeImportJobScalarWhereWithAggregatesInput = {
+    AND?: LegislativeImportJobScalarWhereWithAggregatesInput | LegislativeImportJobScalarWhereWithAggregatesInput[]
+    OR?: LegislativeImportJobScalarWhereWithAggregatesInput[]
+    NOT?: LegislativeImportJobScalarWhereWithAggregatesInput | LegislativeImportJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LegislativeImportJob"> | string
+    candidateId?: StringWithAggregatesFilter<"LegislativeImportJob"> | string
+    status?: StringWithAggregatesFilter<"LegislativeImportJob"> | string
+    startedAt?: DateTimeWithAggregatesFilter<"LegislativeImportJob"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"LegislativeImportJob"> | Date | string | null
+    totalFound?: IntWithAggregatesFilter<"LegislativeImportJob"> | number
+    insertedCount?: IntWithAggregatesFilter<"LegislativeImportJob"> | number
+    updatedCount?: IntWithAggregatesFilter<"LegislativeImportJob"> | number
+    skippedCount?: IntWithAggregatesFilter<"LegislativeImportJob"> | number
+    needsReviewCount?: IntWithAggregatesFilter<"LegislativeImportJob"> | number
+    error?: StringNullableWithAggregatesFilter<"LegislativeImportJob"> | string | null
+    sourcesChecked?: StringNullableWithAggregatesFilter<"LegislativeImportJob"> | string | null
+    coverageNotes?: StringNullableWithAggregatesFilter<"LegislativeImportJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"LegislativeImportJob"> | Date | string
+  }
+
   export type AdminUserCreateInput = {
     id?: string
     email: string
@@ -15135,6 +17902,8 @@ export namespace Prisma {
     educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
   }
 
@@ -15161,6 +17930,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
   }
 
@@ -15187,6 +17958,8 @@ export namespace Prisma {
     educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
   }
 
@@ -15213,6 +17986,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
@@ -16385,6 +19160,284 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CandidateLegislativeRecordCreateInput = {
+    id?: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle?: string | null
+    role: string
+    status: string
+    republicActNo?: string | null
+    filedDate?: Date | string | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl?: string | null
+    reviewStatus?: string
+    matchConfidence?: number
+    matchNotes?: string | null
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutLegislativeRecordsInput
+  }
+
+  export type CandidateLegislativeRecordUncheckedCreateInput = {
+    id?: string
+    candidateId: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle?: string | null
+    role: string
+    status: string
+    republicActNo?: string | null
+    filedDate?: Date | string | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl?: string | null
+    reviewStatus?: string
+    matchConfidence?: number
+    matchNotes?: string | null
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidateLegislativeRecordUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutLegislativeRecordsNestedInput
+  }
+
+  export type CandidateLegislativeRecordUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateLegislativeRecordCreateManyInput = {
+    id?: string
+    candidateId: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle?: string | null
+    role: string
+    status: string
+    republicActNo?: string | null
+    filedDate?: Date | string | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl?: string | null
+    reviewStatus?: string
+    matchConfidence?: number
+    matchNotes?: string | null
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidateLegislativeRecordUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateLegislativeRecordUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LegislativeImportJobCreateInput = {
+    id?: string
+    status: string
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    totalFound?: number
+    insertedCount?: number
+    updatedCount?: number
+    skippedCount?: number
+    needsReviewCount?: number
+    error?: string | null
+    sourcesChecked?: string | null
+    coverageNotes?: string | null
+    createdAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutLegislativeImportJobsInput
+  }
+
+  export type LegislativeImportJobUncheckedCreateInput = {
+    id?: string
+    candidateId: string
+    status: string
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    totalFound?: number
+    insertedCount?: number
+    updatedCount?: number
+    skippedCount?: number
+    needsReviewCount?: number
+    error?: string | null
+    sourcesChecked?: string | null
+    coverageNotes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LegislativeImportJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutLegislativeImportJobsNestedInput
+  }
+
+  export type LegislativeImportJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LegislativeImportJobCreateManyInput = {
+    id?: string
+    candidateId: string
+    status: string
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    totalFound?: number
+    insertedCount?: number
+    updatedCount?: number
+    skippedCount?: number
+    needsReviewCount?: number
+    error?: string | null
+    sourcesChecked?: string | null
+    coverageNotes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LegislativeImportJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LegislativeImportJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -16542,6 +19595,18 @@ export namespace Prisma {
     none?: CandidateSourceWhereInput
   }
 
+  export type CandidateLegislativeRecordListRelationFilter = {
+    every?: CandidateLegislativeRecordWhereInput
+    some?: CandidateLegislativeRecordWhereInput
+    none?: CandidateLegislativeRecordWhereInput
+  }
+
+  export type LegislativeImportJobListRelationFilter = {
+    every?: LegislativeImportJobWhereInput
+    some?: LegislativeImportJobWhereInput
+    none?: LegislativeImportJobWhereInput
+  }
+
   export type SurveyAdjustmentListRelationFilter = {
     every?: SurveyAdjustmentWhereInput
     some?: SurveyAdjustmentWhereInput
@@ -16570,6 +19635,14 @@ export namespace Prisma {
   }
 
   export type CandidateSourceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateLegislativeRecordOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type LegislativeImportJobOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -17292,6 +20365,189 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type CandidateLegislativeRecordCandidateIdBillNoCongressRoleSourceInstitutionCompoundUniqueInput = {
+    candidateId: string
+    billNo: string
+    congress: number
+    role: string
+    sourceInstitution: string
+  }
+
+  export type CandidateLegislativeRecordCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    chamber?: SortOrder
+    congress?: SortOrder
+    billNo?: SortOrder
+    title?: SortOrder
+    longTitle?: SortOrder
+    role?: SortOrder
+    status?: SortOrder
+    republicActNo?: SortOrder
+    filedDate?: SortOrder
+    sourceInstitution?: SortOrder
+    sourceUrl?: SortOrder
+    pdfUrl?: SortOrder
+    reviewStatus?: SortOrder
+    matchConfidence?: SortOrder
+    matchNotes?: SortOrder
+    displayOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidateLegislativeRecordAvgOrderByAggregateInput = {
+    congress?: SortOrder
+    matchConfidence?: SortOrder
+    displayOrder?: SortOrder
+  }
+
+  export type CandidateLegislativeRecordMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    chamber?: SortOrder
+    congress?: SortOrder
+    billNo?: SortOrder
+    title?: SortOrder
+    longTitle?: SortOrder
+    role?: SortOrder
+    status?: SortOrder
+    republicActNo?: SortOrder
+    filedDate?: SortOrder
+    sourceInstitution?: SortOrder
+    sourceUrl?: SortOrder
+    pdfUrl?: SortOrder
+    reviewStatus?: SortOrder
+    matchConfidence?: SortOrder
+    matchNotes?: SortOrder
+    displayOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidateLegislativeRecordMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    chamber?: SortOrder
+    congress?: SortOrder
+    billNo?: SortOrder
+    title?: SortOrder
+    longTitle?: SortOrder
+    role?: SortOrder
+    status?: SortOrder
+    republicActNo?: SortOrder
+    filedDate?: SortOrder
+    sourceInstitution?: SortOrder
+    sourceUrl?: SortOrder
+    pdfUrl?: SortOrder
+    reviewStatus?: SortOrder
+    matchConfidence?: SortOrder
+    matchNotes?: SortOrder
+    displayOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidateLegislativeRecordSumOrderByAggregateInput = {
+    congress?: SortOrder
+    matchConfidence?: SortOrder
+    displayOrder?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type LegislativeImportJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    status?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+    error?: SortOrder
+    sourcesChecked?: SortOrder
+    coverageNotes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LegislativeImportJobAvgOrderByAggregateInput = {
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+  }
+
+  export type LegislativeImportJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    status?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+    error?: SortOrder
+    sourcesChecked?: SortOrder
+    coverageNotes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LegislativeImportJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    status?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+    error?: SortOrder
+    sourcesChecked?: SortOrder
+    coverageNotes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LegislativeImportJobSumOrderByAggregateInput = {
+    totalFound?: SortOrder
+    insertedCount?: SortOrder
+    updatedCount?: SortOrder
+    skippedCount?: SortOrder
+    needsReviewCount?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -17335,6 +20591,20 @@ export namespace Prisma {
     connect?: CandidateSourceWhereUniqueInput | CandidateSourceWhereUniqueInput[]
   }
 
+  export type CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateLegislativeRecordCreateWithoutCandidateInput, CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput> | CandidateLegislativeRecordCreateWithoutCandidateInput[] | CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput | CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateLegislativeRecordCreateManyCandidateInputEnvelope
+    connect?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+  }
+
+  export type LegislativeImportJobCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<LegislativeImportJobCreateWithoutCandidateInput, LegislativeImportJobUncheckedCreateWithoutCandidateInput> | LegislativeImportJobCreateWithoutCandidateInput[] | LegislativeImportJobUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: LegislativeImportJobCreateOrConnectWithoutCandidateInput | LegislativeImportJobCreateOrConnectWithoutCandidateInput[]
+    createMany?: LegislativeImportJobCreateManyCandidateInputEnvelope
+    connect?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+  }
+
   export type SurveyAdjustmentCreateNestedManyWithoutCandidateInput = {
     create?: XOR<SurveyAdjustmentCreateWithoutCandidateInput, SurveyAdjustmentUncheckedCreateWithoutCandidateInput> | SurveyAdjustmentCreateWithoutCandidateInput[] | SurveyAdjustmentUncheckedCreateWithoutCandidateInput[]
     connectOrCreate?: SurveyAdjustmentCreateOrConnectWithoutCandidateInput | SurveyAdjustmentCreateOrConnectWithoutCandidateInput[]
@@ -17375,6 +20645,20 @@ export namespace Prisma {
     connectOrCreate?: CandidateSourceCreateOrConnectWithoutCandidateInput | CandidateSourceCreateOrConnectWithoutCandidateInput[]
     createMany?: CandidateSourceCreateManyCandidateInputEnvelope
     connect?: CandidateSourceWhereUniqueInput | CandidateSourceWhereUniqueInput[]
+  }
+
+  export type CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateLegislativeRecordCreateWithoutCandidateInput, CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput> | CandidateLegislativeRecordCreateWithoutCandidateInput[] | CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput | CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateLegislativeRecordCreateManyCandidateInputEnvelope
+    connect?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+  }
+
+  export type LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<LegislativeImportJobCreateWithoutCandidateInput, LegislativeImportJobUncheckedCreateWithoutCandidateInput> | LegislativeImportJobCreateWithoutCandidateInput[] | LegislativeImportJobUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: LegislativeImportJobCreateOrConnectWithoutCandidateInput | LegislativeImportJobCreateOrConnectWithoutCandidateInput[]
+    createMany?: LegislativeImportJobCreateManyCandidateInputEnvelope
+    connect?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
   }
 
   export type SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput = {
@@ -17474,6 +20758,34 @@ export namespace Prisma {
     deleteMany?: CandidateSourceScalarWhereInput | CandidateSourceScalarWhereInput[]
   }
 
+  export type CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateLegislativeRecordCreateWithoutCandidateInput, CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput> | CandidateLegislativeRecordCreateWithoutCandidateInput[] | CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput | CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateLegislativeRecordUpsertWithWhereUniqueWithoutCandidateInput | CandidateLegislativeRecordUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateLegislativeRecordCreateManyCandidateInputEnvelope
+    set?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    disconnect?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    delete?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    connect?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    update?: CandidateLegislativeRecordUpdateWithWhereUniqueWithoutCandidateInput | CandidateLegislativeRecordUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateLegislativeRecordUpdateManyWithWhereWithoutCandidateInput | CandidateLegislativeRecordUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateLegislativeRecordScalarWhereInput | CandidateLegislativeRecordScalarWhereInput[]
+  }
+
+  export type LegislativeImportJobUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<LegislativeImportJobCreateWithoutCandidateInput, LegislativeImportJobUncheckedCreateWithoutCandidateInput> | LegislativeImportJobCreateWithoutCandidateInput[] | LegislativeImportJobUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: LegislativeImportJobCreateOrConnectWithoutCandidateInput | LegislativeImportJobCreateOrConnectWithoutCandidateInput[]
+    upsert?: LegislativeImportJobUpsertWithWhereUniqueWithoutCandidateInput | LegislativeImportJobUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: LegislativeImportJobCreateManyCandidateInputEnvelope
+    set?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    disconnect?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    delete?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    connect?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    update?: LegislativeImportJobUpdateWithWhereUniqueWithoutCandidateInput | LegislativeImportJobUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: LegislativeImportJobUpdateManyWithWhereWithoutCandidateInput | LegislativeImportJobUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: LegislativeImportJobScalarWhereInput | LegislativeImportJobScalarWhereInput[]
+  }
+
   export type SurveyAdjustmentUpdateManyWithoutCandidateNestedInput = {
     create?: XOR<SurveyAdjustmentCreateWithoutCandidateInput, SurveyAdjustmentUncheckedCreateWithoutCandidateInput> | SurveyAdjustmentCreateWithoutCandidateInput[] | SurveyAdjustmentUncheckedCreateWithoutCandidateInput[]
     connectOrCreate?: SurveyAdjustmentCreateOrConnectWithoutCandidateInput | SurveyAdjustmentCreateOrConnectWithoutCandidateInput[]
@@ -17556,6 +20868,34 @@ export namespace Prisma {
     update?: CandidateSourceUpdateWithWhereUniqueWithoutCandidateInput | CandidateSourceUpdateWithWhereUniqueWithoutCandidateInput[]
     updateMany?: CandidateSourceUpdateManyWithWhereWithoutCandidateInput | CandidateSourceUpdateManyWithWhereWithoutCandidateInput[]
     deleteMany?: CandidateSourceScalarWhereInput | CandidateSourceScalarWhereInput[]
+  }
+
+  export type CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateLegislativeRecordCreateWithoutCandidateInput, CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput> | CandidateLegislativeRecordCreateWithoutCandidateInput[] | CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput | CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateLegislativeRecordUpsertWithWhereUniqueWithoutCandidateInput | CandidateLegislativeRecordUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateLegislativeRecordCreateManyCandidateInputEnvelope
+    set?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    disconnect?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    delete?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    connect?: CandidateLegislativeRecordWhereUniqueInput | CandidateLegislativeRecordWhereUniqueInput[]
+    update?: CandidateLegislativeRecordUpdateWithWhereUniqueWithoutCandidateInput | CandidateLegislativeRecordUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateLegislativeRecordUpdateManyWithWhereWithoutCandidateInput | CandidateLegislativeRecordUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateLegislativeRecordScalarWhereInput | CandidateLegislativeRecordScalarWhereInput[]
+  }
+
+  export type LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<LegislativeImportJobCreateWithoutCandidateInput, LegislativeImportJobUncheckedCreateWithoutCandidateInput> | LegislativeImportJobCreateWithoutCandidateInput[] | LegislativeImportJobUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: LegislativeImportJobCreateOrConnectWithoutCandidateInput | LegislativeImportJobCreateOrConnectWithoutCandidateInput[]
+    upsert?: LegislativeImportJobUpsertWithWhereUniqueWithoutCandidateInput | LegislativeImportJobUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: LegislativeImportJobCreateManyCandidateInputEnvelope
+    set?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    disconnect?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    delete?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    connect?: LegislativeImportJobWhereUniqueInput | LegislativeImportJobWhereUniqueInput[]
+    update?: LegislativeImportJobUpdateWithWhereUniqueWithoutCandidateInput | LegislativeImportJobUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: LegislativeImportJobUpdateManyWithWhereWithoutCandidateInput | LegislativeImportJobUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: LegislativeImportJobScalarWhereInput | LegislativeImportJobScalarWhereInput[]
   }
 
   export type SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput = {
@@ -17836,6 +21176,42 @@ export namespace Prisma {
     update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutSelectionsInput, CandidateUpdateWithoutSelectionsInput>, CandidateUncheckedUpdateWithoutSelectionsInput>
   }
 
+  export type CandidateCreateNestedOneWithoutLegislativeRecordsInput = {
+    create?: XOR<CandidateCreateWithoutLegislativeRecordsInput, CandidateUncheckedCreateWithoutLegislativeRecordsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutLegislativeRecordsInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type CandidateUpdateOneRequiredWithoutLegislativeRecordsNestedInput = {
+    create?: XOR<CandidateCreateWithoutLegislativeRecordsInput, CandidateUncheckedCreateWithoutLegislativeRecordsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutLegislativeRecordsInput
+    upsert?: CandidateUpsertWithoutLegislativeRecordsInput
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutLegislativeRecordsInput, CandidateUpdateWithoutLegislativeRecordsInput>, CandidateUncheckedUpdateWithoutLegislativeRecordsInput>
+  }
+
+  export type CandidateCreateNestedOneWithoutLegislativeImportJobsInput = {
+    create?: XOR<CandidateCreateWithoutLegislativeImportJobsInput, CandidateUncheckedCreateWithoutLegislativeImportJobsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutLegislativeImportJobsInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type CandidateUpdateOneRequiredWithoutLegislativeImportJobsNestedInput = {
+    create?: XOR<CandidateCreateWithoutLegislativeImportJobsInput, CandidateUncheckedCreateWithoutLegislativeImportJobsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutLegislativeImportJobsInput
+    upsert?: CandidateUpsertWithoutLegislativeImportJobsInput
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutLegislativeImportJobsInput, CandidateUpdateWithoutLegislativeImportJobsInput>, CandidateUncheckedUpdateWithoutLegislativeImportJobsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -18050,6 +21426,22 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type CandidatePlatformCreateWithoutCandidateInput = {
     id?: string
     title: string
@@ -18219,6 +21611,100 @@ export namespace Prisma {
 
   export type CandidateSourceCreateManyCandidateInputEnvelope = {
     data: CandidateSourceCreateManyCandidateInput | CandidateSourceCreateManyCandidateInput[]
+  }
+
+  export type CandidateLegislativeRecordCreateWithoutCandidateInput = {
+    id?: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle?: string | null
+    role: string
+    status: string
+    republicActNo?: string | null
+    filedDate?: Date | string | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl?: string | null
+    reviewStatus?: string
+    matchConfidence?: number
+    matchNotes?: string | null
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle?: string | null
+    role: string
+    status: string
+    republicActNo?: string | null
+    filedDate?: Date | string | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl?: string | null
+    reviewStatus?: string
+    matchConfidence?: number
+    matchNotes?: string | null
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidateLegislativeRecordCreateOrConnectWithoutCandidateInput = {
+    where: CandidateLegislativeRecordWhereUniqueInput
+    create: XOR<CandidateLegislativeRecordCreateWithoutCandidateInput, CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateLegislativeRecordCreateManyCandidateInputEnvelope = {
+    data: CandidateLegislativeRecordCreateManyCandidateInput | CandidateLegislativeRecordCreateManyCandidateInput[]
+  }
+
+  export type LegislativeImportJobCreateWithoutCandidateInput = {
+    id?: string
+    status: string
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    totalFound?: number
+    insertedCount?: number
+    updatedCount?: number
+    skippedCount?: number
+    needsReviewCount?: number
+    error?: string | null
+    sourcesChecked?: string | null
+    coverageNotes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LegislativeImportJobUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    status: string
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    totalFound?: number
+    insertedCount?: number
+    updatedCount?: number
+    skippedCount?: number
+    needsReviewCount?: number
+    error?: string | null
+    sourcesChecked?: string | null
+    coverageNotes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LegislativeImportJobCreateOrConnectWithoutCandidateInput = {
+    where: LegislativeImportJobWhereUniqueInput
+    create: XOR<LegislativeImportJobCreateWithoutCandidateInput, LegislativeImportJobUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type LegislativeImportJobCreateManyCandidateInputEnvelope = {
+    data: LegislativeImportJobCreateManyCandidateInput | LegislativeImportJobCreateManyCandidateInput[]
   }
 
   export type SurveyAdjustmentCreateWithoutCandidateInput = {
@@ -18429,6 +21915,84 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CandidateSource"> | Date | string
   }
 
+  export type CandidateLegislativeRecordUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateLegislativeRecordWhereUniqueInput
+    update: XOR<CandidateLegislativeRecordUpdateWithoutCandidateInput, CandidateLegislativeRecordUncheckedUpdateWithoutCandidateInput>
+    create: XOR<CandidateLegislativeRecordCreateWithoutCandidateInput, CandidateLegislativeRecordUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateLegislativeRecordUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateLegislativeRecordWhereUniqueInput
+    data: XOR<CandidateLegislativeRecordUpdateWithoutCandidateInput, CandidateLegislativeRecordUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type CandidateLegislativeRecordUpdateManyWithWhereWithoutCandidateInput = {
+    where: CandidateLegislativeRecordScalarWhereInput
+    data: XOR<CandidateLegislativeRecordUpdateManyMutationInput, CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type CandidateLegislativeRecordScalarWhereInput = {
+    AND?: CandidateLegislativeRecordScalarWhereInput | CandidateLegislativeRecordScalarWhereInput[]
+    OR?: CandidateLegislativeRecordScalarWhereInput[]
+    NOT?: CandidateLegislativeRecordScalarWhereInput | CandidateLegislativeRecordScalarWhereInput[]
+    id?: StringFilter<"CandidateLegislativeRecord"> | string
+    candidateId?: StringFilter<"CandidateLegislativeRecord"> | string
+    chamber?: StringFilter<"CandidateLegislativeRecord"> | string
+    congress?: IntFilter<"CandidateLegislativeRecord"> | number
+    billNo?: StringFilter<"CandidateLegislativeRecord"> | string
+    title?: StringFilter<"CandidateLegislativeRecord"> | string
+    longTitle?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    role?: StringFilter<"CandidateLegislativeRecord"> | string
+    status?: StringFilter<"CandidateLegislativeRecord"> | string
+    republicActNo?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    filedDate?: DateTimeNullableFilter<"CandidateLegislativeRecord"> | Date | string | null
+    sourceInstitution?: StringFilter<"CandidateLegislativeRecord"> | string
+    sourceUrl?: StringFilter<"CandidateLegislativeRecord"> | string
+    pdfUrl?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    reviewStatus?: StringFilter<"CandidateLegislativeRecord"> | string
+    matchConfidence?: FloatFilter<"CandidateLegislativeRecord"> | number
+    matchNotes?: StringNullableFilter<"CandidateLegislativeRecord"> | string | null
+    displayOrder?: IntFilter<"CandidateLegislativeRecord"> | number
+    createdAt?: DateTimeFilter<"CandidateLegislativeRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"CandidateLegislativeRecord"> | Date | string
+  }
+
+  export type LegislativeImportJobUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: LegislativeImportJobWhereUniqueInput
+    update: XOR<LegislativeImportJobUpdateWithoutCandidateInput, LegislativeImportJobUncheckedUpdateWithoutCandidateInput>
+    create: XOR<LegislativeImportJobCreateWithoutCandidateInput, LegislativeImportJobUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type LegislativeImportJobUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: LegislativeImportJobWhereUniqueInput
+    data: XOR<LegislativeImportJobUpdateWithoutCandidateInput, LegislativeImportJobUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type LegislativeImportJobUpdateManyWithWhereWithoutCandidateInput = {
+    where: LegislativeImportJobScalarWhereInput
+    data: XOR<LegislativeImportJobUpdateManyMutationInput, LegislativeImportJobUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type LegislativeImportJobScalarWhereInput = {
+    AND?: LegislativeImportJobScalarWhereInput | LegislativeImportJobScalarWhereInput[]
+    OR?: LegislativeImportJobScalarWhereInput[]
+    NOT?: LegislativeImportJobScalarWhereInput | LegislativeImportJobScalarWhereInput[]
+    id?: StringFilter<"LegislativeImportJob"> | string
+    candidateId?: StringFilter<"LegislativeImportJob"> | string
+    status?: StringFilter<"LegislativeImportJob"> | string
+    startedAt?: DateTimeFilter<"LegislativeImportJob"> | Date | string
+    completedAt?: DateTimeNullableFilter<"LegislativeImportJob"> | Date | string | null
+    totalFound?: IntFilter<"LegislativeImportJob"> | number
+    insertedCount?: IntFilter<"LegislativeImportJob"> | number
+    updatedCount?: IntFilter<"LegislativeImportJob"> | number
+    skippedCount?: IntFilter<"LegislativeImportJob"> | number
+    needsReviewCount?: IntFilter<"LegislativeImportJob"> | number
+    error?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    sourcesChecked?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    coverageNotes?: StringNullableFilter<"LegislativeImportJob"> | string | null
+    createdAt?: DateTimeFilter<"LegislativeImportJob"> | Date | string
+  }
+
   export type SurveyAdjustmentUpsertWithWhereUniqueWithoutCandidateInput = {
     where: SurveyAdjustmentWhereUniqueInput
     update: XOR<SurveyAdjustmentUpdateWithoutCandidateInput, SurveyAdjustmentUncheckedUpdateWithoutCandidateInput>
@@ -18489,6 +22053,8 @@ export namespace Prisma {
     selections?: CandidateSelectionCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
   }
 
@@ -18514,6 +22080,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUncheckedCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
   }
 
@@ -18555,6 +22123,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18580,6 +22150,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUncheckedUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18605,6 +22177,8 @@ export namespace Prisma {
     selections?: CandidateSelectionCreateNestedManyWithoutCandidateInput
     educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
   }
 
@@ -18630,6 +22204,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUncheckedCreateNestedManyWithoutCandidateInput
     educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
   }
 
@@ -18671,6 +22247,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUpdateManyWithoutCandidateNestedInput
     educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18696,6 +22274,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUncheckedUpdateManyWithoutCandidateNestedInput
     educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18721,6 +22301,8 @@ export namespace Prisma {
     educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
   }
 
@@ -18746,6 +22328,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
   }
 
@@ -18787,6 +22371,8 @@ export namespace Prisma {
     educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18812,6 +22398,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18837,6 +22425,8 @@ export namespace Prisma {
     selections?: CandidateSelectionCreateNestedManyWithoutCandidateInput
     educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
   }
 
@@ -18862,6 +22452,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUncheckedCreateNestedManyWithoutCandidateInput
     educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
   }
 
@@ -18903,6 +22495,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUpdateManyWithoutCandidateNestedInput
     educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
   }
 
@@ -18928,6 +22522,8 @@ export namespace Prisma {
     selections?: CandidateSelectionUncheckedUpdateManyWithoutCandidateNestedInput
     educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
@@ -19197,6 +22793,8 @@ export namespace Prisma {
     educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
   }
 
   export type CandidateUncheckedCreateWithoutAdjustmentsInput = {
@@ -19222,6 +22820,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type CandidateCreateOrConnectWithoutAdjustmentsInput = {
@@ -19342,6 +22942,8 @@ export namespace Prisma {
     educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
   }
 
   export type CandidateUncheckedUpdateWithoutAdjustmentsInput = {
@@ -19367,6 +22969,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type SurveyCampaignCreateWithoutSubmissionsInput = {
@@ -19641,6 +23245,8 @@ export namespace Prisma {
     educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
   }
 
@@ -19666,6 +23272,8 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
     publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
     sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
     adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
   }
 
@@ -19772,6 +23380,8 @@ export namespace Prisma {
     educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
   }
 
@@ -19797,6 +23407,256 @@ export namespace Prisma {
     educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
     publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
     sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
+    adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateWithoutLegislativeRecordsInput = {
+    id?: string
+    slug: string
+    name: string
+    position: string
+    party?: string | null
+    color?: string
+    photoUrl?: string | null
+    bio?: string | null
+    education?: string | null
+    publicService?: string | null
+    officialWebsite?: string | null
+    socialLinks?: string | null
+    displayOrder?: number
+    isPublished?: boolean
+    lastVerifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    platforms?: CandidatePlatformCreateNestedManyWithoutCandidateInput
+    selections?: CandidateSelectionCreateNestedManyWithoutCandidateInput
+    educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
+    publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
+    sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobCreateNestedManyWithoutCandidateInput
+    adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutLegislativeRecordsInput = {
+    id?: string
+    slug: string
+    name: string
+    position: string
+    party?: string | null
+    color?: string
+    photoUrl?: string | null
+    bio?: string | null
+    education?: string | null
+    publicService?: string | null
+    officialWebsite?: string | null
+    socialLinks?: string | null
+    displayOrder?: number
+    isPublished?: boolean
+    lastVerifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    platforms?: CandidatePlatformUncheckedCreateNestedManyWithoutCandidateInput
+    selections?: CandidateSelectionUncheckedCreateNestedManyWithoutCandidateInput
+    educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
+    publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
+    sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedCreateNestedManyWithoutCandidateInput
+    adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutLegislativeRecordsInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutLegislativeRecordsInput, CandidateUncheckedCreateWithoutLegislativeRecordsInput>
+  }
+
+  export type CandidateUpsertWithoutLegislativeRecordsInput = {
+    update: XOR<CandidateUpdateWithoutLegislativeRecordsInput, CandidateUncheckedUpdateWithoutLegislativeRecordsInput>
+    create: XOR<CandidateCreateWithoutLegislativeRecordsInput, CandidateUncheckedCreateWithoutLegislativeRecordsInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutLegislativeRecordsInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutLegislativeRecordsInput, CandidateUncheckedUpdateWithoutLegislativeRecordsInput>
+  }
+
+  export type CandidateUpdateWithoutLegislativeRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    party?: NullableStringFieldUpdateOperationsInput | string | null
+    color?: StringFieldUpdateOperationsInput | string
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    education?: NullableStringFieldUpdateOperationsInput | string | null
+    publicService?: NullableStringFieldUpdateOperationsInput | string | null
+    officialWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    lastVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platforms?: CandidatePlatformUpdateManyWithoutCandidateNestedInput
+    selections?: CandidateSelectionUpdateManyWithoutCandidateNestedInput
+    educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
+    publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
+    sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUpdateManyWithoutCandidateNestedInput
+    adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutLegislativeRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    party?: NullableStringFieldUpdateOperationsInput | string | null
+    color?: StringFieldUpdateOperationsInput | string
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    education?: NullableStringFieldUpdateOperationsInput | string | null
+    publicService?: NullableStringFieldUpdateOperationsInput | string | null
+    officialWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    lastVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platforms?: CandidatePlatformUncheckedUpdateManyWithoutCandidateNestedInput
+    selections?: CandidateSelectionUncheckedUpdateManyWithoutCandidateNestedInput
+    educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
+    publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
+    sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeImportJobs?: LegislativeImportJobUncheckedUpdateManyWithoutCandidateNestedInput
+    adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateWithoutLegislativeImportJobsInput = {
+    id?: string
+    slug: string
+    name: string
+    position: string
+    party?: string | null
+    color?: string
+    photoUrl?: string | null
+    bio?: string | null
+    education?: string | null
+    publicService?: string | null
+    officialWebsite?: string | null
+    socialLinks?: string | null
+    displayOrder?: number
+    isPublished?: boolean
+    lastVerifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    platforms?: CandidatePlatformCreateNestedManyWithoutCandidateInput
+    selections?: CandidateSelectionCreateNestedManyWithoutCandidateInput
+    educations?: CandidateEducationCreateNestedManyWithoutCandidateInput
+    publicServices?: CandidatePublicServiceCreateNestedManyWithoutCandidateInput
+    sources?: CandidateSourceCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordCreateNestedManyWithoutCandidateInput
+    adjustments?: SurveyAdjustmentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutLegislativeImportJobsInput = {
+    id?: string
+    slug: string
+    name: string
+    position: string
+    party?: string | null
+    color?: string
+    photoUrl?: string | null
+    bio?: string | null
+    education?: string | null
+    publicService?: string | null
+    officialWebsite?: string | null
+    socialLinks?: string | null
+    displayOrder?: number
+    isPublished?: boolean
+    lastVerifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    platforms?: CandidatePlatformUncheckedCreateNestedManyWithoutCandidateInput
+    selections?: CandidateSelectionUncheckedCreateNestedManyWithoutCandidateInput
+    educations?: CandidateEducationUncheckedCreateNestedManyWithoutCandidateInput
+    publicServices?: CandidatePublicServiceUncheckedCreateNestedManyWithoutCandidateInput
+    sources?: CandidateSourceUncheckedCreateNestedManyWithoutCandidateInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedCreateNestedManyWithoutCandidateInput
+    adjustments?: SurveyAdjustmentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutLegislativeImportJobsInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutLegislativeImportJobsInput, CandidateUncheckedCreateWithoutLegislativeImportJobsInput>
+  }
+
+  export type CandidateUpsertWithoutLegislativeImportJobsInput = {
+    update: XOR<CandidateUpdateWithoutLegislativeImportJobsInput, CandidateUncheckedUpdateWithoutLegislativeImportJobsInput>
+    create: XOR<CandidateCreateWithoutLegislativeImportJobsInput, CandidateUncheckedCreateWithoutLegislativeImportJobsInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutLegislativeImportJobsInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutLegislativeImportJobsInput, CandidateUncheckedUpdateWithoutLegislativeImportJobsInput>
+  }
+
+  export type CandidateUpdateWithoutLegislativeImportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    party?: NullableStringFieldUpdateOperationsInput | string | null
+    color?: StringFieldUpdateOperationsInput | string
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    education?: NullableStringFieldUpdateOperationsInput | string | null
+    publicService?: NullableStringFieldUpdateOperationsInput | string | null
+    officialWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    lastVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platforms?: CandidatePlatformUpdateManyWithoutCandidateNestedInput
+    selections?: CandidateSelectionUpdateManyWithoutCandidateNestedInput
+    educations?: CandidateEducationUpdateManyWithoutCandidateNestedInput
+    publicServices?: CandidatePublicServiceUpdateManyWithoutCandidateNestedInput
+    sources?: CandidateSourceUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUpdateManyWithoutCandidateNestedInput
+    adjustments?: SurveyAdjustmentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutLegislativeImportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    position?: StringFieldUpdateOperationsInput | string
+    party?: NullableStringFieldUpdateOperationsInput | string | null
+    color?: StringFieldUpdateOperationsInput | string
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    education?: NullableStringFieldUpdateOperationsInput | string | null
+    publicService?: NullableStringFieldUpdateOperationsInput | string | null
+    officialWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    socialLinks?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    lastVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platforms?: CandidatePlatformUncheckedUpdateManyWithoutCandidateNestedInput
+    selections?: CandidateSelectionUncheckedUpdateManyWithoutCandidateNestedInput
+    educations?: CandidateEducationUncheckedUpdateManyWithoutCandidateNestedInput
+    publicServices?: CandidatePublicServiceUncheckedUpdateManyWithoutCandidateNestedInput
+    sources?: CandidateSourceUncheckedUpdateManyWithoutCandidateNestedInput
+    legislativeRecords?: CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateNestedInput
     adjustments?: SurveyAdjustmentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
@@ -19861,6 +23721,44 @@ export namespace Prisma {
     displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type CandidateLegislativeRecordCreateManyCandidateInput = {
+    id?: string
+    chamber: string
+    congress: number
+    billNo: string
+    title: string
+    longTitle?: string | null
+    role: string
+    status: string
+    republicActNo?: string | null
+    filedDate?: Date | string | null
+    sourceInstitution: string
+    sourceUrl: string
+    pdfUrl?: string | null
+    reviewStatus?: string
+    matchConfidence?: number
+    matchNotes?: string | null
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LegislativeImportJobCreateManyCandidateInput = {
+    id?: string
+    status: string
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    totalFound?: number
+    insertedCount?: number
+    updatedCount?: number
+    skippedCount?: number
+    needsReviewCount?: number
+    error?: string | null
+    sourcesChecked?: string | null
+    coverageNotes?: string | null
+    createdAt?: Date | string
   }
 
   export type SurveyAdjustmentCreateManyCandidateInput = {
@@ -20068,6 +23966,120 @@ export namespace Prisma {
     displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateLegislativeRecordUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateLegislativeRecordUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateLegislativeRecordUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chamber?: StringFieldUpdateOperationsInput | string
+    congress?: IntFieldUpdateOperationsInput | number
+    billNo?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    longTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    republicActNo?: NullableStringFieldUpdateOperationsInput | string | null
+    filedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceInstitution?: StringFieldUpdateOperationsInput | string
+    sourceUrl?: StringFieldUpdateOperationsInput | string
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewStatus?: StringFieldUpdateOperationsInput | string
+    matchConfidence?: FloatFieldUpdateOperationsInput | number
+    matchNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LegislativeImportJobUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LegislativeImportJobUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LegislativeImportJobUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalFound?: IntFieldUpdateOperationsInput | number
+    insertedCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    skippedCount?: IntFieldUpdateOperationsInput | number
+    needsReviewCount?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcesChecked?: NullableStringFieldUpdateOperationsInput | string | null
+    coverageNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SurveyAdjustmentUpdateWithoutCandidateInput = {
@@ -20391,6 +24403,14 @@ export namespace Prisma {
      * @deprecated Use AdminAuditLogDefaultArgs instead
      */
     export type AdminAuditLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AdminAuditLogDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CandidateLegislativeRecordDefaultArgs instead
+     */
+    export type CandidateLegislativeRecordArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateLegislativeRecordDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use LegislativeImportJobDefaultArgs instead
+     */
+    export type LegislativeImportJobArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LegislativeImportJobDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

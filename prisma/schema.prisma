@@ -39,6 +39,8 @@ model Candidate {
   educations      CandidateEducation[]
   publicServices  CandidatePublicService[]
   sources         CandidateSource[]
+  legislativeRecords  CandidateLegislativeRecord[]
+  legislativeImportJobs LegislativeImportJob[]
   adjustments     SurveyAdjustment[]
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
@@ -243,4 +245,54 @@ model AdminAuditLog {
 
   @@index([createdAt])
 }
+
+model CandidateLegislativeRecord {
+  id                 String    @id @default(cuid())
+  candidateId        String
+  candidate          Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  chamber            String    // SENATE, HOUSE
+  congress           Int       // e.g. 17, 18, 19
+  billNo             String    // e.g. "SB-2214", "HB-1234", "RA 10931"
+  title              String
+  longTitle          String?
+  role               String    // PRINCIPAL_AUTHOR, CO_AUTHOR, SPONSOR, CO_SPONSOR
+  status             String    // PENDING, PASSED_SENATE, PASSED_HOUSE, ENACTED_INTO_LAW, REPUBLIC_ACT, CONSOLIDATED, ARCHIVED
+  republicActNo      String?   // e.g. "RA 10931"
+  filedDate          DateTime?
+  sourceInstitution  String    // SENATE_PH, HOUSE_PH
+  sourceUrl          String
+  pdfUrl             String?
+  reviewStatus       String    @default("CONFIRMED") // CONFIRMED, NEEDS_REVIEW, REJECTED
+  matchConfidence    Float     @default(1.0)
+  matchNotes         String?
+  displayOrder       Int       @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([candidateId, billNo, congress, role, sourceInstitution])
+  @@index([candidateId, chamber, congress])
+  @@index([candidateId, reviewStatus])
+  @@index([chamber, congress])
+}
+
+model LegislativeImportJob {
+  id                 String    @id @default(cuid())
+  candidateId        String
+  candidate          Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  status             String    // IN_PROGRESS, COMPLETED, FAILED
+  startedAt          DateTime  @default(now())
+  completedAt        DateTime?
+  totalFound         Int       @default(0)
+  insertedCount      Int       @default(0)
+  updatedCount       Int       @default(0)
+  skippedCount       Int       @default(0)
+  needsReviewCount   Int       @default(0)
+  error              String?
+  sourcesChecked     String?   // JSON string of sources queried
+  coverageNotes      String?
+  createdAt          DateTime  @default(now())
+
+  @@index([candidateId, startedAt])
+}
+
 

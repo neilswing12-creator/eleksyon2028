@@ -27,6 +27,10 @@ export async function GET(req: NextRequest) {
           sources: {
             orderBy: { displayOrder: "asc" },
           },
+          legislativeRecords: {
+            where: { reviewStatus: "CONFIRMED" },
+            orderBy: [{ congress: "desc" }, { displayOrder: "asc" }, { createdAt: "desc" }],
+          },
         },
       });
 
@@ -58,6 +62,20 @@ export async function GET(req: NextRequest) {
         },
         sources: {
           orderBy: { displayOrder: "asc" },
+        },
+        legislativeRecords: {
+          where: { reviewStatus: "CONFIRMED" },
+          select: {
+            id: true,
+            chamber: true,
+            congress: true,
+            billNo: true,
+            title: true,
+            role: true,
+            status: true,
+            republicActNo: true,
+            sourceInstitution: true,
+          },
         },
       },
       orderBy: [{ position: "asc" }, { displayOrder: "asc" }],

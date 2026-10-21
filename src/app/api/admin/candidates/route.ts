@@ -44,8 +44,15 @@ export async function GET(req: NextRequest) {
         sources: {
           orderBy: { displayOrder: "asc" },
         },
+        legislativeRecords: {
+          orderBy: [{ congress: "desc" }, { displayOrder: "asc" }],
+        },
+        legislativeImportJobs: {
+          orderBy: { startedAt: "desc" },
+          take: 1,
+        },
         _count: {
-          select: { selections: true },
+          select: { selections: true, legislativeRecords: true },
         },
       },
       orderBy: [{ position: "asc" }, { displayOrder: "asc" }],

@@ -307,6 +307,46 @@ exports.Prisma.AdminAuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CandidateLegislativeRecordScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  chamber: 'chamber',
+  congress: 'congress',
+  billNo: 'billNo',
+  title: 'title',
+  longTitle: 'longTitle',
+  role: 'role',
+  status: 'status',
+  republicActNo: 'republicActNo',
+  filedDate: 'filedDate',
+  sourceInstitution: 'sourceInstitution',
+  sourceUrl: 'sourceUrl',
+  pdfUrl: 'pdfUrl',
+  reviewStatus: 'reviewStatus',
+  matchConfidence: 'matchConfidence',
+  matchNotes: 'matchNotes',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LegislativeImportJobScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  status: 'status',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  totalFound: 'totalFound',
+  insertedCount: 'insertedCount',
+  updatedCount: 'updatedCount',
+  skippedCount: 'skippedCount',
+  needsReviewCount: 'needsReviewCount',
+  error: 'error',
+  sourcesChecked: 'sourcesChecked',
+  coverageNotes: 'coverageNotes',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -329,7 +369,9 @@ exports.Prisma.ModelName = {
   SurveyAdjustment: 'SurveyAdjustment',
   SurveySubmission: 'SurveySubmission',
   CandidateSelection: 'CandidateSelection',
-  AdminAuditLog: 'AdminAuditLog'
+  AdminAuditLog: 'AdminAuditLog',
+  CandidateLegislativeRecord: 'CandidateLegislativeRecord',
+  LegislativeImportJob: 'LegislativeImportJob'
 };
 
 /**

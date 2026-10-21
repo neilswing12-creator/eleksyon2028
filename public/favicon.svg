@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="E28">
+  <defs>
+    <radialGradient id="disc" cx="45%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#FFF27A"/>
+      <stop offset="1" stop-color="#F2A900"/>
+    </radialGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A6FE0"/>
+      <stop offset="1" stop-color="#0A2A8C"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0414C"/>
+      <stop offset="1" stop-color="#BF0A1C"/>
+    </linearGradient>
+    <g id="ray">
+      <polygon points="32,1 29,17 32,17" fill="#FFD04A"/>
+      <polygon points="32,1 32,17 35,17" fill="#E09300"/>
+    </g>
+  </defs>
+  <g>
+    <use href="#ray"/>
+    <use href="#ray" transform="rotate(45 32 22)"/>
+    <use href="#ray" transform="rotate(90 32 22)"/>
+    <use href="#ray" transform="rotate(135 32 22)"/>
+    <use href="#ray" transform="rotate(180 32 22)"/>
+    <use href="#ray" transform="rotate(225 32 22)"/>
+    <use href="#ray" transform="rotate(270 32 22)"/>
+    <use href="#ray" transform="rotate(315 32 22)"/>
+    <circle cx="32" cy="22" r="11" fill="url(#disc)"/>
+  </g>
+  <rect x="2" y="36" width="60" height="24" rx="3" fill="#000" opacity=".25" transform="translate(0 1.5)"/>
+  <path d="M5,36 H25 V60 H2 V39 Z" fill="url(#blue)"/>
+  <path d="M25,36 H59 Q62,36 62,39 V57 Q62,60 59,60 H25 Z" fill="url(#red)"/>
+  <rect x="2" y="36" width="60" height="1.6" fill="#fff" opacity=".6"/>
+  <g fill="none" stroke="#fff" stroke-width="3.6" stroke-linejoin="round">
+    <path d="M19,40 H8 V56 H19 M8,48 H17" stroke-linejoin="miter"/>
+    <path d="M28,43 C28,38 38,38 38,44 C38,49 28,51 28,56 H39"/>
+    <circle cx="50" cy="44.5" r="3.4"/>
+    <circle cx="50" cy="51.6" r="4"/>
+  </g>
+</svg>

@@ -8410,6 +8410,8 @@ export namespace Prisma {
     minResponseThreshold: number | null
     activeVotesAdjustment: number | null
     todayVotesAdjustment: number | null
+    domesticVotesAdjustment: number | null
+    overseasVotesAdjustment: number | null
     provincesReportingOverride: number | null
   }
 
@@ -8418,6 +8420,8 @@ export namespace Prisma {
     minResponseThreshold: number | null
     activeVotesAdjustment: number | null
     todayVotesAdjustment: number | null
+    domesticVotesAdjustment: number | null
+    overseasVotesAdjustment: number | null
     provincesReportingOverride: number | null
   }
 
@@ -8444,9 +8448,13 @@ export namespace Prisma {
     privacyNotice: string | null
     activeVotesAdjustment: number | null
     todayVotesAdjustment: number | null
+    domesticVotesAdjustment: number | null
+    overseasVotesAdjustment: number | null
     provincesReportingOverride: number | null
     activeVotesReason: string | null
     todayVotesReason: string | null
+    domesticVotesReason: string | null
+    overseasVotesReason: string | null
     provincesReportingReason: string | null
     statsLastAdjustedAt: Date | null
     statsLastAdjustedBy: string | null
@@ -8477,9 +8485,13 @@ export namespace Prisma {
     privacyNotice: string | null
     activeVotesAdjustment: number | null
     todayVotesAdjustment: number | null
+    domesticVotesAdjustment: number | null
+    overseasVotesAdjustment: number | null
     provincesReportingOverride: number | null
     activeVotesReason: string | null
     todayVotesReason: string | null
+    domesticVotesReason: string | null
+    overseasVotesReason: string | null
     provincesReportingReason: string | null
     statsLastAdjustedAt: Date | null
     statsLastAdjustedBy: string | null
@@ -8510,9 +8522,13 @@ export namespace Prisma {
     privacyNotice: number
     activeVotesAdjustment: number
     todayVotesAdjustment: number
+    domesticVotesAdjustment: number
+    overseasVotesAdjustment: number
     provincesReportingOverride: number
     activeVotesReason: number
     todayVotesReason: number
+    domesticVotesReason: number
+    overseasVotesReason: number
     provincesReportingReason: number
     statsLastAdjustedAt: number
     statsLastAdjustedBy: number
@@ -8527,6 +8543,8 @@ export namespace Prisma {
     minResponseThreshold?: true
     activeVotesAdjustment?: true
     todayVotesAdjustment?: true
+    domesticVotesAdjustment?: true
+    overseasVotesAdjustment?: true
     provincesReportingOverride?: true
   }
 
@@ -8535,6 +8553,8 @@ export namespace Prisma {
     minResponseThreshold?: true
     activeVotesAdjustment?: true
     todayVotesAdjustment?: true
+    domesticVotesAdjustment?: true
+    overseasVotesAdjustment?: true
     provincesReportingOverride?: true
   }
 
@@ -8561,9 +8581,13 @@ export namespace Prisma {
     privacyNotice?: true
     activeVotesAdjustment?: true
     todayVotesAdjustment?: true
+    domesticVotesAdjustment?: true
+    overseasVotesAdjustment?: true
     provincesReportingOverride?: true
     activeVotesReason?: true
     todayVotesReason?: true
+    domesticVotesReason?: true
+    overseasVotesReason?: true
     provincesReportingReason?: true
     statsLastAdjustedAt?: true
     statsLastAdjustedBy?: true
@@ -8594,9 +8618,13 @@ export namespace Prisma {
     privacyNotice?: true
     activeVotesAdjustment?: true
     todayVotesAdjustment?: true
+    domesticVotesAdjustment?: true
+    overseasVotesAdjustment?: true
     provincesReportingOverride?: true
     activeVotesReason?: true
     todayVotesReason?: true
+    domesticVotesReason?: true
+    overseasVotesReason?: true
     provincesReportingReason?: true
     statsLastAdjustedAt?: true
     statsLastAdjustedBy?: true
@@ -8627,9 +8655,13 @@ export namespace Prisma {
     privacyNotice?: true
     activeVotesAdjustment?: true
     todayVotesAdjustment?: true
+    domesticVotesAdjustment?: true
+    overseasVotesAdjustment?: true
     provincesReportingOverride?: true
     activeVotesReason?: true
     todayVotesReason?: true
+    domesticVotesReason?: true
+    overseasVotesReason?: true
     provincesReportingReason?: true
     statsLastAdjustedAt?: true
     statsLastAdjustedBy?: true
@@ -8747,9 +8779,13 @@ export namespace Prisma {
     privacyNotice: string | null
     activeVotesAdjustment: number
     todayVotesAdjustment: number
+    domesticVotesAdjustment: number
+    overseasVotesAdjustment: number
     provincesReportingOverride: number | null
     activeVotesReason: string | null
     todayVotesReason: string | null
+    domesticVotesReason: string | null
+    overseasVotesReason: string | null
     provincesReportingReason: string | null
     statsLastAdjustedAt: Date | null
     statsLastAdjustedBy: string | null
@@ -8799,9 +8835,13 @@ export namespace Prisma {
     privacyNotice?: boolean
     activeVotesAdjustment?: boolean
     todayVotesAdjustment?: boolean
+    domesticVotesAdjustment?: boolean
+    overseasVotesAdjustment?: boolean
     provincesReportingOverride?: boolean
     activeVotesReason?: boolean
     todayVotesReason?: boolean
+    domesticVotesReason?: boolean
+    overseasVotesReason?: boolean
     provincesReportingReason?: boolean
     statsLastAdjustedAt?: boolean
     statsLastAdjustedBy?: boolean
@@ -8835,9 +8875,13 @@ export namespace Prisma {
     privacyNotice?: boolean
     activeVotesAdjustment?: boolean
     todayVotesAdjustment?: boolean
+    domesticVotesAdjustment?: boolean
+    overseasVotesAdjustment?: boolean
     provincesReportingOverride?: boolean
     activeVotesReason?: boolean
     todayVotesReason?: boolean
+    domesticVotesReason?: boolean
+    overseasVotesReason?: boolean
     provincesReportingReason?: boolean
     statsLastAdjustedAt?: boolean
     statsLastAdjustedBy?: boolean
@@ -8868,9 +8912,13 @@ export namespace Prisma {
     privacyNotice?: boolean
     activeVotesAdjustment?: boolean
     todayVotesAdjustment?: boolean
+    domesticVotesAdjustment?: boolean
+    overseasVotesAdjustment?: boolean
     provincesReportingOverride?: boolean
     activeVotesReason?: boolean
     todayVotesReason?: boolean
+    domesticVotesReason?: boolean
+    overseasVotesReason?: boolean
     provincesReportingReason?: boolean
     statsLastAdjustedAt?: boolean
     statsLastAdjustedBy?: boolean
@@ -8914,9 +8962,13 @@ export namespace Prisma {
       privacyNotice: string | null
       activeVotesAdjustment: number
       todayVotesAdjustment: number
+      domesticVotesAdjustment: number
+      overseasVotesAdjustment: number
       provincesReportingOverride: number | null
       activeVotesReason: string | null
       todayVotesReason: string | null
+      domesticVotesReason: string | null
+      overseasVotesReason: string | null
       provincesReportingReason: string | null
       statsLastAdjustedAt: Date | null
       statsLastAdjustedBy: string | null
@@ -9339,9 +9391,13 @@ export namespace Prisma {
     readonly privacyNotice: FieldRef<"SurveyCampaign", 'String'>
     readonly activeVotesAdjustment: FieldRef<"SurveyCampaign", 'Int'>
     readonly todayVotesAdjustment: FieldRef<"SurveyCampaign", 'Int'>
+    readonly domesticVotesAdjustment: FieldRef<"SurveyCampaign", 'Int'>
+    readonly overseasVotesAdjustment: FieldRef<"SurveyCampaign", 'Int'>
     readonly provincesReportingOverride: FieldRef<"SurveyCampaign", 'Int'>
     readonly activeVotesReason: FieldRef<"SurveyCampaign", 'String'>
     readonly todayVotesReason: FieldRef<"SurveyCampaign", 'String'>
+    readonly domesticVotesReason: FieldRef<"SurveyCampaign", 'String'>
+    readonly overseasVotesReason: FieldRef<"SurveyCampaign", 'String'>
     readonly provincesReportingReason: FieldRef<"SurveyCampaign", 'String'>
     readonly statsLastAdjustedAt: FieldRef<"SurveyCampaign", 'DateTime'>
     readonly statsLastAdjustedBy: FieldRef<"SurveyCampaign", 'String'>
@@ -16234,9 +16290,13 @@ export namespace Prisma {
     privacyNotice: 'privacyNotice',
     activeVotesAdjustment: 'activeVotesAdjustment',
     todayVotesAdjustment: 'todayVotesAdjustment',
+    domesticVotesAdjustment: 'domesticVotesAdjustment',
+    overseasVotesAdjustment: 'overseasVotesAdjustment',
     provincesReportingOverride: 'provincesReportingOverride',
     activeVotesReason: 'activeVotesReason',
     todayVotesReason: 'todayVotesReason',
+    domesticVotesReason: 'domesticVotesReason',
+    overseasVotesReason: 'overseasVotesReason',
     provincesReportingReason: 'provincesReportingReason',
     statsLastAdjustedAt: 'statsLastAdjustedAt',
     statsLastAdjustedBy: 'statsLastAdjustedBy',
@@ -17021,9 +17081,13 @@ export namespace Prisma {
     privacyNotice?: StringNullableFilter<"SurveyCampaign"> | string | null
     activeVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
     todayVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
+    domesticVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
+    overseasVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
     provincesReportingOverride?: IntNullableFilter<"SurveyCampaign"> | number | null
     activeVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
     todayVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
+    domesticVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
+    overseasVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
     provincesReportingReason?: StringNullableFilter<"SurveyCampaign"> | string | null
     statsLastAdjustedAt?: DateTimeNullableFilter<"SurveyCampaign"> | Date | string | null
     statsLastAdjustedBy?: StringNullableFilter<"SurveyCampaign"> | string | null
@@ -17056,9 +17120,13 @@ export namespace Prisma {
     privacyNotice?: SortOrderInput | SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrderInput | SortOrder
     activeVotesReason?: SortOrderInput | SortOrder
     todayVotesReason?: SortOrderInput | SortOrder
+    domesticVotesReason?: SortOrderInput | SortOrder
+    overseasVotesReason?: SortOrderInput | SortOrder
     provincesReportingReason?: SortOrderInput | SortOrder
     statsLastAdjustedAt?: SortOrderInput | SortOrder
     statsLastAdjustedBy?: SortOrderInput | SortOrder
@@ -17094,9 +17162,13 @@ export namespace Prisma {
     privacyNotice?: StringNullableFilter<"SurveyCampaign"> | string | null
     activeVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
     todayVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
+    domesticVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
+    overseasVotesAdjustment?: IntFilter<"SurveyCampaign"> | number
     provincesReportingOverride?: IntNullableFilter<"SurveyCampaign"> | number | null
     activeVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
     todayVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
+    domesticVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
+    overseasVotesReason?: StringNullableFilter<"SurveyCampaign"> | string | null
     provincesReportingReason?: StringNullableFilter<"SurveyCampaign"> | string | null
     statsLastAdjustedAt?: DateTimeNullableFilter<"SurveyCampaign"> | Date | string | null
     statsLastAdjustedBy?: StringNullableFilter<"SurveyCampaign"> | string | null
@@ -17129,9 +17201,13 @@ export namespace Prisma {
     privacyNotice?: SortOrderInput | SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrderInput | SortOrder
     activeVotesReason?: SortOrderInput | SortOrder
     todayVotesReason?: SortOrderInput | SortOrder
+    domesticVotesReason?: SortOrderInput | SortOrder
+    overseasVotesReason?: SortOrderInput | SortOrder
     provincesReportingReason?: SortOrderInput | SortOrder
     statsLastAdjustedAt?: SortOrderInput | SortOrder
     statsLastAdjustedBy?: SortOrderInput | SortOrder
@@ -17170,9 +17246,13 @@ export namespace Prisma {
     privacyNotice?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
     activeVotesAdjustment?: IntWithAggregatesFilter<"SurveyCampaign"> | number
     todayVotesAdjustment?: IntWithAggregatesFilter<"SurveyCampaign"> | number
+    domesticVotesAdjustment?: IntWithAggregatesFilter<"SurveyCampaign"> | number
+    overseasVotesAdjustment?: IntWithAggregatesFilter<"SurveyCampaign"> | number
     provincesReportingOverride?: IntNullableWithAggregatesFilter<"SurveyCampaign"> | number | null
     activeVotesReason?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
     todayVotesReason?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
+    domesticVotesReason?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
+    overseasVotesReason?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
     provincesReportingReason?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
     statsLastAdjustedAt?: DateTimeNullableWithAggregatesFilter<"SurveyCampaign"> | Date | string | null
     statsLastAdjustedBy?: StringNullableWithAggregatesFilter<"SurveyCampaign"> | string | null
@@ -18490,9 +18570,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -18525,9 +18609,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -18560,9 +18648,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18595,9 +18687,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18630,9 +18726,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -18663,9 +18763,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18696,9 +18800,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20026,9 +20134,13 @@ export namespace Prisma {
     privacyNotice?: SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrder
     activeVotesReason?: SortOrder
     todayVotesReason?: SortOrder
+    domesticVotesReason?: SortOrder
+    overseasVotesReason?: SortOrder
     provincesReportingReason?: SortOrder
     statsLastAdjustedAt?: SortOrder
     statsLastAdjustedBy?: SortOrder
@@ -20041,6 +20153,8 @@ export namespace Prisma {
     minResponseThreshold?: SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrder
   }
 
@@ -20067,9 +20181,13 @@ export namespace Prisma {
     privacyNotice?: SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrder
     activeVotesReason?: SortOrder
     todayVotesReason?: SortOrder
+    domesticVotesReason?: SortOrder
+    overseasVotesReason?: SortOrder
     provincesReportingReason?: SortOrder
     statsLastAdjustedAt?: SortOrder
     statsLastAdjustedBy?: SortOrder
@@ -20100,9 +20218,13 @@ export namespace Prisma {
     privacyNotice?: SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrder
     activeVotesReason?: SortOrder
     todayVotesReason?: SortOrder
+    domesticVotesReason?: SortOrder
+    overseasVotesReason?: SortOrder
     provincesReportingReason?: SortOrder
     statsLastAdjustedAt?: SortOrder
     statsLastAdjustedBy?: SortOrder
@@ -20115,6 +20237,8 @@ export namespace Prisma {
     minResponseThreshold?: SortOrder
     activeVotesAdjustment?: SortOrder
     todayVotesAdjustment?: SortOrder
+    domesticVotesAdjustment?: SortOrder
+    overseasVotesAdjustment?: SortOrder
     provincesReportingOverride?: SortOrder
   }
 
@@ -22720,9 +22844,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -22754,9 +22882,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -22863,9 +22995,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22897,9 +23033,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22996,9 +23136,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -23030,9 +23174,13 @@ export namespace Prisma {
     privacyNotice?: string | null
     activeVotesAdjustment?: number
     todayVotesAdjustment?: number
+    domesticVotesAdjustment?: number
+    overseasVotesAdjustment?: number
     provincesReportingOverride?: number | null
     activeVotesReason?: string | null
     todayVotesReason?: string | null
+    domesticVotesReason?: string | null
+    overseasVotesReason?: string | null
     provincesReportingReason?: string | null
     statsLastAdjustedAt?: Date | string | null
     statsLastAdjustedBy?: string | null
@@ -23103,9 +23251,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23137,9 +23289,13 @@ export namespace Prisma {
     privacyNotice?: NullableStringFieldUpdateOperationsInput | string | null
     activeVotesAdjustment?: IntFieldUpdateOperationsInput | number
     todayVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    domesticVotesAdjustment?: IntFieldUpdateOperationsInput | number
+    overseasVotesAdjustment?: IntFieldUpdateOperationsInput | number
     provincesReportingOverride?: NullableIntFieldUpdateOperationsInput | number | null
     activeVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     todayVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    domesticVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
+    overseasVotesReason?: NullableStringFieldUpdateOperationsInput | string | null
     provincesReportingReason?: NullableStringFieldUpdateOperationsInput | string | null
     statsLastAdjustedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     statsLastAdjustedBy?: NullableStringFieldUpdateOperationsInput | string | null

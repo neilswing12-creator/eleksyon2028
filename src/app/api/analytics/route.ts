@@ -74,6 +74,8 @@ export async function GET(req: NextRequest) {
     // Read administrative adjustments and overrides for official statistics
     const activeVotesAdjustment = campaign?.activeVotesAdjustment ?? 0;
     const todayVotesAdjustment = campaign?.todayVotesAdjustment ?? 0;
+    const domesticVotesAdjustment = campaign?.domesticVotesAdjustment ?? 0;
+    const overseasVotesAdjustment = campaign?.overseasVotesAdjustment ?? 0;
     const provincesReportingOverride = campaign?.provincesReportingOverride ?? null;
 
     const displayedActiveVotes = Math.max(0, activeSubmissionsCount + activeVotesAdjustment);
@@ -324,6 +326,8 @@ export async function GET(req: NextRequest) {
     const domesticSubmissions = activeSubmissions.filter((s) => s.residenceType !== "OVERSEAS");
     const overseasTotalCount = overseasSubmissions.length;
     const domesticTotalCount = domesticSubmissions.length;
+    const displayedDomesticCount = Math.max(0, domesticTotalCount + domesticVotesAdjustment);
+    const displayedOverseasCount = Math.max(0, overseasTotalCount + overseasVotesAdjustment);
 
     // Group overseas submissions by Country
     const overseasCountryMap: Record<
@@ -754,8 +758,12 @@ export async function GET(req: NextRequest) {
       summary: {
         totalActiveSubmissions: displayedActiveVotes,
         rawActiveSubmissions: activeSubmissionsCount,
-        overseasSubmissionsCount: overseasTotalCount,
-        domesticSubmissionsCount: domesticTotalCount,
+        overseasSubmissionsCount: displayedOverseasCount,
+        rawOverseasSubmissions: overseasTotalCount,
+        overseasVotesAdjustment,
+        domesticSubmissionsCount: displayedDomesticCount,
+        rawDomesticSubmissions: domesticTotalCount,
+        domesticVotesAdjustment,
         activeVotesAdjustment,
         totalRetractedSubmissions: retractedSubmissionsCount,
         todaySubmissions: displayedTodayVotes,
@@ -776,12 +784,14 @@ export async function GET(req: NextRequest) {
         lastUpdated: new Date().toISOString(),
       },
       overseas: {
-        totalSubmissions: overseasTotalCount,
+        totalSubmissions: displayedOverseasCount,
+        rawTotalSubmissions: overseasTotalCount,
         percentageOfTotal:
-          activeSubmissionsCount > 0
-            ? Number(((overseasTotalCount / activeSubmissionsCount) * 100).toFixed(1))
+          displayedActiveVotes > 0
+            ? Number(((displayedOverseasCount / displayedActiveVotes) * 100).toFixed(1))
             : 0,
-        domesticSubmissions: domesticTotalCount,
+        domesticSubmissions: displayedDomesticCount,
+        rawDomesticSubmissions: domesticTotalCount,
         countries: overseasCountryBreakdown,
         regions: overseasRegionBreakdown,
       },

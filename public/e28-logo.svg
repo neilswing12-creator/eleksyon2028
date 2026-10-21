@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="E28 logo">
+  <defs>
+    <radialGradient id="disc" cx="38%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#FFF7B8"/>
+      <stop offset=".35" stop-color="#FFD43B"/>
+      <stop offset=".8" stop-color="#F0A000"/>
+      <stop offset="1" stop-color="#C77A00"/>
+    </radialGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4F8BFF"/>
+      <stop offset=".45" stop-color="#1F55C9"/>
+      <stop offset="1" stop-color="#0A2780"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF5A66"/>
+      <stop offset="1" stop-color="#B10C1D"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".03"/>
+    </linearGradient>
+    <linearGradient id="letter" gradientUnits="userSpaceOnUse" x1="0" y1="270" x2="0" y2="362">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".6" stop-color="#EAF0FF"/>
+      <stop offset="1" stop-color="#A9BDE8"/>
+    </linearGradient>
+    <linearGradient id="starG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE680"/>
+      <stop offset="1" stop-color="#E69500"/>
+    </linearGradient>
+    <filter id="ds" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="#000" flood-opacity=".32"/>
+    </filter>
+    <filter id="blur" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="7"/></filter>
+    <clipPath id="face"><rect x="130" y="255" width="340" height="150" rx="14"/></clipPath>
+
+    <!-- faceted rays pointing up from centre (175,205) -->
+    <g id="major">
+      <polygon points="175,55 161,143 175,143" fill="#FFE27A"/>
+      <polygon points="175,55 175,143 189,143" fill="#D8860A"/>
+    </g>
+    <g id="minor">
+      <polygon points="175,93 167,143 175,143" fill="#FFD04A"/>
+      <polygon points="175,93 175,143 183,143" fill="#C9780A"/>
+    </g>
+    <polygon id="star" points="0,-14 3.29,-4.53 13.31,-4.33 5.33,1.73 8.23,11.33 0,5.6 -8.23,11.33 -5.33,1.73 -13.31,-4.33 -3.29,-4.53"/>
+    <g id="txt" fill="none" stroke-linejoin="round">
+      <path d="M246,283 H185 V349 H246 M185,316 H239" stroke-width="18" stroke-linejoin="miter"/>
+      <path d="M279,295 C279,268 341,268 341,298 C341,322 279,334 279,349 H343" stroke-width="18"/>
+      <circle cx="403" cy="297" r="18" stroke-width="15"/>
+      <circle cx="403" cy="331" r="21" stroke-width="15"/>
+    </g>
+  </defs>
+
+  <g transform="translate(9 35)">
+    <!-- ground shadow -->
+    <ellipse cx="300" cy="438" rx="165" ry="10" fill="#000" opacity=".3" filter="url(#blur)"/>
+
+    <!-- sun -->
+    <g filter="url(#ds)">
+      <use href="#major"/>
+      <use href="#major" transform="rotate(45 175 205)"/>
+      <use href="#major" transform="rotate(90 175 205)"/>
+      <use href="#major" transform="rotate(135 175 205)"/>
+      <use href="#major" transform="rotate(180 175 205)"/>
+      <use href="#major" transform="rotate(225 175 205)"/>
+      <use href="#major" transform="rotate(270 175 205)"/>
+      <use href="#major" transform="rotate(315 175 205)"/>
+      <use href="#minor" transform="rotate(22.5 175 205)"/>
+      <use href="#minor" transform="rotate(67.5 175 205)"/>
+      <use href="#minor" transform="rotate(112.5 175 205)"/>
+      <use href="#minor" transform="rotate(157.5 175 205)"/>
+      <use href="#minor" transform="rotate(202.5 175 205)"/>
+      <use href="#minor" transform="rotate(247.5 175 205)"/>
+      <use href="#minor" transform="rotate(292.5 175 205)"/>
+      <use href="#minor" transform="rotate(337.5 175 205)"/>
+      <circle cx="175" cy="205" r="64" fill="url(#disc)"/>
+    </g>
+    <circle cx="175" cy="205" r="64" fill="none" stroke="#B36B00" stroke-opacity=".55" stroke-width="2"/>
+    <circle cx="175" cy="205" r="50" fill="none" stroke="#FFF3A0" stroke-opacity=".7" stroke-width="3"/>
+    <circle cx="175" cy="205" r="47" fill="none" stroke="#C47C00" stroke-opacity=".35" stroke-width="2"/>
+    <ellipse cx="155" cy="172" rx="30" ry="15" fill="#fff" opacity=".45" transform="rotate(-30 155 172)"/>
+
+    <!-- stars -->
+    <g fill="url(#starG)" stroke="#B36B00" stroke-width="1" stroke-opacity=".6" filter="url(#ds)">
+      <use href="#star" transform="translate(362 232) scale(1.15)"/>
+      <use href="#star" transform="translate(412 218) scale(1.5)"/>
+      <use href="#star" transform="translate(462 232) scale(1.15)"/>
+    </g>
+
+    <!-- extruded banner -->
+    <rect x="130" y="271" width="340" height="150" rx="14" fill="#051548"/>
+    <rect x="130" y="263" width="340" height="150" rx="14" fill="#0A2272"/>
+    <g filter="url(#ds)">
+      <g clip-path="url(#face)">
+        <rect x="130" y="255" width="340" height="150" fill="url(#blue)"/>
+        <rect x="130" y="383" width="340" height="22" fill="url(#red)"/>
+        <rect x="130" y="381" width="340" height="3" fill="#fff" opacity=".7"/>
+        <path d="M130,255 H470 V318 Q300,345 130,300 Z" fill="url(#gloss)"/>
+      </g>
+      <rect x="130" y="255" width="340" height="150" rx="14" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="3"/>
+    </g>
+
+    <!-- 3D letters -->
+    <use href="#txt" transform="translate(5 7)" stroke="#031040" opacity=".65"/>
+    <use href="#txt" transform="translate(3 4)" stroke="#6F86C4"/>
+    <use href="#txt" stroke="url(#letter)"/>
+  </g>
+</svg>

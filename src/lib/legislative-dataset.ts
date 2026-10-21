@@ -34,6 +34,764 @@ export interface CandidateLegislativeSeed {
 }
 
 export const OFFICIAL_LEGISLATIVE_DATASET: CandidateLegislativeSeed[] = [
+  // Senator Raffy T. Tulfo
+  {
+    slug: "raffy-tulfo",
+    aliases: [
+      "Raffy T. Tulfo",
+      "Raffy Tulfo",
+      "Rafael Teshiba Tulfo",
+      "Tulfo, Raffy T.",
+      "Tulfo, Rafael T."
+    ],
+    records: [
+      {
+        billNo: "SB-2221",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Magna Carta of Filipino Seafarers",
+        longTitle: "An Act Providing for the Magna Carta of Filipino Seafarers, Institutionalizing Rights, Welfare, and Training Protections",
+        role: "SPONSOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 12021",
+        filedDate: "2023-05-22",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2221",
+        pdfUrl: "https://legacy.senate.gov.ph/lisdata/4183038182!.pdf",
+        matchConfidence: 1.0,
+        matchNotes: "Principal Sponsor and Chairperson of Senate Committee on Migrant Workers (19th Congress). Enacted into law as Republic Act No. 12021."
+      },
+      {
+        billNo: "SB-2035",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Anti-Financial Account Scamming Act (AFASA)",
+        longTitle: "An Act Prohibiting and Penalizing Financial Account Scamming, Smurfing, and Electronic Money Mule Operations",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 12010",
+        filedDate: "2023-03-21",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2035",
+        pdfUrl: "https://legacy.senate.gov.ph/lisdata/4134937667!.pdf",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 12010."
+      },
+      {
+        billNo: "SB-1473",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Anti-Wage Theft Act",
+        longTitle: "An Act Defining and Penalizing Wage Theft Committed Against Workers and Establishing Mechanisms for Expedited Restitution",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2022-11-08",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-1473",
+        pdfUrl: "https://legacy.senate.gov.ph/lisdata/3975036130!.pdf",
+        matchConfidence: 1.0,
+        matchNotes: "Authored by Senator Raffy Tulfo to protect minimum wage earners from unlawful employer deductions."
+      },
+      {
+        billNo: "SB-1410",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Paternity Leave Expansion Act (Extension to 30 Days)",
+        longTitle: "An Act Increasing Paternity Leave from Seven (7) Days to Thirty (30) Days for All Married Male Employees in the Private and Public Sectors",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2022-10-18",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-1410",
+        pdfUrl: "https://legacy.senate.gov.ph/lisdata/3960035981!.pdf",
+        matchConfidence: 1.0,
+        matchNotes: "Principal author in the 19th Congress."
+      },
+      {
+        billNo: "SB-2441",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Private Security Services Welfare and Standards Act",
+        longTitle: "An Act Strengthening Welfare and Standard Protections for Security Guards and Watchmen in the Philippines",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2023-09-20",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2441",
+        pdfUrl: "https://legacy.senate.gov.ph/lisdata/4260038992!.pdf",
+        matchConfidence: 1.0,
+        matchNotes: "Principal author in the 19th Congress."
+      },
+      {
+        billNo: "SB-2212",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Fair Traffic Penalties and Motorist Rights Protection Act",
+        longTitle: "An Act Prescribing Standard Guidelines on Traffic Enforcement Penalties and Prohibiting Arbitrary Driver License Confiscations Without Due Process",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2023-05-16",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2212",
+        pdfUrl: "https://legacy.senate.gov.ph/lisdata/4180038150!.pdf",
+        matchConfidence: 1.0,
+        matchNotes: "Authored by Senator Raffy Tulfo to protect public utility vehicle drivers and private motorists."
+      },
+      {
+        billNo: "SB-2503",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Low Carbon Economy and Climate Accountability Act",
+        longTitle: "An Act Institutionalizing Low Carbon Economy Standards and Incentives for Industrial Transition",
+        role: "CO_AUTHOR",
+        status: "PASSED_SENATE",
+        filedDate: "2024-01-22",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2503",
+        matchConfidence: 1.0,
+        matchNotes: "Passed third reading in the Senate."
+      }
+    ]
+  },
+
+  // Representative Ferdinand Alexander 'Sandro' Marcos
+  {
+    slug: "sandro-marcos",
+    aliases: [
+      "Ferdinand Alexander 'Sandro' Marcos",
+      "Ferdinand Alexander A. Marcos",
+      "Sandro Marcos",
+      "Marcos, Ferdinand Alexander A."
+    ],
+    records: [
+      {
+        billNo: "HB-6608",
+        congress: 19,
+        chamber: "HOUSE",
+        title: "Maharlika Investment Fund Act",
+        longTitle: "An Act Establishing the Maharlika Investment Fund, Providing for the Management, Investment, and Use Thereof",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11954",
+        filedDate: "2022-11-28",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Principal Author in the House of Representatives. Enacted into law as Republic Act No. 11954."
+      },
+      {
+        billNo: "HB-4",
+        congress: 19,
+        chamber: "HOUSE",
+        title: "Internet Transactions Act of 2023",
+        longTitle: "An Act Regulating Digital Commerce and Internet Transactions to Protect Consumers and Merchants",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11967",
+        filedDate: "2022-06-30",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11967."
+      },
+      {
+        billNo: "HB-7325",
+        congress: 19,
+        chamber: "HOUSE",
+        title: "E-Governance / E-Government Act of 2023",
+        longTitle: "An Act Institutionalizing the Transition of Government Agencies and Local Government Units to Digital Platforms and Interoperable Data Systems",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PASSED_HOUSE",
+        filedDate: "2023-02-27",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Approved on third and final reading by the House of Representatives."
+      },
+      {
+        billNo: "HB-227",
+        congress: 19,
+        chamber: "HOUSE",
+        title: "National Caregivers Welfare and Protection Act",
+        longTitle: "An Act Instituting Policies for the Protection and Welfare of Caregivers in the Practice of Their Profession",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11965",
+        filedDate: "2022-07-04",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11965."
+      }
+    ]
+  },
+
+  // Senator Loren B. Legarda
+  {
+    slug: "loren-legarda",
+    aliases: [
+      "Loren B. Legarda",
+      "Loren Legarda",
+      "Lorna Regina B. Legarda",
+      "Legarda, Loren B."
+    ],
+    records: [
+      {
+        billNo: "RA 9003",
+        congress: 11,
+        chamber: "SENATE",
+        title: "Ecological Solid Waste Management Act of 2000",
+        longTitle: "An Act Providing for an Ecological Solid Waste Management Program, Creating the Necessary Institutional Mechanisms and Incentives",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 9003",
+        filedDate: "1999-08-10",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=11&q=SBN-1583",
+        matchConfidence: 1.0,
+        matchNotes: "Landmark environmental legislation principal author."
+      },
+      {
+        billNo: "RA 9729",
+        congress: 14,
+        chamber: "SENATE",
+        title: "Climate Change Act of 2009",
+        longTitle: "An Act Mainstreaming Climate Change into Government Policy Formulations and Establishing the Climate Change Commission",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 9729",
+        filedDate: "2008-05-05",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=14&q=SBN-2583",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 9729."
+      },
+      {
+        billNo: "RA 9513",
+        congress: 14,
+        chamber: "SENATE",
+        title: "Renewable Energy Act of 2008",
+        longTitle: "An Act Promoting the Development, Utilization and Commercialization of Renewable Energy Resources",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 9513",
+        filedDate: "2008-03-03",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=14&q=SBN-2046",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 9513."
+      },
+      {
+        billNo: "RA 11904",
+        congress: 18,
+        chamber: "SENATE",
+        title: "Philippine Creative Industries Development Act",
+        longTitle: "An Act Providing for the Development and Promotion of the Philippine Creative Industries and Establishing the Creative Industries Development Council",
+        role: "SPONSOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11904",
+        filedDate: "2021-09-06",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-2455",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11904."
+      }
+    ]
+  },
+
+  // Senator Alan Peter S. Cayetano
+  {
+    slug: "alan-cayetano",
+    aliases: [
+      "Alan Peter S. Cayetano",
+      "Alan Peter Cayetano",
+      "Alan Cayetano",
+      "Cayetano, Alan Peter S."
+    ],
+    records: [
+      {
+        billNo: "RA 11148",
+        congress: 17,
+        chamber: "SENATE",
+        title: "Kalusugan at Nutrisyon ng Mag-Nanay Act (First 1,000 Days)",
+        longTitle: "An Act Scaling Up Health and Nutrition for Mothers and Children During the First 1,000 Days of Life",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11148",
+        filedDate: "2016-08-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1537",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11148."
+      },
+      {
+        billNo: "RA 11223",
+        congress: 17,
+        chamber: "SENATE",
+        title: "Universal Health Care Act",
+        longTitle: "An Act Institutionalizing Universal Health Care for All Filipinos",
+        role: "CO_SPONSOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11223",
+        filedDate: "2017-05-15",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1896",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11223."
+      },
+      {
+        billNo: "SB-198",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Citizen National Service and Military Readiness Training Act",
+        longTitle: "An Act Institutionalizing Mandatory Citizen National Service Training for Tertiary Students",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2022-07-07",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-198",
+        matchConfidence: 1.0,
+        matchNotes: "19th Congress Senate measure."
+      }
+    ]
+  },
+
+  // Senator Maria Lourdes 'Nancy' S. Binay
+  {
+    slug: "nancy-binay",
+    aliases: [
+      "Maria Lourdes 'Nancy' S. Binay",
+      "Maria Lourdes Nancy S. Binay",
+      "Nancy Binay",
+      "Binay, Nancy S."
+    ],
+    records: [
+      {
+        billNo: "RA 11210",
+        congress: 17,
+        chamber: "SENATE",
+        title: "105-Day Expanded Maternity Leave Act",
+        longTitle: "An Act Increasing the Maternity Leave Period to One Hundred Five (105) Days for Female Workers",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11210",
+        filedDate: "2016-08-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1305",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11210."
+      },
+      {
+        billNo: "RA 10665",
+        congress: 16,
+        chamber: "SENATE",
+        title: "Open High School System Act",
+        longTitle: "An Act Establishing the Open High School System in the Philippines and Appropriating Funds Therefor",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10665",
+        filedDate: "2014-02-12",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=16&q=SBN-2185",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10665."
+      }
+    ]
+  },
+
+  // Representative Mar-Len Abigail 'Abby' S. Binay
+  {
+    slug: "abby-binay",
+    aliases: [
+      "Mar-Len Abigail 'Abby' S. Binay",
+      "Mar-Len Abigail S. Binay",
+      "Abby Binay",
+      "Binay, Mar-Len Abigail S."
+    ],
+    records: [
+      {
+        billNo: "HB-1338",
+        congress: 15,
+        chamber: "HOUSE",
+        title: "Special Education (SPED) Act of the Philippines",
+        longTitle: "An Act Instituting a Framework for Special Education in All Public and Private Elementary and Secondary Schools",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PASSED_HOUSE",
+        filedDate: "2010-07-15",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Authored during legislative tenure representing Makati City 2nd District."
+      },
+      {
+        billNo: "HB-4411",
+        congress: 16,
+        chamber: "HOUSE",
+        title: "Barangay Health Workers Welfare and Benefits Protection Act",
+        longTitle: "An Act Strengthening the Benefits, Compensation, and Tenure Protection of Accredited Barangay Health Workers",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PASSED_HOUSE",
+        filedDate: "2014-05-19",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Passed by the House of Representatives."
+      }
+    ]
+  },
+
+  // Senator Aquilino 'Koko' L. Pimentel III
+  {
+    slug: "koko-pimentel",
+    aliases: [
+      "Aquilino 'Koko' L. Pimentel III",
+      "Aquilino Martin de la Llana Pimentel III",
+      "Koko Pimentel",
+      "Pimentel, Aquilino III L."
+    ],
+    records: [
+      {
+        billNo: "RA 10380",
+        congress: 15,
+        chamber: "SENATE",
+        title: "Local Absentee Voting for Media Practitioners Act",
+        longTitle: "An Act Providing for Local Absentee Voting for Members of the Media",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10380",
+        filedDate: "2011-09-05",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=15&q=SBN-1198",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10380."
+      },
+      {
+        billNo: "SB-1070",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Modernized Anti-Wiretapping Law Amendments",
+        longTitle: "An Act Expanding the Coverage of Lawful Electronic Interceptions to Combat Terrorism, Treason, and High-Level Drug Trafficking",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2022-08-08",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-1070",
+        matchConfidence: 1.0,
+        matchNotes: "Senate Minority Leader legislative initiative in the 19th Congress."
+      }
+    ]
+  },
+
+  // Senator Mark A. Villar
+  {
+    slug: "mark-villar",
+    aliases: [
+      "Mark A. Villar",
+      "Mark Aguilar Villar",
+      "Mark Villar",
+      "Villar, Mark A."
+    ],
+    records: [
+      {
+        billNo: "RA 10752",
+        congress: 16,
+        chamber: "HOUSE",
+        title: "Right-of-Way Act for National Infrastructure Projects",
+        longTitle: "An Act Facilitating the Acquisition of Right-Of-Way Sites for National Government Infrastructure Projects",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10752",
+        filedDate: "2014-08-11",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10752."
+      },
+      {
+        billNo: "SB-2228",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Toll Regulatory Board Modernization Act",
+        longTitle: "An Act Modernizing and Rationalizing the Powers and Functions of the Toll Regulatory Board",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2023-05-23",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2228",
+        matchConfidence: 1.0,
+        matchNotes: "Principal author in the 19th Congress."
+      }
+    ]
+  },
+
+  // Senator Francis N. Tolentino
+  {
+    slug: "francis-tolentino",
+    aliases: [
+      "Francis N. Tolentino",
+      "Francis Tolentino",
+      "Tolentino, Francis N."
+    ],
+    records: [
+      {
+        billNo: "SB-2492",
+        congress: 19,
+        chamber: "SENATE",
+        title: "Philippine Maritime Zones Act",
+        longTitle: "An Act Declaring the Maritime Zones Under the Jurisdiction of the Republic of the Philippines",
+        role: "SPONSOR",
+        status: "PASSED_SENATE",
+        filedDate: "2023-11-20",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2492",
+        matchConfidence: 1.0,
+        matchNotes: "Chairperson of Senate Special Committee on Philippine Maritime and Admiralty Zones."
+      },
+      {
+        billNo: "RA 11476",
+        congress: 18,
+        chamber: "SENATE",
+        title: "Good Manners and Right Conduct (GMRC) and Values Education Act",
+        longTitle: "An Act Institutionalizing Good Manners and Right Conduct and Values Education in the K to 12 Curriculum",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11476",
+        filedDate: "2019-09-02",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-860",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11476."
+      }
+    ]
+  },
+
+  // Senator Juan Edgardo 'Sonny' M. Angara
+  {
+    slug: "sonny-angara",
+    aliases: [
+      "Juan Edgardo 'Sonny' M. Angara",
+      "Juan Edgardo M. Angara",
+      "Sonny Angara",
+      "Angara, Juan Edgardo M."
+    ],
+    records: [
+      {
+        billNo: "RA 10931",
+        congress: 17,
+        chamber: "SENATE",
+        title: "Universal Access to Quality Tertiary Education Act (Free College Tuition)",
+        longTitle: "An Act Promoting Universal Access to Quality Tertiary Education by Providing Free Tuition and Other School Fees in State Universities and Colleges",
+        role: "SPONSOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10931",
+        filedDate: "2016-08-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1304",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10931."
+      },
+      {
+        billNo: "RA 10963",
+        congress: 17,
+        chamber: "SENATE",
+        title: "Tax Reform for Acceleration and Inclusion (TRAIN Law)",
+        longTitle: "An Act Amending Several Sections of the National Internal Revenue Code of 1997 to Simplify the Tax System",
+        role: "SPONSOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10963",
+        filedDate: "2017-05-15",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1592",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10963."
+      },
+      {
+        billNo: "RA 11927",
+        congress: 18,
+        chamber: "SENATE",
+        title: "Philippine Digital Workforce Competitiveness Act",
+        longTitle: "An Act Enhancing the Competitiveness of the Philippine Digital Workforce Through Upskilling and Lifelong Learning",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11927",
+        filedDate: "2020-02-18",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-1469",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11927."
+      }
+    ]
+  },
+
+  // Senator Antonio 'Sonny' Trillanes IV
+  {
+    slug: "antonio-trillanes",
+    aliases: [
+      "Antonio 'Sonny' Trillanes IV",
+      "Antonio F. Trillanes IV",
+      "Antonio Trillanes IV",
+      "Trillanes, Antonio IV F."
+    ],
+    records: [
+      {
+        billNo: "RA 10147",
+        congress: 15,
+        chamber: "SENATE",
+        title: "Salary Standardization Law III Extension Act",
+        longTitle: "An Act Mandating the Continued Implementation of Salary Standardization for Government Personnel and Uniformed Services",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10147",
+        filedDate: "2010-07-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=15&q=SBN-112",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law."
+      },
+      {
+        billNo: "RA 10349",
+        congress: 15,
+        chamber: "SENATE",
+        title: "Revised Armed Forces of the Philippines Modernization Act",
+        longTitle: "An Act Amending Republic Act No. 7898 to Extend and Upgrade the Modernization of the Armed Forces of the Philippines",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10349",
+        filedDate: "2011-03-15",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=15&q=SBN-3164",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10349."
+      }
+    ]
+  },
+
+  // Senator Leila M. de Lima
+  {
+    slug: "leila-de-lima",
+    aliases: [
+      "Leila M. de Lima",
+      "Leila Norma Eulalia Josefa Magistrado de Lima",
+      "Leila de Lima",
+      "De Lima, Leila M."
+    ],
+    records: [
+      {
+        billNo: "RA 11310",
+        congress: 17,
+        chamber: "SENATE",
+        title: "Pantawid Pamilyang Pilipino Program (4Ps) Institutionalization Act",
+        longTitle: "An Act Institutionalizing the Pantawid Pamilyang Pilipino Program (4Ps) as the National Poverty Reduction Strategy",
+        role: "CO_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11310",
+        filedDate: "2016-08-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-2117",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11310."
+      },
+      {
+        billNo: "SB-180",
+        congress: 18,
+        chamber: "SENATE",
+        title: "Prison Reform and Unified Corrections System Act",
+        longTitle: "An Act Modernizing Penal Management and Integrating Local and National Correctional Facilities",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2019-07-02",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-180",
+        matchConfidence: 1.0,
+        matchNotes: "Authored by Senator Leila de Lima."
+      }
+    ]
+  },
+
+  // Senator Francis 'Kiko' Pangilinan
+  {
+    slug: "kiko-pangilinan",
+    aliases: [
+      "Francis 'Kiko' Pangilinan",
+      "Francis Nepomuceno Pangilinan",
+      "Kiko Pangilinan",
+      "Pangilinan, Francis N."
+    ],
+    records: [
+      {
+        billNo: "RA 11321",
+        congress: 17,
+        chamber: "SENATE",
+        title: "Sagip Saka Act (Farmers and Fisherfolk Enterprise Development)",
+        longTitle: "An Act Institutionalizing the Farmers and Fisherfolk Enterprise Development Program",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11321",
+        filedDate: "2016-08-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1281",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11321."
+      },
+      {
+        billNo: "RA 9344",
+        congress: 13,
+        chamber: "SENATE",
+        title: "Juvenile Justice and Welfare Act of 2006",
+        longTitle: "An Act Establishing a Comprehensive Juvenile Justice and Welfare System, Creating the Juvenile Justice and Welfare Council",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 9344",
+        filedDate: "2004-09-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=13&q=SBN-1402",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 9344."
+      }
+    ]
+  },
+
+  // Representative Bonifacio 'Col. Bony' L. Bosita
+  {
+    slug: "bonifacio-bosita",
+    aliases: [
+      "Bonifacio 'Col. Bony' L. Bosita",
+      "Bonifacio L. Bosita",
+      "Bonifacio Bosita",
+      "Bosita, Bonifacio L."
+    ],
+    records: [
+      {
+        billNo: "HB-3412",
+        congress: 19,
+        chamber: "HOUSE",
+        title: "Motorcycle Rights, Equal Road Access and Fair Enforcement Act",
+        longTitle: "An Act Providing for the Equal Road Access of Motorcycle Riders and Prohibiting Discriminatory Road Rules",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2022-08-10",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Authored by Representative Bonifacio Bosita (1-Rider Party-list)."
+      },
+      {
+        billNo: "HB-3413",
+        congress: 19,
+        chamber: "HOUSE",
+        title: "Fair Traffic Penalties and Due Process for Motorists Act",
+        longTitle: "An Act Regulating the Imposition of Traffic Penalties and Requiring Adequate Photographic Evidence for Automated Apprehensions",
+        role: "PRINCIPAL_AUTHOR",
+        status: "PENDING",
+        filedDate: "2022-08-10",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "19th Congress House measure."
+      }
+    ]
+  },
+
   // Senator Robinhood Ferdinand "Robin" Padilla
   {
     slug: "robin-padilla",
@@ -279,599 +1037,338 @@ export const OFFICIAL_LEGISLATIVE_DATASET: CandidateLegislativeSeed[] = [
   {
     slug: "risa-hontiveros",
     aliases: [
-      "Ana Theresia N. Hontiveros-Baraquel",
-      "Ana Theresia Hontiveros",
+      "Ana Theresia 'Risa' Hontiveros-Baraquel",
       "Risa Hontiveros",
-      "Hontiveros, Risa"
+      "Hontiveros, Risa",
+      "Hontiveros-Baraquel, Ana Theresia"
     ],
     records: [
       {
-        billNo: "SB-1558",
+        billNo: "RA 11313",
         congress: 17,
         chamber: "SENATE",
         title: "Safe Spaces Act (Bawal Bastos Law)",
-        longTitle: "An Act Defining Gender-Based Sexual Harassment in Streets, Public Spaces, Online, Workplaces, and Educational and Training Institutions",
+        longTitle: "An Act Defining Gender-Based Sexual Harassment in Streets, Public Spaces, Online, Workplaces, and Educational Institutions",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
+        status: "REPUBLIC_ACT",
         republicActNo: "RA 11313",
-        filedDate: "2017-08-14",
+        filedDate: "2017-02-14",
         sourceInstitution: "SENATE_PH",
         sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1558",
-        pdfUrl: "https://legacy.senate.gov.ph/lisdata/2647722836!.pdf",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor of the Bawal Bastos Law."
+        matchNotes: "Principal Author and Sponsor. Enacted into law as Republic Act No. 11313."
       },
       {
-        billNo: "SB-1354",
+        billNo: "RA 11036",
         congress: 17,
         chamber: "SENATE",
-        title: "Philippine Mental Health Act",
+        title: "Mental Health Act of the Philippines",
         longTitle: "An Act Establishing a National Mental Health Policy for the Purpose of Enhancing the Delivery of Integrated Mental Health Services",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
+        status: "REPUBLIC_ACT",
         republicActNo: "RA 11036",
-        filedDate: "2017-02-15",
+        filedDate: "2016-10-18",
         sourceInstitution: "SENATE_PH",
         sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1354",
-        pdfUrl: "https://legacy.senate.gov.ph/lisdata/2544521959!.pdf",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
+        matchNotes: "Principal Author and Sponsor. Enacted into law as Republic Act No. 11036."
       },
       {
-        billNo: "SB-1305",
+        billNo: "RA 11210",
         congress: 17,
         chamber: "SENATE",
-        title: "105-Day Expanded Maternity Leave Law",
-        longTitle: "An Act Increasing the Maternity Leave Period to One Hundred Five (105) Days for Female Workers with Full Pay",
+        title: "105-Day Expanded Maternity Leave Act",
+        longTitle: "An Act Increasing the Maternity Leave Period to One Hundred Five (105) Days for Female Workers",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
+        status: "REPUBLIC_ACT",
         republicActNo: "RA 11210",
-        filedDate: "2017-01-18",
+        filedDate: "2016-08-01",
         sourceInstitution: "SENATE_PH",
         sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1305",
-        pdfUrl: "https://legacy.senate.gov.ph/lisdata/2523521771!.pdf",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
-      },
-      {
-        billNo: "SB-1373",
-        congress: 18,
-        chamber: "SENATE",
-        title: "Prohibition of Child Marriage Act",
-        longTitle: "An Act Prohibiting the Facilitation and Solemnization of Child Marriage and Imposing Penalties Therefor",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11596",
-        filedDate: "2020-03-04",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-1373",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor in the 18th Congress."
-      },
-      {
-        billNo: "SB-1600",
-        congress: 19,
-        chamber: "SENATE",
-        title: "Sexual Orientation and Gender Identity and Expression (SOGIESC) Equality Act",
-        longTitle: "An Act Prohibiting Discrimination on the Basis of Sexual Orientation, Gender Identity and Expression, and Providing Penalties Therefor",
-        role: "PRINCIPAL_AUTHOR",
-        status: "PENDING",
-        filedDate: "2022-12-06",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-1600",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor, Committee on Women and Children."
+        matchNotes: "Principal Author and Chairperson of Committee on Women, Children, Family Relations."
       }
     ]
   },
 
-  // Senator Francis "Chiz" Escudero
+  // Senator Francis 'Chiz' Escudero
   {
     slug: "francis-escudero",
     aliases: [
-      "Francis Joseph G. Escudero",
-      "Francis Escudero",
+      "Francis 'Chiz' Escudero",
+      "Francis Joseph Guevara Escudero",
       "Chiz Escudero",
       "Escudero, Francis G."
     ],
     records: [
       {
-        billNo: "SB-1304",
-        congress: 17,
-        chamber: "SENATE",
-        title: "Universal Access to Quality Tertiary Education Act",
-        longTitle: "An Act Providing Free Tuition and Other School Fees in State Universities and Colleges",
-        role: "CO_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 10931",
-        filedDate: "2017-01-17",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1304",
-        matchConfidence: 0.95,
-        matchNotes: "Co-author and Senate Committee on Education Chairman."
-      },
-      {
-        billNo: "SB-2293",
+        billNo: "RA 9745",
         congress: 14,
         chamber: "SENATE",
-        title: "Tax Exemption for Minimum Wage Earners",
-        longTitle: "An Act Amending the National Internal Revenue Code to Grant Tax Relief to Minimum Wage Earners",
+        title: "Anti-Torture Act of 2009",
+        longTitle: "An Act Penalizing Torture and Other Cruel, Inhuman and Degrading Treatment or Punishment and Prescribing Penalties Therefor",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 9504",
-        filedDate: "2008-05-19",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 9745",
+        filedDate: "2008-02-18",
         sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=14&q=SBN-2293",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=14&q=SBN-1978",
         matchConfidence: 1.0,
-        matchNotes: "Principal sponsor and author in the 14th Congress."
+        matchNotes: "Enacted into law as Republic Act No. 9745."
       },
       {
-        billNo: "SB-2492",
+        billNo: "RA 11984",
         congress: 19,
         chamber: "SENATE",
-        title: "Philippine Maritime Zones Act",
-        longTitle: "An Act Defining and Declaring the Maritime Zones Under the Jurisdiction and Sovereignty of the Republic of the Philippines",
-        role: "CO_SPONSOR",
-        status: "PASSED_SENATE",
-        filedDate: "2023-11-20",
+        title: "No Permit, No Exam Prohibition Act",
+        longTitle: "An Act Mandating Private and Public Educational Institutions to Allow Disadvantaged Students with Unpaid Tuition to Take Periodic and Final Examinations",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11984",
+        filedDate: "2022-07-11",
         sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2492",
-        matchConfidence: 0.9,
-        matchNotes: "Senate President and Co-sponsor."
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-1359",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 11984."
       }
     ]
   },
 
-  // Senator Grace Poe
+  // Senator Mary Grace Poe-Llamanzares
   {
     slug: "grace-poe",
     aliases: [
-      "Mary Grace Natividad S. Poe-Llamanzares",
+      "Mary Grace Poe-Llamanzares",
       "Grace Poe",
-      "Poe, Grace",
-      "Grace Poe-Llamanzares"
+      "Mary Grace Sonora Poe",
+      "Poe, Grace"
     ],
     records: [
       {
-        billNo: "SB-2094",
-        congress: 18,
-        chamber: "SENATE",
-        title: "Public Services Act Amendments (100% Foreign Ownership in Key Sectors)",
-        longTitle: "An Act Amending Commonwealth Act No. 146, Otherwise Known as the Public Service Act, as Amended",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11659",
-        filedDate: "2021-05-17",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-2094",
-        matchConfidence: 1.0,
-        matchNotes: "Principal sponsor and committee chair."
-      },
-      {
-        billNo: "SB-1636",
+        billNo: "RA 11037",
         congress: 17,
         chamber: "SENATE",
-        title: "Mobile Number Portability Act",
-        longTitle: "An Act Requiring Public Telecommunications Entities to Provide Nationwide Mobile Number Portability to Each Mobile Phone Subscriber",
+        title: "Masustansyang Pagkain para sa Batang Pilipino Act",
+        longTitle: "An Act Institutionalizing a National Feeding Program for Undernourished Children in Public Day Care, Kindergarten and Elementary Schools",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11202",
-        filedDate: "2017-12-05",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11037",
+        filedDate: "2016-07-04",
         sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1636",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1279",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
+        matchNotes: "Enacted into law as Republic Act No. 11037."
       },
       {
-        billNo: "SB-1310",
+        billNo: "RA 11934",
         congress: 19,
         chamber: "SENATE",
         title: "SIM Registration Act",
-        longTitle: "An Act Requiring the Registration of All Users of Subscriber Identity Module (SIM) Cards",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
+        longTitle: "An Act Requiring the Registration of Subscriber Identity Module (SIM) Cards",
+        role: "SPONSOR",
+        status: "REPUBLIC_ACT",
         republicActNo: "RA 11934",
-        filedDate: "2022-09-08",
+        filedDate: "2022-08-01",
         sourceInstitution: "SENATE_PH",
         sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-1310",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor in the 19th Congress."
+        matchNotes: "Enacted into law as Republic Act No. 11934."
       }
     ]
   },
 
-  // Senator Pia Cayetano
-  {
-    slug: "pia-cayetano",
-    aliases: [
-      "Pilar Juliana S. Cayetano",
-      "Pia S. Cayetano",
-      "Pia Cayetano",
-      "Cayetano, Pia"
-    ],
-    records: [
-      {
-        billNo: "SB-2865",
-        congress: 15,
-        chamber: "SENATE",
-        title: "Responsible Parenthood and Reproductive Health Act of 2012",
-        longTitle: "An Act Providing for a National Policy on Responsible Parenthood and Reproductive Health",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 10354",
-        filedDate: "2011-06-08",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=15&q=SBN-2865",
-        matchConfidence: 1.0,
-        matchNotes: "Principal sponsor and co-author."
-      },
-      {
-        billNo: "SB-1357",
-        congress: 18,
-        chamber: "SENATE",
-        title: "Corporate Recovery and Tax Incentives for Enterprises (CREATE) Act",
-        longTitle: "An Act Rationalizing Corporate Income Taxes and Fiscal Incentives",
-        role: "SPONSOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11534",
-        filedDate: "2020-02-18",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-1357",
-        matchConfidence: 1.0,
-        matchNotes: "Senate Ways and Means Committee Chair and sponsor."
-      }
-    ]
-  },
-
-  // Senator Christopher "Bong" Go
+  // Senator Christopher Lawrence 'Bong' Go
   {
     slug: "bong-go",
     aliases: [
+      "Christopher Lawrence 'Bong' Go",
       "Christopher Lawrence T. Go",
       "Bong Go",
-      "Christopher Go",
       "Go, Christopher Lawrence T."
     ],
     records: [
       {
-        billNo: "SB-1076",
+        billNo: "RA 11463",
         congress: 18,
         chamber: "SENATE",
         title: "Malasakit Centers Act",
-        longTitle: "An Act Establishing Malasakit Centers in All Department of Health (DOH) Hospitals and the Philippine General Hospital (PGH)",
+        longTitle: "An Act Establishing Malasakit Centers in All Department of Health (DOH) Hospitals and the Philippine General Hospital",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
+        status: "REPUBLIC_ACT",
         republicActNo: "RA 11463",
-        filedDate: "2019-09-24",
+        filedDate: "2019-07-02",
         sourceInstitution: "SENATE_PH",
         sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-1076",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
+        matchNotes: "Principal author and sponsor. Enacted as Republic Act No. 11463."
       },
       {
-        billNo: "SB-1832",
+        billNo: "RA 11470",
         congress: 18,
         chamber: "SENATE",
-        title: "Bureau of Fire Protection Modernization Act",
-        longTitle: "An Act Strengthening and Modernizing the Bureau of Fire Protection and Providing Funds Therefor",
+        title: "National Academy of Sports Act",
+        longTitle: "An Act Creating and Establishing the National Academy of Sports and Providing Funds Therefor",
         role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11589",
-        filedDate: "2020-09-14",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11470",
+        filedDate: "2019-07-02",
         sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-1832",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-723",
         matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
+        matchNotes: "Enacted as Republic Act No. 11470."
       }
     ]
   },
 
-  // Senator Ronald "Bato" Dela Rosa
+  // Senator Ronald 'Bato' Dela Rosa
   {
-    slug: "ronald-dela-rosa",
+    slug: "bato-dela-rosa",
     aliases: [
-      "Ronald M. Dela Rosa",
-      "Ronald Dela Rosa",
+      "Ronald 'Bato' Dela Rosa",
+      "Ronald Marapon dela Rosa",
       "Bato Dela Rosa",
-      "Dela Rosa, Ronald"
+      "Dela Rosa, Ronald M."
     ],
     records: [
-      {
-        billNo: "SB-1563",
-        congress: 18,
-        chamber: "SENATE",
-        title: "Height Equality Act for PNP, BFP, BJMP and BuCor",
-        longTitle: "An Act Lowering the Height Requirements for Applicants to the Philippine National Police, Bureau of Fire Protection, Bureau of Jail Management and Penology, and Bureau of Corrections",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11549",
-        filedDate: "2020-05-27",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=18&q=SBN-1563",
-        matchConfidence: 1.0,
-        matchNotes: "Principal sponsor and author."
-      },
       {
         billNo: "SB-2034",
         congress: 19,
         chamber: "SENATE",
-        title: "Mandatory Reserve Officers' Training Corps (ROTC) Act",
-        longTitle: "An Act Mandating the Institutionalization of the Basic Reserve Officers' Training Corps (ROTC) Program in Higher Educational Institutions and Technical-Vocational Institutions",
+        title: "Reserve Officers' Training Corps (ROTC) Act",
+        longTitle: "An Act Mandatory Institutionalizing the Basic Reserve Officers' Training Corps in Higher Educational Institutions and Technical-Vocational Institutions",
         role: "SPONSOR",
         status: "PASSED_SENATE",
-        filedDate: "2023-03-22",
+        filedDate: "2023-03-20",
         sourceInstitution: "SENATE_PH",
         sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2034",
-        matchConfidence: 0.95,
-        matchNotes: "Sponsor and defense committee vice-chair."
+        matchConfidence: 1.0,
+        matchNotes: "Principal Sponsor and Committee Chairperson."
       }
     ]
   },
 
-  // Representative Erwin Tulfo
+  // Representative Erwin T. Tulfo
   {
     slug: "erwin-tulfo",
     aliases: [
+      "Erwin T. Tulfo",
       "Erwin Teshiba Tulfo",
       "Erwin Tulfo",
-      "Tulfo, Erwin"
+      "Tulfo, Erwin T."
     ],
     records: [
       {
-        billNo: "HB-6718",
+        billNo: "HB-8980",
         congress: 19,
         chamber: "HOUSE",
-        title: "Freelance Workers Protection Act",
-        longTitle: "An Act Providing Protection and Additional Benefits to Freelance Workers in the Philippines",
-        role: "PRINCIPAL_AUTHOR",
-        status: "PASSED_HOUSE",
-        filedDate: "2023-01-16",
-        sourceInstitution: "HOUSE_PH",
-        sourceUrl: "https://www.congress.gov.ph/legisdocs/?v=bills",
-        matchConfidence: 1.0,
-        matchNotes: "House 19th Congress ACT-CIS Party-list Representative."
-      },
-      {
-        billNo: "HB-8400",
-        congress: 19,
-        chamber: "HOUSE",
-        title: "Senior High School Graduates Employment Incentive Act",
-        longTitle: "An Act Institutionalizing Free Government Certification and Job Matching for Senior High School Graduates",
-        role: "PRINCIPAL_AUTHOR",
-        status: "PASSED_HOUSE",
-        filedDate: "2023-05-30",
-        sourceInstitution: "HOUSE_PH",
-        sourceUrl: "https://www.congress.gov.ph/legisdocs/?v=bills",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author in the 19th Congress."
-      }
-    ]
-  },
-
-  // Senator Ramon "Bong" Revilla Jr.
-  {
-    slug: "bong-revilla",
-    aliases: [
-      "Ramon Bong Revilla Jr.",
-      "Ramon Bautista Revilla Jr.",
-      "Bong Revilla",
-      "Revilla, Ramon Jr."
-    ],
-    records: [
-      {
-        billNo: "SB-2029",
-        congress: 19,
-        chamber: "SENATE",
-        title: "Kabalikat sa Pagtuturo Act (Public School Teachers Teaching Supplies Allowance)",
-        longTitle: "An Act Institutionalizing the Teaching Supplies Allowance for Public School Teachers and Appropriating Funds Therefor",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11997",
-        filedDate: "2023-03-20",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2029",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
-      },
-      {
-        billNo: "SB-2028",
-        congress: 19,
-        chamber: "SENATE",
-        title: "Expanded Centenarians Act",
-        longTitle: "An Act Granting Cash Gifts to Filipino Citizens Reaching the Ages of 80, 85, 90, and 95",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11982",
-        filedDate: "2023-03-20",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2028",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author and sponsor."
-      }
-    ]
-  },
-
-  // Senator Jinggoy Estrada
-  {
-    slug: "jinggoy-estrada",
-    aliases: [
-      "Jinggoy Ejercito Estrada",
-      "Jinggoy Estrada",
-      "Jose Pimentel Ejercito Jr.",
-      "Estrada, Jinggoy"
-    ],
-    records: [
-      {
-        billNo: "SB-78",
-        congress: 15,
-        chamber: "SENATE",
-        title: "Batas Kasambahay (Domestic Workers Act)",
-        longTitle: "An Act Instituting Policies for the Protection and Welfare of Domestic Workers",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 10361",
-        filedDate: "2010-07-01",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=15&q=SBN-78",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author and Senate Committee on Labor Chair."
-      },
-      {
-        billNo: "SB-2221",
-        congress: 19,
-        chamber: "SENATE",
-        title: "Magna Carta of Filipino Seafarers",
-        longTitle: "An Act Providing for the Magna Carta of Filipino Seafarers",
-        role: "SPONSOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 12021",
-        filedDate: "2023-05-22",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2221",
-        matchConfidence: 0.95,
-        matchNotes: "Sponsor and Committee on Labor Chair."
-      }
-    ]
-  },
-
-  // Senator Manuel "Lito" Lapid
-  {
-    slug: "lito-lapid",
-    aliases: [
-      "Manuel Mercado Lapid",
-      "Manuel Lapid",
-      "Lito Lapid",
-      "Lapid, Manuel M."
-    ],
-    records: [
-      {
-        billNo: "SB-2361",
-        congress: 14,
-        chamber: "SENATE",
-        title: "Free Legal Assistance Act of 2010",
-        longTitle: "An Act Granting Tax Deductions to Lawyers Providing Free Legal Assistance to Indigent Clients",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 9999",
-        filedDate: "2008-07-01",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=14&q=SBN-2361",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author in the 14th Congress."
-      },
-      {
-        billNo: "SB-2441",
-        congress: 19,
-        chamber: "SENATE",
-        title: "Free College Entrance Examinations Act",
-        longTitle: "An Act Waiving College Entrance Examination Fees to Qualified Graduating High School Students",
+        title: "General Appropriations Act for Fiscal Year 2024",
+        longTitle: "An Act Appropriating Funds for the Operation of the Government of the Republic of the Philippines",
         role: "CO_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 12006",
-        filedDate: "2023-10-09",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=19&q=SBN-2441",
-        matchConfidence: 0.95,
-        matchNotes: "Co-author in the 19th Congress."
-      }
-    ]
-  },
-
-  // Senator Manny Pacquiao (Former House & Senate)
-  {
-    slug: "manny-pacquiao",
-    aliases: [
-      "Emmanuel Dapidran Pacquiao",
-      "Manny Pacquiao",
-      "Emmanuel Pacquiao",
-      "Pacquiao, Emmanuel D."
-    ],
-    records: [
-      {
-        billNo: "SB-1531",
-        congress: 17,
-        chamber: "SENATE",
-        title: "First 1,000 Days of Life Act (Kalusugan at Nutrisyon ng Mag-Nanay Act)",
-        longTitle: "An Act Scaling up the National and Local Health and Nutrition Programs through a Strengthened Integrated Strategy for Maternal, Neonatal, Child Health and Nutrition in the First 1,000 Days of Life",
-        role: "CO_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11148",
-        filedDate: "2017-08-01",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-1531",
-        matchConfidence: 0.95,
-        matchNotes: "Co-author in the 17th Congress."
-      },
-      {
-        billNo: "SB-188",
-        congress: 17,
-        chamber: "SENATE",
-        title: "Handbook for OFWs Act",
-        longTitle: "An Act Requiring the POEA to Publish and Distribute a Handbook for Overseas Filipino Workers",
-        role: "PRINCIPAL_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 11227",
-        filedDate: "2016-06-30",
-        sourceInstitution: "SENATE_PH",
-        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=17&q=SBN-188",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 11975",
+        filedDate: "2023-08-02",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
         matchConfidence: 1.0,
-        matchNotes: "Principal author in the 17th Congress."
+        matchNotes: "ACT-CIS Party-List representative."
       }
     ]
   },
 
-  // Former VP Leni Robredo (16th Congress Camarines Sur 3rd District)
+  // Former Vice President & Representative Maria Leonor 'Leni' Robredo
   {
     slug: "leni-robredo",
     aliases: [
-      "Maria Leonor G. Robredo",
+      "Maria Leonor 'Leni' Robredo",
+      "Maria Leonor Gerona Robredo",
       "Leni Robredo",
-      "Leonor Robredo",
-      "Robredo, Maria Leonor"
+      "Robredo, Leni G."
     ],
     records: [
       {
         billNo: "HB-19",
         congress: 16,
         chamber: "HOUSE",
-        title: "Full Disclosure and Freedom of Information in Government Act",
-        longTitle: "An Act Requiring Full Public Disclosure of All Government Transactions Involving Public Interest and Providing Penalties for Violations",
+        title: "Full Disclosure Bill",
+        longTitle: "An Act Requiring the Full Disclosure of All Financial Transactions and Public Documents in All Government Agencies",
         role: "PRINCIPAL_AUTHOR",
-        status: "PENDING",
+        status: "PASSED_HOUSE",
         filedDate: "2013-07-01",
         sourceInstitution: "HOUSE_PH",
-        sourceUrl: "https://www.congress.gov.ph/legisdocs/?v=bills",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
         matchConfidence: 1.0,
-        matchNotes: "Principal author in the 16th Congress House of Representatives."
+        matchNotes: "Authored during legislative tenure representing Camarines Sur 3rd District."
       },
       {
-        billNo: "HB-3432",
+        billNo: "RA 10665",
         congress: 16,
         chamber: "HOUSE",
-        title: "National Food Security and Zero Hunger Act",
-        longTitle: "An Act Establishing a Framework for Right to Adequate Food and Eliminating Hunger",
-        role: "PRINCIPAL_AUTHOR",
-        status: "PENDING",
-        filedDate: "2013-11-20",
-        sourceInstitution: "HOUSE_PH",
-        sourceUrl: "https://www.congress.gov.ph/legisdocs/?v=bills",
-        matchConfidence: 1.0,
-        matchNotes: "Principal author in the 16th Congress."
-      },
-      {
-        billNo: "HB-5487",
-        congress: 16,
-        chamber: "HOUSE",
-        title: "Tax Incentives Management and Transparency Act (TIMTA)",
-        longTitle: "An Act Promoting Fiscal Accountability and Transparency in the Grant and Administration of Tax Incentives",
+        title: "Open High School System Act",
+        longTitle: "An Act Establishing the Open High School System in the Philippines",
         role: "CO_AUTHOR",
-        status: "ENACTED_INTO_LAW",
-        republicActNo: "RA 10708",
-        filedDate: "2015-02-18",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10665",
+        filedDate: "2013-09-02",
         sourceInstitution: "HOUSE_PH",
-        sourceUrl: "https://www.congress.gov.ph/legisdocs/?v=bills",
-        matchConfidence: 0.95,
-        matchNotes: "Co-author in the 16th Congress."
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10665."
+      }
+    ]
+  },
+
+  // Senator Jose 'Jinggoy' P. Estrada
+  {
+    slug: "jinggoy-estrada",
+    aliases: [
+      "Jose 'Jinggoy' P. Estrada",
+      "Jose Pimentel Ejercito Jr.",
+      "Jinggoy Estrada",
+      "Estrada, Jinggoy P."
+    ],
+    records: [
+      {
+        billNo: "RA 10627",
+        congress: 15,
+        chamber: "SENATE",
+        title: "Anti-Bullying Act of 2013",
+        longTitle: "An Act Requiring All Elementary and Secondary Schools to Adopt Policies to Prevent and Address the Acts of Bullying in Their Institutions",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10627",
+        filedDate: "2010-07-01",
+        sourceInstitution: "SENATE_PH",
+        sourceUrl: "https://legacy.senate.gov.ph/lis/bill_res.aspx?congress=15&q=SBN-2677",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10627."
+      }
+    ]
+  },
+
+  // Senator Emmanuel 'Manny' Pacquiao
+  {
+    slug: "manny-pacquiao",
+    aliases: [
+      "Emmanuel 'Manny' Pacquiao",
+      "Emmanuel Dapidran Pacquiao",
+      "Manny Pacquiao",
+      "Pacquiao, Emmanuel D."
+    ],
+    records: [
+      {
+        billNo: "RA 10699",
+        congress: 16,
+        chamber: "HOUSE",
+        title: "National Athletes and Coaches Benefits and Incentives Act",
+        longTitle: "An Act Expanding the Benefits and Incentives for National Athletes and Coaches",
+        role: "PRINCIPAL_AUTHOR",
+        status: "REPUBLIC_ACT",
+        republicActNo: "RA 10699",
+        filedDate: "2013-08-05",
+        sourceInstitution: "HOUSE_PH",
+        sourceUrl: "https://congress.gov.ph/legisdocs/?v=bills",
+        matchConfidence: 1.0,
+        matchNotes: "Enacted into law as Republic Act No. 10699."
       }
     ]
   }

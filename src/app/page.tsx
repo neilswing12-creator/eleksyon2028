@@ -67,7 +67,7 @@ export default function HomePage() {
 
             {/* Clear Primary Heading */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0B1E36] leading-tight">
-              2028 Philippine National Pre-Election{" "}
+              2028 Philippine Pre-Election{" "}
               <span className="text-blue-600">Public Opinion Survey</span>
             </h1>
 
@@ -144,40 +144,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================= */}
-      {/* 2. CURRENT SURVEY STANDINGS (TRIPLE LEADERBOARD)          */}
-      {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-slate-200/70">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-              Current Survey Standings
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
-              National Survey Results
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-              Real-time tabulation across President, Vice President, and the Senatorial Magic 12 from voluntary survey submissions.
-            </p>
-          </div>
-          <Link
-            href="/results"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 self-start sm:self-auto"
-          >
-            <span>Explore full results breakdown</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <GMATripleLeaderboard
-          presidentialRankings={analytics?.presidentialRankings || []}
-          vicePresidentialRankings={analytics?.vicePresidentialRankings || []}
-          senatorialRankings={analytics?.senatorialRankings || []}
-          lastUpdated={analytics?.summary?.lastUpdated}
-        />
-      </section>
-
-      {/* ========================================================= */}
-      {/* 3. INTERACTIVE MAP & GEOGRAPHIC COVERAGE                   */}
+      {/* 2. INTERACTIVE MAP & GEOGRAPHIC COVERAGE                   */}
       {/* ========================================================= */}
       <section className="bg-[#F8FAFC] py-16 border-b border-slate-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
@@ -222,6 +189,39 @@ export default function HomePage() {
             />
           )}
         </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* 3. CURRENT SURVEY STANDINGS (TRIPLE LEADERBOARD)          */}
+      {/* ========================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-slate-200/70">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
+              Current Survey Standings
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
+              National Survey Results
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
+              Real-time tabulation across President, Vice President, and the Senatorial Magic 12 from voluntary survey submissions.
+            </p>
+          </div>
+          <Link
+            href="/results"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 self-start sm:self-auto"
+          >
+            <span>Explore full results breakdown</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <GMATripleLeaderboard
+          presidentialRankings={analytics?.presidentialRankings || []}
+          vicePresidentialRankings={analytics?.vicePresidentialRankings || []}
+          senatorialRankings={analytics?.senatorialRankings || []}
+          lastUpdated={analytics?.summary?.lastUpdated}
+        />
       </section>
 
       {/* ========================================================= */}

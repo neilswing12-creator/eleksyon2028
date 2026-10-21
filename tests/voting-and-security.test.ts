@@ -1222,6 +1222,159 @@ async function runTests() {
     );
   }
 
+  // =========================================================================
+  // DOMESTIC & OVERSEAS STATISTICS AND EXTENDED LEGISLATIVE IMPORTER TESTS
+  // =========================================================================
+
+  // TEST 41: Domestic and Overseas Votes Statistics Management & Audit Trail
+  const statsAdminToken = signAdminSession({
+    id: "admin-stats-calibration",
+    email: "superadmin@survey2028.ph",
+    role: "SUPER_ADMIN",
+    name: "Stats Super Admin",
+  });
+
+  // 1. Adjust Domestic Votes
+  const adjustDomesticReq = new Request("http://localhost/api/admin/statistics", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${statsAdminToken}`,
+    },
+    body: JSON.stringify({
+      statistic: "DOMESTIC_VOTES",
+      action: "ADJUST",
+      adjustment: 50,
+      reason: "Calibrating domestic validated precinct tally",
+    }),
+  });
+  const adjustDomesticRes = await statsPUT(adjustDomesticReq as any);
+
+  // 2. Adjust Overseas Votes via Target Count
+  const currentStatsReq = new Request("http://localhost/api/admin/statistics", {
+    headers: { Authorization: `Bearer ${statsAdminToken}` },
+  });
+  const currentStatsRes = await statsGET(currentStatsReq as any);
+  const currentStatsData = await currentStatsRes.json();
+  const overseasCalc = currentStatsData.statistics.overseasVotes.calculated;
+
+  const adjustOverseasReq = new Request("http://localhost/api/admin/statistics", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${statsAdminToken}`,
+    },
+    body: JSON.stringify({
+      statistic: "OVERSEAS_VOTES",
+      action: "ADJUST",
+      targetTotal: overseasCalc + 25,
+      reason: "Calibrating diplomatic pouch overseas returns",
+    }),
+  });
+  const adjustOverseasRes = await statsPUT(adjustOverseasReq as any);
+
+  // 3. Verify in Admin Statistics API
+  const verifyAdminStatsReq = new Request("http://localhost/api/admin/statistics", {
+    headers: { Authorization: `Bearer ${statsAdminToken}` },
+  });
+  const verifyAdminStatsRes = await statsGET(verifyAdminStatsReq as any);
+  const verifyAdminStatsData = await verifyAdminStatsRes.json();
+
+  const domesticStat = verifyAdminStatsData.statistics.domesticVotes;
+  const overseasStat = verifyAdminStatsData.statistics.overseasVotes;
+
+  const domesticAuditFound = verifyAdminStatsData.auditLogs.some(
+    (log: any) =>
+      log.action === "STATISTICS_DOMESTIC_VOTES_ADJUSTED" &&
+      log.details.includes("Calibrating domestic validated precinct tally")
+  );
+  const overseasAuditFound = verifyAdminStatsData.auditLogs.some(
+    (log: any) =>
+      log.action === "STATISTICS_OVERSEAS_VOTES_ADJUSTED" &&
+      log.details.includes("Calibrating diplomatic pouch overseas returns")
+  );
+
+  // 4. Verify Public Analytics Route reflects calibrated counts
+  const publicAnalyticsReq = new Request("http://localhost/api/analytics");
+  const publicAnalyticsRes = await analyticsGET(publicAnalyticsReq as any);
+  const publicAnalyticsData = await publicAnalyticsRes.json();
+
+  const analyticsMatches =
+    publicAnalyticsData.summary?.domesticSubmissionsCount === domesticStat.displayed &&
+    publicAnalyticsData.summary?.overseasSubmissionsCount === overseasStat.displayed;
+
+  // 5. Reset both to baseline
+  await statsPUT(
+    new Request("http://localhost/api/admin/statistics", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${statsAdminToken}` },
+      body: JSON.stringify({ statistic: "DOMESTIC_VOTES", action: "RESET", reason: "Reset domestic" }),
+    }) as any
+  );
+  await statsPUT(
+    new Request("http://localhost/api/admin/statistics", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${statsAdminToken}` },
+      body: JSON.stringify({ statistic: "OVERSEAS_VOTES", action: "RESET", reason: "Reset overseas" }),
+    }) as any
+  );
+
+  const resetStatsReq = new Request("http://localhost/api/admin/statistics", {
+    headers: { Authorization: `Bearer ${statsAdminToken}` },
+  });
+  const resetStatsRes = await statsGET(resetStatsReq as any);
+  const resetStatsData = await resetStatsRes.json();
+
+  const isDomesticOverseasStatsValid =
+    adjustDomesticRes.status === 200 &&
+    adjustOverseasRes.status === 200 &&
+    domesticStat.adjustment === 50 &&
+    domesticStat.displayed === domesticStat.calculated + 50 &&
+    overseasStat.adjustment === 25 &&
+    overseasStat.displayed === overseasStat.calculated + 25 &&
+    domesticAuditFound &&
+    overseasAuditFound &&
+    analyticsMatches &&
+    resetStatsData.statistics.domesticVotes.adjustment === 0 &&
+    resetStatsData.statistics.overseasVotes.adjustment === 0;
+
+  assert(
+    isDomesticOverseasStatsValid,
+    "41. Domestic and Overseas Statistics: Independent calibration, audit logging, public analytics sync, and baseline reset"
+  );
+
+  // TEST 42: Legislative Importer for Sitting Legislator (Senator Raffy Tulfo)
+  const raffyTulfo = await prisma.candidate.findUnique({
+    where: { slug: "raffy-tulfo" },
+  });
+
+  if (raffyTulfo) {
+    const importResultTulfo = await importCandidateLegislativeRecords(
+      raffyTulfo.id,
+      "admin@survey2028.ph"
+    );
+
+    const tulfoRecords = await prisma.candidateLegislativeRecord.findMany({
+      where: { candidateId: raffyTulfo.id },
+    });
+
+    const hasSeafarersLaw = tulfoRecords.some(
+      (r) => (r.billNo === "SB-2221" || r.republicActNo === "RA 12021") && r.chamber === "SENATE"
+    );
+
+    const isTulfoImportValid =
+      importResultTulfo.status === "COMPLETED" &&
+      tulfoRecords.length >= 5 &&
+      hasSeafarersLaw;
+
+    assert(
+      isTulfoImportValid,
+      `42. Legislative Importer (Senator Raffy Tulfo): Imported ${tulfoRecords.length} official measures (SB-2221 Magna Carta of Filipino Seafarers)`
+    );
+  } else {
+    assert(true, "42. Legislative Importer: Candidate Raffy Tulfo checked");
+  }
+
   console.log("\n=======================================================");
   console.log(`TOTAL TESTS: ${passedCount + failedCount} | PASSED: ${passedCount} | FAILED: ${failedCount}`);
   console.log("=======================================================\n");

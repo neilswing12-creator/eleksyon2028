@@ -145,9 +145,13 @@ model SurveyCampaign {
   // Survey Statistics Management (Manual Adjustments & Display Overrides)
   activeVotesAdjustment      Int                @default(0)
   todayVotesAdjustment       Int                @default(0)
+  domesticVotesAdjustment    Int                @default(0)
+  overseasVotesAdjustment    Int                @default(0)
   provincesReportingOverride Int?               // null = calculated from distinct reporting provinces
   activeVotesReason          String?
   todayVotesReason           String?
+  domesticVotesReason        String?
+  overseasVotesReason        String?
   provincesReportingReason   String?
   statsLastAdjustedAt        DateTime?
   statsLastAdjustedBy        String?

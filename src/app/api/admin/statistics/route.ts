@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // 3. Calculate distinct reporting provinces from active submissions
+    // 3. Calculate distinct reporting provinces from active domestic submissions
     const activeSubmissions = await prisma.surveySubmission.findMany({
       where: {
         status: "ACTIVE",
@@ -63,8 +63,17 @@ export async function GET(req: NextRequest) {
       },
       select: {
         provinceId: true,
+        residenceType: true,
       },
     });
+
+    const calculatedDomesticSubmissions = activeSubmissions.filter(
+      (s) => s.residenceType !== "OVERSEAS"
+    ).length;
+
+    const calculatedOverseasSubmissions = activeSubmissions.filter(
+      (s) => s.residenceType === "OVERSEAS"
+    ).length;
 
     const distinctReportingProvinceIds = new Set(
       activeSubmissions
@@ -78,11 +87,15 @@ export async function GET(req: NextRequest) {
     // 4. Stored manual adjustments and overrides
     const activeVotesAdjustment = campaign?.activeVotesAdjustment ?? 0;
     const todayVotesAdjustment = campaign?.todayVotesAdjustment ?? 0;
+    const domesticVotesAdjustment = campaign?.domesticVotesAdjustment ?? 0;
+    const overseasVotesAdjustment = campaign?.overseasVotesAdjustment ?? 0;
     const provincesReportingOverride = campaign?.provincesReportingOverride ?? null;
 
     // 5. Approved public displayed totals
     const displayedActiveVotes = Math.max(0, calculatedActiveSubmissions + activeVotesAdjustment);
     const displayedTodayVotes = Math.max(0, calculatedTodaySubmissions + todayVotesAdjustment);
+    const displayedDomesticVotes = Math.max(0, calculatedDomesticSubmissions + domesticVotesAdjustment);
+    const displayedOverseasVotes = Math.max(0, calculatedOverseasSubmissions + overseasVotesAdjustment);
     const displayedProvincesReporting =
       provincesReportingOverride !== null
         ? Math.min(totalProvinces, Math.max(0, provincesReportingOverride))
@@ -115,6 +128,20 @@ export async function GET(req: NextRequest) {
           isAdjusted: todayVotesAdjustment !== 0,
           timezone: "Asia/Manila (UTC+08:00)",
           startOfTodayManila: startOfManilaToday.toISOString(),
+        },
+        domesticVotes: {
+          calculated: calculatedDomesticSubmissions,
+          adjustment: domesticVotesAdjustment,
+          displayed: displayedDomesticVotes,
+          reason: campaign?.domesticVotesReason || null,
+          isAdjusted: domesticVotesAdjustment !== 0,
+        },
+        overseasVotes: {
+          calculated: calculatedOverseasSubmissions,
+          adjustment: overseasVotesAdjustment,
+          displayed: displayedOverseasVotes,
+          reason: campaign?.overseasVotesReason || null,
+          isAdjusted: overseasVotesAdjustment !== 0,
         },
         provincesReporting: {
           calculated: calculatedProvincesReporting,
@@ -197,8 +224,17 @@ export async function PUT(req: NextRequest) {
 
     const activeSubmissions = await prisma.surveySubmission.findMany({
       where: { status: "ACTIVE", campaignId: campaign.id },
-      select: { provinceId: true },
+      select: { provinceId: true, residenceType: true },
     });
+
+    const calculatedDomestic = activeSubmissions.filter(
+      (s) => s.residenceType !== "OVERSEAS"
+    ).length;
+
+    const calculatedOverseas = activeSubmissions.filter(
+      (s) => s.residenceType === "OVERSEAS"
+    ).length;
+
     const distinctReportingProvinceIds = new Set(
       activeSubmissions
         .map((s) => s.provinceId)
@@ -227,6 +263,18 @@ export async function PUT(req: NextRequest) {
         updateData.todayVotesReason = `Reset to calculated baseline (${trimmedReason})`;
         auditAction = "STATISTICS_TODAY_VOTES_RESET";
         auditDetails = `Votes Received Today reset to calculated baseline ${calculatedToday} (Previous adjustment: ${prevAdj >= 0 ? `+${prevAdj}` : prevAdj} -> 0). Reason: ${trimmedReason}`;
+      } else if (statistic === "DOMESTIC_VOTES") {
+        const prevAdj = campaign.domesticVotesAdjustment;
+        updateData.domesticVotesAdjustment = 0;
+        updateData.domesticVotesReason = `Reset to calculated baseline (${trimmedReason})`;
+        auditAction = "STATISTICS_DOMESTIC_VOTES_RESET";
+        auditDetails = `Domestic (PH) votes reset to calculated baseline ${calculatedDomestic} (Previous adjustment: ${prevAdj >= 0 ? `+${prevAdj}` : prevAdj} -> 0). Reason: ${trimmedReason}`;
+      } else if (statistic === "OVERSEAS_VOTES") {
+        const prevAdj = campaign.overseasVotesAdjustment;
+        updateData.overseasVotesAdjustment = 0;
+        updateData.overseasVotesReason = `Reset to calculated baseline (${trimmedReason})`;
+        auditAction = "STATISTICS_OVERSEAS_VOTES_RESET";
+        auditDetails = `Overseas (OFW) votes reset to calculated baseline ${calculatedOverseas} (Previous adjustment: ${prevAdj >= 0 ? `+${prevAdj}` : prevAdj} -> 0). Reason: ${trimmedReason}`;
       } else if (statistic === "PROVINCES_REPORTING") {
         const prevOverride = campaign.provincesReportingOverride;
         updateData.provincesReportingOverride = null;
@@ -236,9 +284,13 @@ export async function PUT(req: NextRequest) {
       } else if (statistic === "ALL") {
         updateData.activeVotesAdjustment = 0;
         updateData.todayVotesAdjustment = 0;
+        updateData.domesticVotesAdjustment = 0;
+        updateData.overseasVotesAdjustment = 0;
         updateData.provincesReportingOverride = null;
         updateData.activeVotesReason = `Reset all to calculated (${trimmedReason})`;
         updateData.todayVotesReason = `Reset all to calculated (${trimmedReason})`;
+        updateData.domesticVotesReason = `Reset all to calculated (${trimmedReason})`;
+        updateData.overseasVotesReason = `Reset all to calculated (${trimmedReason})`;
         updateData.provincesReportingReason = `Reset all to calculated (${trimmedReason})`;
         auditAction = "STATISTICS_ALL_RESET";
         auditDetails = `All survey statistics reset to pure system-calculated values. Reason: ${trimmedReason}`;
@@ -310,6 +362,70 @@ export async function PUT(req: NextRequest) {
         updateData.todayVotesReason = trimmedReason;
         auditAction = "STATISTICS_TODAY_VOTES_ADJUSTED";
         auditDetails = `Votes Received Today adjusted (Asia/Manila Day): Calculated Baseline = ${calculatedToday}, Adjustment: ${prevAdj >= 0 ? `+${prevAdj}` : prevAdj} -> ${finalAdjustment >= 0 ? `+${finalAdjustment}` : finalAdjustment}, Displayed Total: ${prevDisplayed} -> ${resultingDisplayed}. Reason: ${trimmedReason}`;
+      } else if (statistic === "DOMESTIC_VOTES") {
+        let finalAdjustment = 0;
+        if (targetTotal !== undefined) {
+          const parsedTarget = parseInt(String(targetTotal), 10);
+          if (isNaN(parsedTarget) || parsedTarget < 0) {
+            return NextResponse.json({ error: "Target total must be a non-negative number." }, { status: 400 });
+          }
+          finalAdjustment = parsedTarget - calculatedDomestic;
+        } else if (adjustment !== undefined) {
+          const parsedAdj = parseInt(String(adjustment), 10);
+          if (isNaN(parsedAdj)) {
+            return NextResponse.json({ error: "Adjustment must be a valid integer." }, { status: 400 });
+          }
+          finalAdjustment = parsedAdj;
+        } else {
+          return NextResponse.json({ error: "Either targetTotal or adjustment must be provided." }, { status: 400 });
+        }
+
+        const resultingDisplayed = calculatedDomestic + finalAdjustment;
+        if (resultingDisplayed < 0) {
+          return NextResponse.json(
+            { error: `Adjustment would cause displayed total to be negative (${resultingDisplayed}). Minimum allowed displayed total is 0.` },
+            { status: 400 }
+          );
+        }
+
+        const prevAdj = campaign.domesticVotesAdjustment;
+        const prevDisplayed = Math.max(0, calculatedDomestic + prevAdj);
+        updateData.domesticVotesAdjustment = finalAdjustment;
+        updateData.domesticVotesReason = trimmedReason;
+        auditAction = "STATISTICS_DOMESTIC_VOTES_ADJUSTED";
+        auditDetails = `Domestic (PH) votes adjusted: Calculated Baseline = ${calculatedDomestic}, Adjustment: ${prevAdj >= 0 ? `+${prevAdj}` : prevAdj} -> ${finalAdjustment >= 0 ? `+${finalAdjustment}` : finalAdjustment}, Displayed Total: ${prevDisplayed} -> ${resultingDisplayed}. Reason: ${trimmedReason}`;
+      } else if (statistic === "OVERSEAS_VOTES") {
+        let finalAdjustment = 0;
+        if (targetTotal !== undefined) {
+          const parsedTarget = parseInt(String(targetTotal), 10);
+          if (isNaN(parsedTarget) || parsedTarget < 0) {
+            return NextResponse.json({ error: "Target total must be a non-negative number." }, { status: 400 });
+          }
+          finalAdjustment = parsedTarget - calculatedOverseas;
+        } else if (adjustment !== undefined) {
+          const parsedAdj = parseInt(String(adjustment), 10);
+          if (isNaN(parsedAdj)) {
+            return NextResponse.json({ error: "Adjustment must be a valid integer." }, { status: 400 });
+          }
+          finalAdjustment = parsedAdj;
+        } else {
+          return NextResponse.json({ error: "Either targetTotal or adjustment must be provided." }, { status: 400 });
+        }
+
+        const resultingDisplayed = calculatedOverseas + finalAdjustment;
+        if (resultingDisplayed < 0) {
+          return NextResponse.json(
+            { error: `Adjustment would cause displayed total to be negative (${resultingDisplayed}). Minimum allowed displayed total is 0.` },
+            { status: 400 }
+          );
+        }
+
+        const prevAdj = campaign.overseasVotesAdjustment;
+        const prevDisplayed = Math.max(0, calculatedOverseas + prevAdj);
+        updateData.overseasVotesAdjustment = finalAdjustment;
+        updateData.overseasVotesReason = trimmedReason;
+        auditAction = "STATISTICS_OVERSEAS_VOTES_ADJUSTED";
+        auditDetails = `Overseas (OFW) votes adjusted: Calculated Baseline = ${calculatedOverseas}, Adjustment: ${prevAdj >= 0 ? `+${prevAdj}` : prevAdj} -> ${finalAdjustment >= 0 ? `+${finalAdjustment}` : finalAdjustment}, Displayed Total: ${prevDisplayed} -> ${resultingDisplayed}. Reason: ${trimmedReason}`;
       } else if (statistic === "PROVINCES_REPORTING") {
         let finalOverride = 0;
         if (override !== undefined) {

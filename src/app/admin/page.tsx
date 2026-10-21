@@ -39,6 +39,8 @@ import {
   HelpCircle,
   Check,
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   TrendingUp,
   Activity,
   RotateCcw,
@@ -47,6 +49,7 @@ import {
   FileCheck,
   Search,
   ExternalLink,
+  Info,
 } from "lucide-react";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS } from "@/lib/philippines-geo";
 
@@ -88,6 +91,16 @@ export default function AdminPage() {
 
   const [provincesOverrideInput, setProvincesOverrideInput] = useState<string>("");
   const [provincesReason, setProvincesReason] = useState<string>("");
+
+  const [domesticVotesMode, setDomesticVotesMode] = useState<"TARGET" | "ADJUSTMENT">("TARGET");
+  const [domesticVotesInput, setDomesticVotesInput] = useState<string>("");
+  const [domesticVotesReason, setDomesticVotesReason] = useState<string>("");
+
+  const [overseasVotesMode, setOverseasVotesMode] = useState<"TARGET" | "ADJUSTMENT">("TARGET");
+  const [overseasVotesInput, setOverseasVotesInput] = useState<string>("");
+  const [overseasVotesReason, setOverseasVotesReason] = useState<string>("");
+
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
 
   const [savingStatKey, setSavingStatKey] = useState<string | null>(null);
   const [statsConfirmModal, setStatsConfirmModal] = useState<{
@@ -700,7 +713,7 @@ export default function AdminPage() {
 
   // Survey Statistics Management Handlers
   const handleApplyStat = async (
-    statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "PROVINCES_REPORTING",
+    statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "DOMESTIC_VOTES" | "OVERSEAS_VOTES" | "PROVINCES_REPORTING",
     payload: { adjustment?: number; targetTotal?: number; override?: number; reason: string }
   ) => {
     if (isAnalyst) {
@@ -735,7 +748,7 @@ export default function AdminPage() {
   };
 
   const handleResetStat = async (
-    statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "PROVINCES_REPORTING" | "ALL",
+    statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "DOMESTIC_VOTES" | "OVERSEAS_VOTES" | "PROVINCES_REPORTING" | "ALL",
     reason: string
   ) => {
     if (isAnalyst) {
@@ -1588,7 +1601,7 @@ export default function AdminPage() {
             </div>
 
             {/* THREE PRIMARY STATISTIC CONTROLS */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* STATISTIC 1: ACTIVE VERIFIED VOTES */}
               <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4 flex flex-col justify-between">
                 <div className="space-y-3">
@@ -2274,6 +2287,494 @@ export default function AdminPage() {
                     className="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-colors"
                   >
                     {savingStatKey === "PROVINCES_REPORTING" ? "Saving..." : "Save Override"}
+                  </button>
+                </div>
+              </div>
+
+              {/* STATISTIC 4: DOMESTIC (PH) VOTES */}
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-brand-navy">Domestic (PH)</h3>
+                        <span className="text-[10px] text-sky-700 font-semibold font-mono">Philippine Provinces &amp; Cities</span>
+                      </div>
+                    </div>
+                    {(surveyStats?.domesticVotes?.adjustment ?? 0) !== 0 ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                        Manual Adjustment
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        100% Organic
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Accurately reflects unique, eligible active submissions originating within Philippine provinces and chartered cities.
+                  </p>
+
+                  {/* 3 Metric Pills */}
+                  <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-center">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Calculated</span>
+                      <span className="font-mono font-black text-sm text-slate-700">
+                        {(surveyStats?.domesticVotes?.calculated ?? analytics?.summary?.rawDomesticSubmissions ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Adjustment</span>
+                      <span
+                        className={`font-mono font-bold text-sm ${
+                          (surveyStats?.domesticVotes?.adjustment ?? 0) !== 0
+                            ? (surveyStats?.domesticVotes?.adjustment ?? 0) > 0
+                              ? "text-sky-700"
+                              : "text-amber-600"
+                            : "text-slate-400"
+                        }`}
+                      >
+                        {(surveyStats?.domesticVotes?.adjustment ?? 0) > 0
+                          ? `+${(surveyStats?.domesticVotes?.adjustment ?? 0).toLocaleString()}`
+                          : (surveyStats?.domesticVotes?.adjustment ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-sky-700 block truncate">Public Total</span>
+                      <span className="font-mono font-black text-sm text-sky-700">
+                        {(surveyStats?.domesticVotes?.displayed ?? analytics?.summary?.domesticSubmissionsCount ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Adjustment Controls */}
+                  <div className="pt-2 border-t border-slate-100 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-brand-navy">Adjust Domestic Counter</span>
+                      <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[10px] font-bold">
+                        <button
+                          type="button"
+                          onClick={() => setDomesticVotesMode("TARGET")}
+                          className={`px-2 py-0.5 rounded ${
+                            domesticVotesMode === "TARGET" ? "bg-white text-brand-navy shadow-xs" : "text-slate-500"
+                          }`}
+                        >
+                          Target Total
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDomesticVotesMode("ADJUSTMENT")}
+                          className={`px-2 py-0.5 rounded ${
+                            domesticVotesMode === "ADJUSTMENT" ? "bg-white text-brand-navy shadow-xs" : "text-slate-500"
+                          }`}
+                        >
+                          Adjustment (+/-)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        {domesticVotesMode === "TARGET"
+                          ? "Approved Displayed Total (e.g. 500)"
+                          : "Manual Delta (+/- to add/subtract)"}
+                      </label>
+                      <input
+                        type="number"
+                        disabled={isAnalyst}
+                        placeholder={
+                          domesticVotesMode === "TARGET"
+                            ? `Current displayed: ${surveyStats?.domesticVotes?.displayed ?? 0}`
+                            : "e.g. +50 or -10"
+                        }
+                        value={domesticVotesInput}
+                        onChange={(e) => setDomesticVotesInput(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30 font-mono font-bold"
+                      />
+                      {domesticVotesInput !== "" && !isNaN(parseInt(domesticVotesInput, 10)) && (
+                        <p className="text-[10px] text-sky-700 mt-1 font-mono">
+                          {domesticVotesMode === "TARGET" ? (
+                            <>
+                              Calculated ({(surveyStats?.domesticVotes?.calculated ?? 0).toLocaleString()}) + Adjustment (
+                              {parseInt(domesticVotesInput, 10) - (surveyStats?.domesticVotes?.calculated ?? 0) >= 0
+                                ? `+${parseInt(domesticVotesInput, 10) - (surveyStats?.domesticVotes?.calculated ?? 0)}`
+                                : parseInt(domesticVotesInput, 10) - (surveyStats?.domesticVotes?.calculated ?? 0)}
+                              ) = <strong>{Math.max(0, parseInt(domesticVotesInput, 10)).toLocaleString()} displayed</strong>
+                            </>
+                          ) : (
+                            <>
+                              Calculated ({(surveyStats?.domesticVotes?.calculated ?? 0).toLocaleString()}) + (
+                              {parseInt(domesticVotesInput, 10) >= 0
+                                ? `+${parseInt(domesticVotesInput, 10)}`
+                                : parseInt(domesticVotesInput, 10)}
+                              ) ={" "}
+                              <strong>
+                                {Math.max(
+                                  0,
+                                  (surveyStats?.domesticVotes?.calculated ?? 0) + parseInt(domesticVotesInput, 10)
+                                ).toLocaleString()}{" "}
+                                displayed
+                              </strong>
+                            </>
+                          )}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        Audit Reason <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isAnalyst}
+                        placeholder="e.g. Turnout verification for domestic precinct reporting"
+                        value={domesticVotesReason}
+                        onChange={(e) => setDomesticVotesReason(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    disabled={
+                      isAnalyst ||
+                      savingStatKey === "DOMESTIC_VOTES" ||
+                      (surveyStats?.domesticVotes?.adjustment ?? 0) === 0
+                    }
+                    onClick={() => {
+                      const calc = surveyStats?.domesticVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.domesticVotes?.adjustment ?? 0;
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Reset Domestic (PH) Votes",
+                        statisticName: "Domestic (PH) Votes",
+                        action: "RESET",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: "0 (Zero Adjustment)",
+                        currentDisplayed: (calc + curAdj).toLocaleString(),
+                        resultingDisplayed: calc.toLocaleString(),
+                        reason: "Reset to calculated domestic baseline",
+                        onConfirm: async () => {
+                          await handleResetStat("DOMESTIC_VOTES", "Reset to calculated baseline");
+                          setDomesticVotesInput("");
+                          setDomesticVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-40 text-slate-600 text-xs font-bold"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isAnalyst || savingStatKey === "DOMESTIC_VOTES" || domesticVotesInput === ""}
+                    onClick={() => {
+                      if (!domesticVotesReason.trim() || domesticVotesReason.trim().length < 3) {
+                        alert("Please provide an audit reason (minimum 3 characters) explaining this adjustment.");
+                        return;
+                      }
+                      const calc = surveyStats?.domesticVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.domesticVotes?.adjustment ?? 0;
+                      let newAdj = 0;
+                      let newTotal = 0;
+                      if (domesticVotesMode === "TARGET") {
+                        const target = parseInt(domesticVotesInput, 10);
+                        if (isNaN(target) || target < 0) {
+                          alert("Target must be a non-negative number.");
+                          return;
+                        }
+                        newAdj = target - calc;
+                        newTotal = target;
+                      } else {
+                        const adj = parseInt(domesticVotesInput, 10);
+                        if (isNaN(adj)) {
+                          alert("Adjustment must be a valid integer.");
+                          return;
+                        }
+                        newAdj = adj;
+                        newTotal = Math.max(0, calc + adj);
+                      }
+
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Confirm Domestic (PH) Votes Adjustment",
+                        statisticName: "Domestic (PH) Votes",
+                        action: "ADJUST",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: newAdj >= 0 ? `+${newAdj}` : newAdj,
+                        currentDisplayed: Math.max(0, calc + curAdj).toLocaleString(),
+                        resultingDisplayed: newTotal.toLocaleString(),
+                        reason: domesticVotesReason.trim(),
+                        onConfirm: async () => {
+                          await handleApplyStat("DOMESTIC_VOTES", {
+                            adjustment: newAdj,
+                            reason: domesticVotesReason.trim(),
+                          });
+                          setDomesticVotesInput("");
+                          setDomesticVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-colors"
+                  >
+                    {savingStatKey === "DOMESTIC_VOTES" ? "Saving..." : "Save Adjustment"}
+                  </button>
+                </div>
+              </div>
+
+              {/* STATISTIC 5: OVERSEAS (OFW) VOTES */}
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center">
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-brand-navy">Overseas (OFW)</h3>
+                        <span className="text-[10px] text-indigo-700 font-semibold font-mono">Global Filipino Diaspora</span>
+                      </div>
+                    </div>
+                    {(surveyStats?.overseasVotes?.adjustment ?? 0) !== 0 ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                        Manual Adjustment
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        100% Organic
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Calculates eligible voluntary survey submissions from overseas Filipino workers (OFW) and diaspora across global regions.
+                  </p>
+
+                  {/* 3 Metric Pills */}
+                  <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-center">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Calculated</span>
+                      <span className="font-mono font-black text-sm text-slate-700">
+                        {(surveyStats?.overseasVotes?.calculated ?? analytics?.summary?.rawOverseasSubmissions ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Adjustment</span>
+                      <span
+                        className={`font-mono font-bold text-sm ${
+                          (surveyStats?.overseasVotes?.adjustment ?? 0) !== 0
+                            ? (surveyStats?.overseasVotes?.adjustment ?? 0) > 0
+                              ? "text-indigo-700"
+                              : "text-amber-600"
+                            : "text-slate-400"
+                        }`}
+                      >
+                        {(surveyStats?.overseasVotes?.adjustment ?? 0) > 0
+                          ? `+${(surveyStats?.overseasVotes?.adjustment ?? 0).toLocaleString()}`
+                          : (surveyStats?.overseasVotes?.adjustment ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-indigo-700 block truncate">Public Total</span>
+                      <span className="font-mono font-black text-sm text-indigo-700">
+                        {(surveyStats?.overseasVotes?.displayed ?? analytics?.summary?.overseasSubmissionsCount ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Adjustment Controls */}
+                  <div className="pt-2 border-t border-slate-100 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-brand-navy">Adjust Overseas Counter</span>
+                      <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[10px] font-bold">
+                        <button
+                          type="button"
+                          onClick={() => setOverseasVotesMode("TARGET")}
+                          className={`px-2 py-0.5 rounded ${
+                            overseasVotesMode === "TARGET" ? "bg-white text-brand-navy shadow-xs" : "text-slate-500"
+                          }`}
+                        >
+                          Target Total
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setOverseasVotesMode("ADJUSTMENT")}
+                          className={`px-2 py-0.5 rounded ${
+                            overseasVotesMode === "ADJUSTMENT" ? "bg-white text-brand-navy shadow-xs" : "text-slate-500"
+                          }`}
+                        >
+                          Adjustment (+/-)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        {overseasVotesMode === "TARGET"
+                          ? "Approved Displayed Total (e.g. 100)"
+                          : "Manual Delta (+/- to add/subtract)"}
+                      </label>
+                      <input
+                        type="number"
+                        disabled={isAnalyst}
+                        placeholder={
+                          overseasVotesMode === "TARGET"
+                            ? `Current displayed: ${surveyStats?.overseasVotes?.displayed ?? 0}`
+                            : "e.g. +20 or -5"
+                        }
+                        value={overseasVotesInput}
+                        onChange={(e) => setOverseasVotesInput(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30 font-mono font-bold"
+                      />
+                      {overseasVotesInput !== "" && !isNaN(parseInt(overseasVotesInput, 10)) && (
+                        <p className="text-[10px] text-indigo-700 mt-1 font-mono">
+                          {overseasVotesMode === "TARGET" ? (
+                            <>
+                              Calculated ({(surveyStats?.overseasVotes?.calculated ?? 0).toLocaleString()}) + Adjustment (
+                              {parseInt(overseasVotesInput, 10) - (surveyStats?.overseasVotes?.calculated ?? 0) >= 0
+                                ? `+${parseInt(overseasVotesInput, 10) - (surveyStats?.overseasVotes?.calculated ?? 0)}`
+                                : parseInt(overseasVotesInput, 10) - (surveyStats?.overseasVotes?.calculated ?? 0)}
+                              ) = <strong>{Math.max(0, parseInt(overseasVotesInput, 10)).toLocaleString()} displayed</strong>
+                            </>
+                          ) : (
+                            <>
+                              Calculated ({(surveyStats?.overseasVotes?.calculated ?? 0).toLocaleString()}) + (
+                              {parseInt(overseasVotesInput, 10) >= 0
+                                ? `+${parseInt(overseasVotesInput, 10)}`
+                                : parseInt(overseasVotesInput, 10)}
+                              ) ={" "}
+                              <strong>
+                                {Math.max(
+                                  0,
+                                  (surveyStats?.overseasVotes?.calculated ?? 0) + parseInt(overseasVotesInput, 10)
+                                ).toLocaleString()}{" "}
+                                displayed
+                              </strong>
+                            </>
+                          )}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        Audit Reason <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isAnalyst}
+                        placeholder="e.g. Calibration of global diaspora and seafarer voter submissions"
+                        value={overseasVotesReason}
+                        onChange={(e) => setOverseasVotesReason(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    disabled={
+                      isAnalyst ||
+                      savingStatKey === "OVERSEAS_VOTES" ||
+                      (surveyStats?.overseasVotes?.adjustment ?? 0) === 0
+                    }
+                    onClick={() => {
+                      const calc = surveyStats?.overseasVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.overseasVotes?.adjustment ?? 0;
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Reset Overseas (OFW) Votes",
+                        statisticName: "Overseas (OFW) Votes",
+                        action: "RESET",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: "0 (Zero Adjustment)",
+                        currentDisplayed: (calc + curAdj).toLocaleString(),
+                        resultingDisplayed: calc.toLocaleString(),
+                        reason: "Reset to calculated overseas baseline",
+                        onConfirm: async () => {
+                          await handleResetStat("OVERSEAS_VOTES", "Reset to calculated baseline");
+                          setOverseasVotesInput("");
+                          setOverseasVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-40 text-slate-600 text-xs font-bold"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isAnalyst || savingStatKey === "OVERSEAS_VOTES" || overseasVotesInput === ""}
+                    onClick={() => {
+                      if (!overseasVotesReason.trim() || overseasVotesReason.trim().length < 3) {
+                        alert("Please provide an audit reason (minimum 3 characters) explaining this adjustment.");
+                        return;
+                      }
+                      const calc = surveyStats?.overseasVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.overseasVotes?.adjustment ?? 0;
+                      let newAdj = 0;
+                      let newTotal = 0;
+                      if (overseasVotesMode === "TARGET") {
+                        const target = parseInt(overseasVotesInput, 10);
+                        if (isNaN(target) || target < 0) {
+                          alert("Target must be a non-negative number.");
+                          return;
+                        }
+                        newAdj = target - calc;
+                        newTotal = target;
+                      } else {
+                        const adj = parseInt(overseasVotesInput, 10);
+                        if (isNaN(adj)) {
+                          alert("Adjustment must be a valid integer.");
+                          return;
+                        }
+                        newAdj = adj;
+                        newTotal = Math.max(0, calc + adj);
+                      }
+
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Confirm Overseas (OFW) Votes Adjustment",
+                        statisticName: "Overseas (OFW) Votes",
+                        action: "ADJUST",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: newAdj >= 0 ? `+${newAdj}` : newAdj,
+                        currentDisplayed: Math.max(0, calc + curAdj).toLocaleString(),
+                        resultingDisplayed: newTotal.toLocaleString(),
+                        reason: overseasVotesReason.trim(),
+                        onConfirm: async () => {
+                          await handleApplyStat("OVERSEAS_VOTES", {
+                            adjustment: newAdj,
+                            reason: overseasVotesReason.trim(),
+                          });
+                          setOverseasVotesInput("");
+                          setOverseasVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-colors"
+                  >
+                    {savingStatKey === "OVERSEAS_VOTES" ? "Saving..." : "Save Adjustment"}
                   </button>
                 </div>
               </div>
@@ -4475,7 +4976,7 @@ export default function AdminPage() {
       {/* ========================================================= */}
       {importModalCandidate && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center">
@@ -4492,7 +4993,10 @@ export default function AdminPage() {
               </div>
               {!importingLegislative && (
                 <button
-                  onClick={() => setImportModalCandidate(null)}
+                  onClick={() => {
+                    setImportModalCandidate(null);
+                    setShowDiagnostics(false);
+                  }}
                   className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
                 >
                   <X className="w-4 h-4" />
@@ -4545,13 +5049,66 @@ export default function AdminPage() {
             {/* Completed Result State */}
             {!importingLegislative && importResult && (
               <div className="space-y-4">
-                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs text-emerald-900 space-y-0.5">
-                    <span className="font-bold">Sync Completed Successfully</span>
-                    <p className="text-emerald-800 text-[11px]">{importResult.coverageNotes}</p>
+                {/* Truthful Status Banner */}
+                {importResult.status === "COMPLETED" && (
+                  <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-emerald-900 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">Import Completed</span>
+                        <span className="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-bold uppercase">
+                          Live Verified
+                        </span>
+                      </div>
+                      <p className="text-emerald-800 text-[11px]">{importResult.coverageNotes}</p>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {importResult.status === "PARTIAL_RESULTS" && (
+                  <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-200 flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-sky-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-sky-900 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">Import Completed (Verified Archive Applied)</span>
+                        <span className="text-[10px] bg-sky-200 text-sky-800 px-2 py-0.5 rounded font-bold uppercase">
+                          Archive Fallback
+                        </span>
+                      </div>
+                      <p className="text-sky-800 text-[11px]">{importResult.coverageNotes}</p>
+                    </div>
+                  </div>
+                )}
+
+                {importResult.status === "NO_MATCHES" && (
+                  <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-2.5">
+                    <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-amber-900 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">No Congressional Records Found</span>
+                        <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold uppercase">
+                          Executive / Local Official
+                        </span>
+                      </div>
+                      <p className="text-amber-800 text-[11px]">{importResult.coverageNotes}</p>
+                    </div>
+                  </div>
+                )}
+
+                {importResult.status === "NEEDS_REVIEW" && (
+                  <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-2.5">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-amber-900 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">Needs Review</span>
+                        <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold uppercase">
+                          Check Author Attribution
+                        </span>
+                      </div>
+                      <p className="text-amber-800 text-[11px]">{importResult.coverageNotes}</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Metrics Breakdown */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -4572,12 +5129,56 @@ export default function AdminPage() {
                     <div className="text-[10px] font-bold text-amber-700 uppercase">Needs Review</div>
                   </div>
                 </div>
+
+                {/* Diagnostics Toggle */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowDiagnostics(!showDiagnostics)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800"
+                  >
+                    <span>{showDiagnostics ? "Hide Technical Diagnostics" : "View Technical Diagnostics & Source Logs"}</span>
+                    {showDiagnostics ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                  </button>
+
+                  {showDiagnostics && (
+                    <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 text-xs">
+                      <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-500 border-b border-slate-200/80 pb-2 gap-2">
+                        <span>Candidate Slug: <code className="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-mono text-slate-700">{importResult.candidateSlug}</code></span>
+                        <span>Execution Duration: <strong className="text-slate-800 font-mono">{importResult.durationMs}ms</strong></span>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                          Official Sources Queried
+                        </span>
+                        {(importResult.sourcesChecked || []).map((s: any, idx: number) => (
+                          <div key={idx} className="p-2 rounded-lg bg-white border border-slate-200/80 space-y-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-semibold text-slate-800">{s.name}</span>
+                              <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                                s.httpStatus?.includes("200")
+                                  ? "bg-emerald-50 text-emerald-700"
+                                  : s.httpStatus?.includes("403")
+                                  ? "bg-amber-50 text-amber-700"
+                                  : "bg-slate-100 text-slate-600"
+                              }`}>
+                                {s.httpStatus}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 leading-normal">{s.notes}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Footer Actions */}
             <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
-              {!importingLegislative && importResult && (
+              {!importingLegislative && importResult && importResult.totalFound > 0 && (
                 <button
                   type="button"
                   onClick={() => {
@@ -4585,8 +5186,9 @@ export default function AdminPage() {
                     loadCandidateLegislativeRecords(importModalCandidate.id);
                     setActiveTab("LEGISLATIVE");
                     setImportModalCandidate(null);
+                    setShowDiagnostics(false);
                   }}
-                  className="px-4 py-2 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white font-bold text-xs shadow-sm transition-colors"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors"
                 >
                   Review Records in Dashboard
                 </button>
@@ -4594,7 +5196,10 @@ export default function AdminPage() {
               <button
                 type="button"
                 disabled={importingLegislative}
-                onClick={() => setImportModalCandidate(null)}
+                onClick={() => {
+                  setImportModalCandidate(null);
+                  setShowDiagnostics(false);
+                }}
                 className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors disabled:opacity-40"
               >
                 Close

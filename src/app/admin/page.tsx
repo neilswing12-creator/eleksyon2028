@@ -5065,17 +5065,32 @@ export default function AdminPage() {
                   </div>
                 )}
 
-                {importResult.status === "PARTIAL_RESULTS" && (
+                {(importResult.status === "COMPLETED_PARTIAL" || importResult.status === "PARTIAL_RESULTS") && (
                   <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-200 flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-sky-600 mt-0.5 flex-shrink-0" />
                     <div className="text-xs text-sky-900 space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold">Import Completed (Verified Archive Applied)</span>
+                        <span className="font-bold">Completed with Partial Results</span>
                         <span className="text-[10px] bg-sky-200 text-sky-800 px-2 py-0.5 rounded font-bold uppercase">
-                          Archive Fallback
+                          Statutory Archive Fallback
                         </span>
                       </div>
                       <p className="text-sky-800 text-[11px]">{importResult.coverageNotes}</p>
+                    </div>
+                  </div>
+                )}
+
+                {importResult.status === "BLOCKED_BY_SOURCE" && (
+                  <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-2.5">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-rose-900 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">Automated Queries Blocked by Source (HTTP 403)</span>
+                        <span className="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded font-bold uppercase">
+                          WAF Anti-Bot Defense
+                        </span>
+                      </div>
+                      <p className="text-rose-800 text-[11px]">{importResult.coverageNotes}</p>
                     </div>
                   </div>
                 )}
@@ -5085,9 +5100,9 @@ export default function AdminPage() {
                     <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
                     <div className="text-xs text-amber-900 space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold">No Congressional Records Found</span>
+                        <span className="font-bold">No Matches Found</span>
                         <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold uppercase">
-                          Executive / Local Official
+                          Verified Non-Legislator
                         </span>
                       </div>
                       <p className="text-amber-800 text-[11px]">{importResult.coverageNotes}</p>
@@ -5153,20 +5168,33 @@ export default function AdminPage() {
                           Official Sources Queried
                         </span>
                         {(importResult.sourcesChecked || []).map((s: any, idx: number) => (
-                          <div key={idx} className="p-2 rounded-lg bg-white border border-slate-200/80 space-y-1">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-semibold text-slate-800">{s.name}</span>
-                              <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                          <div key={idx} className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-1.5">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <span className="font-semibold text-slate-800">{s.name}</span>
+                                <div className="text-[10px] font-mono text-slate-400 break-all">{s.url}</div>
+                              </div>
+                              <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
                                 s.httpStatus?.includes("200")
-                                  ? "bg-emerald-50 text-emerald-700"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                   : s.httpStatus?.includes("403")
-                                  ? "bg-amber-50 text-amber-700"
-                                  : "bg-slate-100 text-slate-600"
+                                  ? "bg-rose-50 text-rose-700 border border-rose-200"
+                                  : "bg-slate-100 text-slate-600 border border-slate-200"
                               }`}>
                                 {s.httpStatus}
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-500 leading-normal">{s.notes}</p>
+                            {s.parsingErrors && (
+                              <div className="text-[10px] text-rose-600 bg-rose-50/50 p-1.5 rounded border border-rose-100">
+                                <span className="font-semibold">Security Challenge: </span>{s.parsingErrors}
+                              </div>
+                            )}
+                            {s.coverageLimitations && (
+                              <div className="text-[10px] text-slate-500">
+                                <span className="font-semibold text-slate-600">Scope: </span>{s.coverageLimitations}
+                              </div>
+                            )}
+                            <p className="text-[11px] text-slate-600 leading-normal">{s.notes}</p>
                           </div>
                         ))}
                       </div>
@@ -5177,7 +5205,22 @@ export default function AdminPage() {
             )}
 
             {/* Footer Actions */}
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 flex-wrap">
+              {!importingLegislative && importResult && (importResult.status === "BLOCKED_BY_SOURCE" || importResult.status === "NO_MATCHES") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLegCandidateId(importModalCandidate.id);
+                    setManualBillForm((prev) => ({ ...prev, candidateId: importModalCandidate.id }));
+                    setShowManualBillModal(true);
+                    setImportModalCandidate(null);
+                    setShowDiagnostics(false);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs shadow-xs transition-colors"
+                >
+                  Add Measure Manually (Fallback)
+                </button>
+              )}
               {!importingLegislative && importResult && importResult.totalFound > 0 && (
                 <button
                   type="button"

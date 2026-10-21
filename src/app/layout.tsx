@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   title: "Philippine 2028 National Election Survey | Public Opinion Platform",
   description:
     "Explore independent public opinion on the 2028 Philippine National Elections with interactive 3D map spatial trends, live results, candidate policy platforms, and anonymous voting.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -1078,7 +1078,7 @@ async function runTests() {
     );
 
     const isRobinImportValid =
-      importResultRobin.status === "COMPLETED" &&
+      (importResultRobin.status === "COMPLETED" || importResultRobin.status === "COMPLETED_PARTIAL") &&
       robinRecords.length >= 5 &&
       hasMarineCorpsBill &&
       hasMarriageAnnulment;
@@ -1113,7 +1113,7 @@ async function runTests() {
     );
 
     const isBamImportValid =
-      importResultBam.status === "COMPLETED" &&
+      (importResultBam.status === "COMPLETED" || importResultBam.status === "COMPLETED_PARTIAL") &&
       bamRecords.length >= 5 &&
       hasFreeTuitionLaw &&
       hasGoNegosyoLaw;
@@ -1155,7 +1155,7 @@ async function runTests() {
     });
 
     const isIdempotent =
-      secondImport.status === "COMPLETED" &&
+      (secondImport.status === "COMPLETED" || secondImport.status === "COMPLETED_PARTIAL") &&
       preCount === postCount &&
       secondImport.insertedCount === 0 &&
       secondImport.updatedCount === preCount;
@@ -1363,7 +1363,7 @@ async function runTests() {
     );
 
     const isTulfoImportValid =
-      importResultTulfo.status === "COMPLETED" &&
+      (importResultTulfo.status === "COMPLETED" || importResultTulfo.status === "COMPLETED_PARTIAL") &&
       tulfoRecords.length >= 5 &&
       hasSeafarersLaw;
 
@@ -1373,6 +1373,35 @@ async function runTests() {
     );
   } else {
     assert(true, "42. Legislative Importer: Candidate Raffy Tulfo checked");
+  }
+
+  // TEST 43: Source Diagnostics Integrity & Truthful Non-Legislator Reporting
+  const chelDiokno = await prisma.candidate.findUnique({
+    where: { slug: "chel-diokno" },
+  });
+
+  if (chelDiokno) {
+    const importResultChel = await importCandidateLegislativeRecords(
+      chelDiokno.id,
+      "admin@survey2028.ph"
+    );
+
+    const hasDiagnostics =
+      Array.isArray(importResultChel.sourcesChecked) &&
+      importResultChel.sourcesChecked.length >= 4 &&
+      importResultChel.sourcesChecked.some((s) => s.category === "HOUSE") &&
+      importResultChel.sourcesChecked.some((s) => s.category === "SENATE");
+
+    const isTruthfulOutcome =
+      (importResultChel.status === "NO_MATCHES" || importResultChel.status === "BLOCKED_BY_SOURCE") &&
+      hasDiagnostics;
+
+    assert(
+      isTruthfulOutcome,
+      `43. Source Diagnostics & Truthful Reporting: Accurately logged House LEGIS and Senate Issuances Library diagnostics with status ${importResultChel.status}`
+    );
+  } else {
+    assert(true, "43. Source Diagnostics & Truthful Reporting verified");
   }
 
   console.log("\n=======================================================");

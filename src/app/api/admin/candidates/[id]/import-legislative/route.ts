@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/security";
 import { importCandidateLegislativeRecords } from "@/lib/legislative-importer";
+import { OfficialLegislativeRecord } from "@/lib/legislative-dataset";
 
 export const dynamic = "force-dynamic";
 
@@ -30,11 +31,22 @@ export async function POST(
       return NextResponse.json({ error: "Candidate ID is required." }, { status: 400 });
     }
 
-    const result = await importCandidateLegislativeRecords(id, admin.email);
+    // Optional manual records payload (CSV/JSON fallback)
+    let manualRecords: OfficialLegislativeRecord[] | undefined;
+    try {
+      const body = await req.json();
+      if (body?.manualRecords && Array.isArray(body.manualRecords)) {
+        manualRecords = body.manualRecords;
+      }
+    } catch {
+      // Body is empty for regular 1-click import; ignore JSON parse error
+    }
+
+    const result = await importCandidateLegislativeRecords(id, admin.email, manualRecords);
 
     return NextResponse.json({
       success: true,
-      message: `Successfully imported legislative records for ${result.candidateName}`,
+      message: `Legislative records processed for ${result.candidateName} (Status: ${result.status})`,
       result,
     });
   } catch (error: any) {

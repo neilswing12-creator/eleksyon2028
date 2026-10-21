@@ -966,7 +966,7 @@ export default function AdminPage() {
       )}
 
       {/* Admin Broadcast Header */}
-      <div className="bg-[#0B132B] text-white py-6 border-b-2 border-gma-red">
+      <div className="bg-[#0B1E36] text-white py-6 border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold text-slate-300 uppercase tracking-wider">
@@ -1192,7 +1192,7 @@ export default function AdminPage() {
                     Manage &rarr;
                   </button>
                 </div>
-                <div className="text-2xl sm:text-3xl font-black text-[#0B132B] mt-1 tabular-nums">
+                <div className="text-2xl sm:text-3xl font-black text-[#0B1E36] mt-1 tabular-nums">
                   {analytics?.summary?.provincesReporting ?? 0} / {analytics?.summary?.totalProvinces ?? 82}
                 </div>
                 <p className="text-[10px] text-slate-400 mt-0.5 truncate">
@@ -2145,8 +2145,8 @@ export default function AdminPage() {
                       </span>
                     </div>
                     <div>
-                      <span className="text-[9px] uppercase font-bold text-[#0B132B] block truncate">Public Total</span>
-                      <span className="font-mono font-black text-sm text-[#0B132B]">
+                      <span className="text-[9px] uppercase font-bold text-[#0B1E36] block truncate">Public Total</span>
+                      <span className="font-mono font-black text-sm text-[#0B1E36]">
                         {surveyStats?.provincesReporting?.displayed ?? analytics?.summary?.provincesReporting ?? 0} / 82
                       </span>
                     </div>

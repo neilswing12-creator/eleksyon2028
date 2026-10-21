@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { Award, TrendingUp, Users, CheckCircle2, ChevronRight, MapPin, X } from "lucide-react";
-import ElectionLiveBadge from "./ElectionLiveBadge";
 
 interface CandidateRank {
   id: string;
@@ -32,65 +31,64 @@ export default function GMALeaderboardWidget({
   onClearProvince,
   totalSubmissions,
 }: Props) {
-  const topCandidate = rankings[0];
-
   return (
-    <div className="bg-white rounded-2xl border-2 border-slate-200 overflow-hidden shadow-card flex flex-col h-full">
-      {/* Broadcast Header */}
-      <div className="bg-[#0B132B] text-white p-4">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col h-full">
+      {/* Header Panel */}
+      <div className="bg-slate-50/90 p-4 border-b border-slate-200/80">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <ElectionLiveBadge label="OFFICIAL TALLY" sublabel="Made by Swing Labs" />
-          </div>
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold border border-blue-200/60">
+            <Award className="w-3.5 h-3.5" />
+            <span>Survey Standings</span>
+          </span>
 
-          <span className="text-[11px] font-sans text-slate-300">
+          <span className="text-[11px] text-slate-500 font-medium">
             {totalSubmissions.toLocaleString()} Total Votes
           </span>
         </div>
 
         {/* Selected Area Banner */}
         {selectedProvince ? (
-          <div className="bg-white/10 rounded-xl p-2.5 flex items-center justify-between">
+          <div className="bg-white rounded-xl p-2.5 flex items-center justify-between border border-slate-200 shadow-xs mb-3">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-400 flex-shrink-0" />
+              <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <div>
-                <div className="text-xs font-headline font-bold tracking-wide uppercase text-white">
+                <div className="text-xs font-bold text-[#0B1E36]">
                   {selectedProvince.name}
                 </div>
-                <div className="text-[10px] text-slate-300">
+                <div className="text-[10px] text-slate-500">
                   {selectedProvince.islandGroup} &bull; {selectedProvince.regionId}
                 </div>
               </div>
             </div>
             <button
               onClick={onClearProvince}
-              className="p-1 rounded bg-white/20 hover:bg-white/30 text-white transition-colors"
+              className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
               title="Clear province selection"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         ) : (
-          <div className="text-base sm:text-lg font-headline font-bold uppercase text-white tracking-wide">
-            {selectedPosition === "PRESIDENT" && "PRESIDENTIAL RACE - NATIONAL"}
-            {selectedPosition === "VICE_PRESIDENT" && "VICE PRESIDENTIAL RACE - NATIONAL"}
-            {selectedPosition === "SENATOR" && "SENATORIAL RACE - TOP SLATE"}
+          <div className="text-sm font-bold text-[#0B1E36] mb-2">
+            {selectedPosition === "PRESIDENT" && "Presidential Race — National"}
+            {selectedPosition === "VICE_PRESIDENT" && "Vice Presidential Race — National"}
+            {selectedPosition === "SENATOR" && "Senatorial Race — Top Slate"}
           </div>
         )}
 
         {/* Position Tab Switchers */}
-        <div className="grid grid-cols-3 gap-1 mt-3 bg-[#070D1F] p-1 rounded-xl font-headline text-xs">
+        <div className="grid grid-cols-3 gap-1 bg-slate-200/60 p-1 rounded-xl text-xs font-semibold">
           {(["PRESIDENT", "VICE_PRESIDENT", "SENATOR"] as const).map((pos) => (
             <button
               key={pos}
               onClick={() => onSelectPosition(pos)}
-              className={`py-1.5 rounded-lg font-bold tracking-wider uppercase transition-all ${
+              className={`py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 selectedPosition === pos
-                  ? "bg-gma-red text-white shadow"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              {pos === "PRESIDENT" ? "PRESIDENT" : pos === "VICE_PRESIDENT" ? "VICE PRES" : "SENATORS"}
+              {pos === "PRESIDENT" ? "President" : pos === "VICE_PRESIDENT" ? "Vice Pres" : "Senators"}
             </button>
           ))}
         </div>
@@ -113,86 +111,82 @@ export default function GMALeaderboardWidget({
                 key={cand.id}
                 className={`rounded-xl border p-3.5 transition-all ${
                   isFirst
-                    ? "border-amber-400 bg-amber-50/40 shadow-sm ring-1 ring-amber-300"
-                    : "border-slate-200 bg-white hover:border-slate-300"
+                    ? "border-blue-300 bg-blue-50/30 shadow-xs"
+                    : "border-slate-200/80 bg-white hover:border-slate-300"
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   {/* Left: Rank, Avatar, Name */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center font-headline font-bold text-xs ${
-                        isFirst ? "bg-amber-400 text-slate-900 shadow-sm" : "bg-slate-100 text-slate-600"
+                      className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 ${
+                        isFirst ? "bg-blue-600 text-white shadow-xs" : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {idx + 1}
                     </span>
 
                     {/* Candidate Photo */}
-                    <div className="relative">
+                    <div className="relative flex-shrink-0">
                       {cand.photoUrl ? (
                         <img
                           src={cand.photoUrl}
                           alt={cand.name}
-                          className="w-12 h-12 rounded-full object-cover border-2 shadow-sm"
+                          className="w-10 h-10 rounded-full object-cover border shadow-xs"
                           style={{ borderColor: cand.color }}
                         />
                       ) : (
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-sm"
+                          className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-xs"
                           style={{ backgroundColor: cand.color }}
                         >
                           {cand.name.slice(0, 2)}
                         </div>
                       )}
                       <span
-                        className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm"
+                        className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border border-white shadow-xs"
                         style={{ backgroundColor: cand.color }}
                       ></span>
                     </div>
 
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
-                        <h4 className="font-headline font-bold text-base text-[#0B132B] uppercase tracking-wide leading-none">
+                        <h4 className="font-bold text-xs sm:text-sm text-[#0B1E36] truncate leading-tight">
                           {cand.name}
                         </h4>
                       </div>
-                      <div className="text-[11px] font-sans font-semibold text-slate-500 mt-1">
-                        {cand.party || "INDEPENDENT"}
+                      <div className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                        {cand.party || "Independent"}
                       </div>
                     </div>
                   </div>
 
-                  {/* Right: Percentage & Vote Count */}
+                  {/* Right: Percent & Votes */}
                   <div className="text-right flex-shrink-0">
-                    <div className="font-headline font-black text-xl text-[#0B132B] tabular-nums tracking-tight">
+                    <div className="text-base sm:text-lg font-bold text-[#0B1E36] tabular-nums leading-none">
                       {cand.percentage}%
                     </div>
-                    <div className="text-[11px] font-sans font-bold text-slate-500 tabular-nums">
+                    <div className="text-[10px] text-slate-400 font-medium mt-0.5 tabular-nums">
                       {cand.votes.toLocaleString()} votes
                     </div>
                   </div>
                 </div>
 
-                {/* GMA-style bold progress bar */}
-                <div className="mt-2.5 w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                {/* Progress bar */}
+                <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-2.5">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
-                      width: `${Math.max(2, cand.percentage)}%`,
-                      backgroundColor: cand.color,
+                      width: `${Math.max(cand.percentage, 2)}%`,
+                      backgroundColor: cand.color || "#004B93",
                     }}
                   ></div>
                 </div>
 
-                {/* Lead Margin Banner for 1st place */}
                 {isFirst && margin > 0 && (
-                  <div className="mt-2 pt-2 border-t border-amber-200/80 flex items-center justify-between text-[11px] text-amber-900 font-bold">
-                    <span className="flex items-center gap-1">
-                      <Award className="w-3.5 h-3.5 text-amber-600" />
-                      <span>LEAD MARGIN:</span>
-                    </span>
-                    <span className="text-gma-red font-headline text-xs font-bold">+{margin}% OVER #2</span>
+                  <div className="mt-2 pt-1.5 border-t border-blue-100/60 flex items-center justify-between text-[10px] text-blue-700 font-semibold">
+                    <span>Leading candidate in tally</span>
+                    <span>+{margin}% lead</span>
                   </div>
                 )}
               </div>
@@ -201,20 +195,13 @@ export default function GMALeaderboardWidget({
         )}
       </div>
 
-      {/* Footer CTA */}
-      <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+      <div className="p-3 bg-slate-50 border-t border-slate-200/80 text-center">
         <Link
           href="/results"
-          className="font-headline font-bold text-gma-blue hover:text-blue-800 uppercase tracking-wider flex items-center gap-1"
+          className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1"
         >
-          <span>Full Comprehensive Tally</span>
-          <ChevronRight className="w-4 h-4" />
-        </Link>
-        <Link
-          href="/survey"
-          className="px-3 py-1.5 rounded-lg bg-gma-red text-white font-headline font-bold text-xs tracking-wider uppercase shadow hover:bg-red-700 transition-colors"
-        >
-          Cast Vote
+          <span>View complete national race standings</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     </div>

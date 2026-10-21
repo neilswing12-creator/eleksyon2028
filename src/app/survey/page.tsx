@@ -294,8 +294,8 @@ export default function SurveyPage() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
         <div className="text-center space-y-3">
-          <div className="w-10 h-10 border-4 border-gma-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-xs font-headline font-bold text-slate-500 uppercase tracking-wider">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
             Loading Eleksyon Ballot Candidates...
           </p>
         </div>
@@ -308,9 +308,9 @@ export default function SurveyPage() {
       <div className="max-w-3xl mx-auto">
         {/* Step Progress Tracker */}
         {step <= 5 && (
-          <div className="mb-8 font-headline">
+          <div className="mb-8 font-sans">
             <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-              <span className="text-gma-blue font-black">STEP {step} OF 5</span>
+              <span className="text-blue-600 font-black">STEP {step} OF 5</span>
               <span>
                 {step === 1 && "VOTER INFO & LOCATION"}
                 {step === 2 && "PRESIDENTIAL BALLOT"}
@@ -321,7 +321,7 @@ export default function SurveyPage() {
             </div>
             <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
               <div
-                className="bg-gma-red h-full transition-all duration-300"
+                className="bg-blue-600 h-full transition-all duration-300"
                 style={{ width: `${(step / 5) * 100}%` }}
               ></div>
             </div>
@@ -332,11 +332,11 @@ export default function SurveyPage() {
         {step === 1 && (
           <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-gma-blue text-xs font-headline font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold tracking-normal mb-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Anonymous Civic Participation</span>
               </div>
-              <h2 className="text-3xl font-headline font-black text-[#0B132B] uppercase tracking-wide">
+              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide">
                 2028 National Election Survey Ballot
               </h2>
               <p className="text-xs text-slate-600 font-sans mt-1 leading-relaxed">
@@ -347,8 +347,8 @@ export default function SurveyPage() {
 
             <div className="space-y-4 pt-2 font-sans">
               <div>
-                <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
-                  Your Full Name or Pseudonym <span className="text-gma-red">*</span>
+                <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
+                  Your Full Name or Pseudonym <span className="text-blue-600">*</span>
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 absolute left-3 top-3.5 text-slate-400" />
@@ -358,7 +358,7 @@ export default function SurveyPage() {
                     placeholder="e.g. Juan dela Cruz"
                     value={participantName}
                     onChange={(e) => setParticipantName(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none transition-all"
+                    className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all"
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-1">
@@ -368,8 +368,8 @@ export default function SurveyPage() {
 
               {/* Location Type Selection: Domestic vs Overseas */}
               <div>
-                <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-2">
-                  Voting Location / Sector <span className="text-gma-red">*</span>
+                <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-2">
+                  Voting Location / Sector <span className="text-blue-600">*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
@@ -393,7 +393,7 @@ export default function SurveyPage() {
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="font-headline font-bold text-xs uppercase text-[#0B132B]">
+                      <div className="font-semibold text-xs uppercase text-[#0B1E36]">
                         Within the Philippines
                       </div>
                       <div className="text-[11px] text-slate-500 font-sans mt-0.5">
@@ -424,7 +424,7 @@ export default function SurveyPage() {
                       <Globe className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="font-headline font-bold text-xs uppercase text-[#0B132B]">
+                      <div className="font-semibold text-xs uppercase text-[#0B1E36]">
                         Outside the Philippines (OFW / Overseas Filipino)
                       </div>
                       <div className="text-[11px] text-slate-500 font-sans mt-0.5">
@@ -438,14 +438,14 @@ export default function SurveyPage() {
               {/* DOMESTIC: Philippine Region, Province, City */}
               {residenceType === "DOMESTIC" ? (
                 <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="text-[11px] font-headline font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-gma-blue" />
+                  <div className="text-[11px] font-semibold tracking-normal text-slate-600 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-blue-600" />
                     <span>Philippine Geographic Location (Domestic)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                      <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
                         Region <span className="text-slate-400 font-normal lowercase">(optional)</span>
                       </label>
                       <select
@@ -455,7 +455,7 @@ export default function SurveyPage() {
                           setSelectedProvinceId("");
                           setSelectedCity("");
                         }}
-                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
                       >
                         <option value="">Select Region...</option>
                         {PHILIPPINE_REGIONS.map((r) => (
@@ -468,7 +468,7 @@ export default function SurveyPage() {
 
                     {/* Province */}
                     <div>
-                      <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                      <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
                         Province <span className="text-slate-400 font-normal lowercase">(optional)</span>
                       </label>
                       <select
@@ -477,7 +477,7 @@ export default function SurveyPage() {
                           setSelectedProvinceId(e.target.value);
                           setSelectedCity("");
                         }}
-                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
                       >
                         <option value="">Select Province...</option>
                         {availableProvinces.map((p) => (
@@ -492,13 +492,13 @@ export default function SurveyPage() {
                   {/* City / Municipality */}
                   {availableCities.length > 0 && (
                     <div>
-                      <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                      <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
                         City / Municipality <span className="text-slate-400 font-normal lowercase">(optional)</span>
                       </label>
                       <select
                         value={selectedCity}
                         onChange={(e) => setSelectedCity(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                        className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
                       >
                         <option value="">Select City or Municipality...</option>
                         {availableCities.map((city) => (
@@ -513,7 +513,7 @@ export default function SurveyPage() {
               ) : (
                 /* OVERSEAS: Country Selector & Optional City Abroad */
                 <div className="space-y-4 p-4 rounded-xl bg-blue-50/50 border border-blue-200">
-                  <div className="text-[11px] font-headline font-bold uppercase tracking-wider text-blue-900 flex items-center justify-between">
+                  <div className="text-[11px] font-semibold tracking-normal text-blue-900 flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
                       <Globe className="w-3.5 h-3.5 text-blue-600" />
                       <span>Overseas Filipino Country of Residence</span>
@@ -525,8 +525,8 @@ export default function SurveyPage() {
 
                   {/* Searchable Country Selector */}
                   <div>
-                    <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
-                      Country Abroad <span className="text-gma-red">*</span>
+                    <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
+                      Country Abroad <span className="text-blue-600">*</span>
                     </label>
 
                     {/* Filter Input */}
@@ -537,7 +537,7 @@ export default function SurveyPage() {
                         placeholder="Search country (e.g. Saudi Arabia, UAE, USA, Japan, Singapore, Canada)..."
                         value={countrySearch}
                         onChange={(e) => setCountrySearch(e.target.value)}
-                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:ring-1 focus:ring-gma-blue outline-none"
+                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:ring-1 focus:ring-blue-500 outline-none"
                       />
                     </div>
 
@@ -545,7 +545,7 @@ export default function SurveyPage() {
                       value={selectedCountryCode}
                       onChange={(e) => setSelectedCountryCode(e.target.value)}
                       required={residenceType === "OVERSEAS"}
-                      className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none font-sans"
+                      className="w-full px-3 py-2.5 text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none font-sans"
                     >
                       <option value="">Select Country Abroad...</option>
                       {filteredCountries.map((c) => (
@@ -561,7 +561,7 @@ export default function SurveyPage() {
 
                   {/* Optional City or Region Abroad */}
                   <div>
-                    <label className="block text-xs font-headline font-bold uppercase tracking-wide text-[#0B132B] mb-1.5">
+                    <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
                       City, State, or Region Abroad <span className="text-slate-400 font-normal lowercase">(optional)</span>
                     </label>
                     <div className="relative">
@@ -572,7 +572,7 @@ export default function SurveyPage() {
                         value={overseasCity}
                         onChange={(e) => setOverseasCity(e.target.value)}
                         maxLength={100}
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
                       />
                     </div>
                   </div>
@@ -581,7 +581,7 @@ export default function SurveyPage() {
               {/* Optional Demographic Profile for Voters Research */}
               <div className="pt-3 border-t border-slate-200 space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-headline font-bold uppercase tracking-wider text-[#0B132B]">
+                  <span className="text-xs font-semibold tracking-normal text-[#0B1E36]">
                     Optional Demographic Profile
                   </span>
                   <span className="text-[10px] text-slate-400 font-sans font-medium">
@@ -598,7 +598,7 @@ export default function SurveyPage() {
                     <select
                       value={ageGroup}
                       onChange={(e) => setAgeGroup(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
                     >
                       <option value="">Prefer not to say</option>
                       <option value="18-25">Gen Z (18–25 years old)</option>
@@ -616,7 +616,7 @@ export default function SurveyPage() {
                     <select
                       value={gender}
                       onChange={(e) => setGender(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
                     >
                       <option value="">Prefer not to say</option>
                       <option value="FEMALE">Female</option>
@@ -632,7 +632,7 @@ export default function SurveyPage() {
                     type="checkbox"
                     checked={isFirstTimeVoter}
                     onChange={(e) => setIsFirstTimeVoter(e.target.checked)}
-                    className="rounded text-gma-blue focus:ring-gma-blue w-4 h-4 border-slate-300"
+                    className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 border-slate-300"
                   />
                   <span className="text-xs text-slate-700 font-medium">
                     I am a first-time voter in the Philippine National Elections
@@ -647,7 +647,7 @@ export default function SurveyPage() {
                     type="checkbox"
                     checked={privacyAgreed}
                     onChange={(e) => setPrivacyAgreed(e.target.checked)}
-                    className="mt-0.5 rounded text-gma-blue focus:ring-gma-blue w-4 h-4 border-slate-300"
+                    className="mt-0.5 rounded text-blue-600 focus:ring-blue-500 w-4 h-4 border-slate-300"
                   />
                   <span className="text-xs text-slate-600 leading-relaxed font-sans">
                     I understand that this is an independent, unofficial public opinion survey and not an official
@@ -661,7 +661,7 @@ export default function SurveyPage() {
               <button
                 disabled={!participantName.trim() || !privacyAgreed}
                 onClick={() => setStep(2)}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gma-red hover:bg-red-700 text-white font-headline font-bold text-sm tracking-wider uppercase shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm tracking-wider uppercase shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <span>Proceed to Presidential Ballot</span>
                 <ArrowRight className="w-4 h-4" />
@@ -674,10 +674,10 @@ export default function SurveyPage() {
         {step === 2 && (
           <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
             <div>
-              <span className="text-xs font-headline font-bold text-gma-red uppercase tracking-wider">
+              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                 CATEGORY A &bull; EXACTLY 1 SELECTION
               </span>
-              <h2 className="text-3xl font-headline font-black text-[#0B132B] uppercase tracking-wide mt-0.5">
+              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                 President of the Philippines
               </h2>
               <p className="text-xs text-slate-500 font-sans mt-1">
@@ -694,7 +694,7 @@ export default function SurveyPage() {
                     onClick={() => setPresidentialChoice(c.id)}
                     className={`cursor-pointer rounded-xl border-2 p-4 transition-all flex items-center justify-between ${
                       isSelected
-                        ? "border-amber-400 bg-amber-50/50 shadow-sm ring-2 ring-amber-300"
+                        ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
                         : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
@@ -715,7 +715,7 @@ export default function SurveyPage() {
                         />
                       ) : (
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center font-headline font-bold text-xs text-white shadow-sm flex-shrink-0"
+                          className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
                           style={{ backgroundColor: c.color }}
                         >
                           {c.name.slice(0, 2)}
@@ -723,7 +723,7 @@ export default function SurveyPage() {
                       )}
 
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm sm:text-base font-headline font-bold text-[#0B132B] uppercase tracking-wide truncate">
+                        <h4 className="text-sm sm:text-base font-semibold text-[#0B1E36] uppercase tracking-wide truncate">
                           {c.name}
                         </h4>
                         <p className="text-xs font-sans font-semibold text-slate-500 truncate">
@@ -739,7 +739,7 @@ export default function SurveyPage() {
 
                     <div
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                        isSelected ? "border-amber-500 bg-amber-500 text-white" : "border-slate-300"
+                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
                       }`}
                     >
                       {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white"></div>}
@@ -749,10 +749,10 @@ export default function SurveyPage() {
               })}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-headline">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B132B] uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -760,7 +760,7 @@ export default function SurveyPage() {
               <button
                 disabled={!presidentialChoice}
                 onClick={() => setStep(3)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gma-red hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <span>Continue to Vice President</span>
                 <ArrowRight className="w-4 h-4" />
@@ -773,10 +773,10 @@ export default function SurveyPage() {
         {step === 3 && (
           <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
             <div>
-              <span className="text-xs font-headline font-bold text-gma-red uppercase tracking-wider">
+              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                 CATEGORY B &bull; EXACTLY 1 SELECTION
               </span>
-              <h2 className="text-3xl font-headline font-black text-[#0B132B] uppercase tracking-wide mt-0.5">
+              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                 Vice President of the Philippines
               </h2>
               <p className="text-xs text-slate-500 font-sans mt-1">
@@ -793,7 +793,7 @@ export default function SurveyPage() {
                     onClick={() => setVicePresidentialChoice(c.id)}
                     className={`cursor-pointer rounded-xl border-2 p-4 transition-all flex items-center justify-between ${
                       isSelected
-                        ? "border-amber-400 bg-amber-50/50 shadow-sm ring-2 ring-amber-300"
+                        ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
                         : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
@@ -812,7 +812,7 @@ export default function SurveyPage() {
                         />
                       ) : (
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center font-headline font-bold text-xs text-white shadow-sm flex-shrink-0"
+                          className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
                           style={{ backgroundColor: c.color }}
                         >
                           {c.name.slice(0, 2)}
@@ -820,7 +820,7 @@ export default function SurveyPage() {
                       )}
 
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm sm:text-base font-headline font-bold text-[#0B132B] uppercase tracking-wide truncate">
+                        <h4 className="text-sm sm:text-base font-semibold text-[#0B1E36] uppercase tracking-wide truncate">
                           {c.name}
                         </h4>
                         <p className="text-xs font-sans font-semibold text-slate-500 truncate">
@@ -836,7 +836,7 @@ export default function SurveyPage() {
 
                     <div
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                        isSelected ? "border-amber-500 bg-amber-500 text-white" : "border-slate-300"
+                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
                       }`}
                     >
                       {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white"></div>}
@@ -846,10 +846,10 @@ export default function SurveyPage() {
               })}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-headline">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
               <button
                 onClick={() => setStep(2)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B132B] uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -857,7 +857,7 @@ export default function SurveyPage() {
               <button
                 disabled={!vicePresidentialChoice}
                 onClick={() => setStep(4)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gma-red hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <span>Continue to Senators</span>
                 <ArrowRight className="w-4 h-4" />
@@ -871,10 +871,10 @@ export default function SurveyPage() {
           <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
-                <span className="text-xs font-headline font-bold text-gma-red uppercase tracking-wider">
+                <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                   CATEGORY C &bull; SELECT UP TO 12 CANDIDATES
                 </span>
-                <h2 className="text-3xl font-headline font-black text-[#0B132B] uppercase tracking-wide mt-0.5">
+                <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                   Senatorial Slate Ballot
                 </h2>
                 <p className="text-xs text-slate-500 font-sans mt-0.5">
@@ -884,10 +884,10 @@ export default function SurveyPage() {
 
               {/* Live Counter Badge (Sticky on mobile for ease of 12-selection) */}
               <div
-                className={`sticky top-16 z-30 sm:relative sm:top-0 px-3.5 py-2 rounded-xl font-headline font-bold text-xs uppercase tracking-wider flex items-center justify-between sm:justify-start gap-2 shadow-sm border-2 ${
+                className={`sticky top-16 z-30 sm:relative sm:top-0 px-3.5 py-2 rounded-xl font-semibold text-xsr flex items-center justify-between sm:justify-start gap-2 shadow-sm border-2 ${
                   senatorialChoices.length === 12
                     ? "bg-emerald-50 text-emerald-800 border-emerald-400"
-                    : "bg-blue-50 text-gma-blue border-blue-300"
+                    : "bg-blue-50 text-blue-600 border-blue-300"
                 }`}
               >
                 <div className="flex items-center gap-1.5">
@@ -911,7 +911,7 @@ export default function SurveyPage() {
                     onClick={() => toggleSenator(c.id)}
                     className={`cursor-pointer rounded-xl border-2 p-3 transition-all flex items-center justify-between gap-2.5 ${
                       isSelected
-                        ? "border-amber-400 bg-amber-50/50 shadow-sm ring-1 ring-amber-300"
+                        ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
                         : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
@@ -930,7 +930,7 @@ export default function SurveyPage() {
                         />
                       ) : (
                         <div
-                          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-headline font-bold text-xs text-white shadow-sm flex-shrink-0"
+                          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
                           style={{ backgroundColor: c.color }}
                         >
                           {c.name.slice(0, 2)}
@@ -938,7 +938,7 @@ export default function SurveyPage() {
                       )}
 
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-xs sm:text-sm font-headline font-bold text-[#0B132B] uppercase truncate">
+                        <h4 className="text-xs sm:text-sm font-semibold text-[#0B1E36] uppercase truncate">
                           {c.name}
                         </h4>
                         <p className="text-[10px] sm:text-[11px] font-sans font-semibold text-slate-500 truncate">
@@ -950,7 +950,7 @@ export default function SurveyPage() {
                     <div
                       className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
                         isSelected
-                          ? "border-amber-500 bg-amber-500 text-white"
+                          ? "border-blue-600 bg-blue-600 text-white"
                           : "border-slate-300 bg-white"
                       }`}
                     >
@@ -961,17 +961,17 @@ export default function SurveyPage() {
               })}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-headline">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
               <button
                 onClick={() => setStep(3)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B132B] uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
               </button>
               <button
                 onClick={() => setStep(5)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gma-red hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider shadow transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow transition-all"
               >
                 <span>Review Ballot</span>
                 <ArrowRight className="w-4 h-4" />
@@ -984,10 +984,10 @@ export default function SurveyPage() {
         {step === 5 && (
           <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
             <div>
-              <span className="text-xs font-headline font-bold text-gma-red uppercase tracking-wider">
+              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                 FINAL VERIFICATION &bull; STEP 5 OF 5
               </span>
-              <h2 className="text-3xl font-headline font-black text-[#0B132B] uppercase tracking-wide mt-0.5">
+              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                 Review Your Survey Ballot
               </h2>
               <p className="text-xs text-slate-500 font-sans mt-1">
@@ -1000,7 +1000,7 @@ export default function SurveyPage() {
               <div className="p-4 rounded-xl bg-red-50 border-2 border-red-300 text-red-900 text-xs flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-headline font-bold text-sm uppercase">SUBMISSION NOT ACCEPTED</p>
+                  <p className="font-semibold text-sm uppercase">SUBMISSION NOT ACCEPTED</p>
                   <p className="text-red-700 font-sans">{errorMessage}</p>
                 </div>
               </div>
@@ -1008,7 +1008,7 @@ export default function SurveyPage() {
 
             <div className="space-y-4 font-sans">
               <div className="p-4 rounded-xl bg-slate-50 border-2 border-slate-200 text-xs">
-                <div className="font-headline font-bold text-base text-[#0B132B] uppercase">
+                <div className="font-semibold text-base text-[#0B1E36] uppercase">
                   {participantName}
                 </div>
                 <div className="text-slate-500 font-semibold mt-0.5">
@@ -1031,7 +1031,7 @@ export default function SurveyPage() {
 
               {/* President */}
               <div className="p-4 rounded-xl border-2 border-slate-200">
-                <div className="text-xs font-headline font-bold uppercase tracking-wider text-slate-500 mb-2">
+                <div className="text-xs font-semibold tracking-normal text-slate-500 mb-2">
                   Presidential Preference
                 </div>
                 {presidentialChoice ? (
@@ -1044,7 +1044,7 @@ export default function SurveyPage() {
                           style={{ backgroundColor: cand?.color }}
                         ></span>
                         <div>
-                          <div className="font-headline font-bold text-base text-[#0B132B] uppercase">
+                          <div className="font-semibold text-base text-[#0B1E36] uppercase">
                             {cand?.name}
                           </div>
                           <div className="text-xs text-slate-500 font-semibold">{cand?.party}</div>
@@ -1059,7 +1059,7 @@ export default function SurveyPage() {
 
               {/* VP */}
               <div className="p-4 rounded-xl border-2 border-slate-200">
-                <div className="text-xs font-headline font-bold uppercase tracking-wider text-slate-500 mb-2">
+                <div className="text-xs font-semibold tracking-normal text-slate-500 mb-2">
                   Vice Presidential Preference
                 </div>
                 {vicePresidentialChoice ? (
@@ -1072,7 +1072,7 @@ export default function SurveyPage() {
                           style={{ backgroundColor: cand?.color }}
                         ></span>
                         <div>
-                          <div className="font-headline font-bold text-base text-[#0B132B] uppercase">
+                          <div className="font-semibold text-base text-[#0B1E36] uppercase">
                             {cand?.name}
                           </div>
                           <div className="text-xs text-slate-500 font-semibold">{cand?.party}</div>
@@ -1088,7 +1088,7 @@ export default function SurveyPage() {
               {/* Senators */}
               <div className="p-4 rounded-xl border-2 border-slate-200">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-headline font-bold uppercase tracking-wider text-slate-500">
+                  <div className="text-xs font-semibold tracking-normal text-slate-500">
                     Senatorial Slate ({senatorialChoices.length} of 12)
                   </div>
                 </div>
@@ -1099,7 +1099,7 @@ export default function SurveyPage() {
                       return (
                         <span
                           key={sId}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 border border-slate-300 text-xs font-headline font-bold uppercase text-[#0B132B]"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-[#0B1E36]"
                         >
                           <span
                             className="w-2 h-2 rounded-full"
@@ -1116,10 +1116,10 @@ export default function SurveyPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-headline">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
               <button
                 onClick={() => setStep(4)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B132B] uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -1127,7 +1127,7 @@ export default function SurveyPage() {
               <button
                 disabled={submitting}
                 onClick={handleSubmit}
-                className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gma-red hover:bg-red-700 text-white font-bold text-sm tracking-wider uppercase shadow-lg disabled:opacity-50 transition-all"
+                className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm tracking-wider uppercase shadow-lg disabled:opacity-50 transition-all"
               >
                 {submitting ? (
                   <>
@@ -1147,7 +1147,7 @@ export default function SurveyPage() {
 
         {/* STEP 6: Confirmation */}
         {step === 6 && submissionResult && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-10 shadow-broadcast text-center space-y-6 animate-in zoom-in-95 duration-200 font-headline">
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-10 shadow-sm text-center space-y-6 animate-in zoom-in-95 duration-200 font-sans">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-300">
               <CheckCircle2 className="w-10 h-10" />
             </div>
@@ -1156,7 +1156,7 @@ export default function SurveyPage() {
               <div className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
                 SURVEY RESPONSE RECORDED
               </div>
-              <h2 className="text-3xl font-black text-[#0B132B] uppercase mt-1">
+              <h2 className="text-3xl font-black text-[#0B1E36] uppercase mt-1">
                 Thank You, {submissionResult.participantName}!
               </h2>
               <p className="text-xs text-slate-600 font-sans mt-1 max-w-md mx-auto">
@@ -1167,7 +1167,7 @@ export default function SurveyPage() {
 
             {/* Management Link Card */}
             <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 text-left space-y-2.5 font-sans">
-              <div className="flex items-center justify-between font-headline">
+              <div className="flex items-center justify-between font-sans">
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-900">
                   YOUR PRIVATE VOTE MANAGEMENT LINK
                 </span>
@@ -1193,7 +1193,7 @@ export default function SurveyPage() {
                 />
                 <button
                   onClick={copyManagementLink}
-                  className="px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-headline font-bold uppercase hover:bg-amber-700 flex items-center gap-1.5 flex-shrink-0 transition-colors shadow"
+                  className="px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-semibold hover:bg-amber-700 flex items-center gap-1.5 flex-shrink-0 transition-colors shadow"
                 >
                   <Copy className="w-3.5 h-3.5" />
                   <span>{copiedLink ? "Copied!" : "Copy"}</span>
@@ -1202,8 +1202,8 @@ export default function SurveyPage() {
             </div>
 
             {/* Share Your Vote 1080x1350 Banner */}
-            <div className="bg-gradient-to-r from-[#0B132B] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-5 text-left text-white shadow-xl space-y-3 font-sans">
-              <div className="flex items-center justify-between font-headline">
+            <div className="bg-gradient-to-r from-[#0B1E36] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-5 text-left text-white shadow-xl space-y-3 font-sans">
+              <div className="flex items-center justify-between font-sans">
                 <div className="flex items-center gap-2">
                   <Vote className="w-5 h-5 text-amber-300" />
                   <span className="text-sm font-black uppercase tracking-wider text-amber-300">
@@ -1219,7 +1219,7 @@ export default function SurveyPage() {
                 vote tally vs competitors, and an instant voting QR code for your social media.
               </p>
 
-              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-headline">
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-sans">
                 {presidentialChoice && (
                   <button
                     onClick={() => openShareModal(presidentialChoice, "PRESIDENT")}
@@ -1253,7 +1253,7 @@ export default function SurveyPage() {
 
               {senatorialChoices.length > 0 && (
                 <div className="pt-2 border-t border-white/10">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2 font-headline">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2 font-sans">
                     Senatorial Slate ({senatorialChoices.length} candidates) - Click to generate share card:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -1283,19 +1283,19 @@ export default function SurveyPage() {
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/survey/manage/${submissionResult.managementToken}`}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold uppercase tracking-wider text-[#0B132B] hover:bg-slate-50 transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold uppercase tracking-wider text-[#0B1E36] hover:bg-slate-50 transition-colors"
               >
                 Manage or Retract Vote
               </Link>
               <Link
                 href="/results"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gma-blue text-white text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow"
               >
                 View Live Tallies &rarr;
               </Link>
               <Link
                 href="/map"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#0B132B] text-white text-xs font-bold uppercase tracking-wider hover:bg-slate-900 transition-colors shadow"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#0B1E36] text-white text-xs font-bold uppercase tracking-wider hover:bg-slate-900 transition-colors shadow"
               >
                 Explore Live Map &rarr;
               </Link>

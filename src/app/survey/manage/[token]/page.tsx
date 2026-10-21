@@ -323,9 +323,9 @@ export default function ManageVotePage() {
               {presSelection && (
                 <button
                   onClick={() => openShareModal(presSelection.candidate, "PRESIDENT")}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold tracking-normal transition-colors shadow-xs self-start sm:self-auto"
                 >
-                  <Share2 className="w-3.5 h-3.5 text-amber-300" />
+                  <Share2 className="w-3.5 h-3.5 text-white" />
                   <span>Share My Vote (1080×1350)</span>
                 </button>
               )}
@@ -353,9 +353,9 @@ export default function ManageVotePage() {
               {vpSelection && (
                 <button
                   onClick={() => openShareModal(vpSelection.candidate, "VICE_PRESIDENT")}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gma-red hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold tracking-normal transition-colors shadow-xs self-start sm:self-auto"
                 >
-                  <Share2 className="w-3.5 h-3.5 text-amber-300" />
+                  <Share2 className="w-3.5 h-3.5 text-white" />
                   <span>Share My Vote (1080×1350)</span>
                 </button>
               )}

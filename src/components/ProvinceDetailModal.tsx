@@ -45,9 +45,9 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-2xl shadow-broadcast border-2 border-slate-300 w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative bg-white rounded-2xl shadow-xl border-2 border-slate-300 w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* GMA News Broadcast Header */}
-        <div className="bg-[#0B132B] text-white p-5 border-b-2 border-gma-red flex items-start justify-between">
+        <div className="bg-[#0B1E36] text-white p-5 border-b-2 border-slate-200 flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 text-xs font-headline font-bold uppercase tracking-wider text-amber-400">
               <span>{province.islandGroup}</span>
@@ -109,7 +109,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                     style={{ backgroundColor: province.leadingPresident.color }}
                   ></span>
                   <div>
-                    <h4 className="text-lg font-headline font-bold text-[#0B132B] uppercase">
+                    <h4 className="text-lg font-headline font-bold text-[#0B1E36] uppercase">
                       {province.leadingPresident.name}
                     </h4>
                     <p className="text-xs text-slate-500 font-semibold">
@@ -119,7 +119,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-headline font-black text-gma-blue tabular-nums">
+                  <div className="text-2xl font-headline font-black text-blue-700 tabular-nums">
                     {province.leadingPresident.share}%
                   </div>
                   {province.leadingPresident.margin > 0 && (
@@ -147,7 +147,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                     style={{ backgroundColor: province.leadingVicePresident.color }}
                   ></span>
                   <div>
-                    <h4 className="text-base font-headline font-bold text-[#0B132B] uppercase">
+                    <h4 className="text-base font-headline font-bold text-[#0B1E36] uppercase">
                       {province.leadingVicePresident.name}
                     </h4>
                     <p className="text-xs text-slate-500 font-semibold">
@@ -155,7 +155,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                     </p>
                   </div>
                 </div>
-                <div className="text-xl font-headline font-black text-[#0B132B] tabular-nums">
+                <div className="text-xl font-headline font-black text-[#0B1E36] tabular-nums">
                   {province.leadingVicePresident.share}%
                 </div>
               </div>
@@ -184,7 +184,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                         className="w-2.5 h-2.5 rounded-full"
                         style={{ backgroundColor: sen.color }}
                       ></span>
-                      <span className="font-headline font-bold text-sm text-[#0B132B] uppercase">
+                      <span className="font-headline font-bold text-sm text-[#0B1E36] uppercase">
                         {sen.name}
                       </span>
                     </div>
@@ -221,7 +221,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
         <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-[#0B132B] text-white font-headline font-bold text-xs uppercase tracking-wider hover:bg-slate-800 transition-colors"
+            className="px-5 py-2 rounded-xl bg-blue-600 text-white font-semibold text-xs transition-colors hover:bg-blue-700 shadow-xs"
           >
             Close Details
           </button>

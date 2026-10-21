@@ -573,7 +573,7 @@ export default function GMASmartMapStation({
             onClick={() => setMapStyle("GEOGRAPHIC")}
             className={`px-3 py-1 text-xs font-headline font-bold rounded uppercase transition-colors flex items-center gap-1.5 ${
               mapStyle === "GEOGRAPHIC"
-                ? "bg-[#0B132B] text-white shadow-sm"
+                ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
@@ -600,7 +600,7 @@ export default function GMASmartMapStation({
           <button
             onClick={() => setMapStyle("GEOGRAPHIC")}
             className={`px-2.5 py-1 rounded font-bold uppercase ${
-              mapStyle === "GEOGRAPHIC" ? "bg-[#0B132B] text-white" : "bg-white text-slate-600"
+              mapStyle === "GEOGRAPHIC" ? "bg-blue-600 text-white" : "bg-white text-slate-600"
             }`}
           >
             Geographic
@@ -634,7 +634,7 @@ export default function GMASmartMapStation({
         >
           {/* Smart Search */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-headline font-black text-[#0B132B] tracking-wider uppercase">
+            <label className="block text-xs font-headline font-black text-[#0B1E36] tracking-wider uppercase">
               SMART SEARCH
             </label>
             <div className="relative">
@@ -651,7 +651,7 @@ export default function GMASmartMapStation({
 
           {/* Filter by Position */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-headline font-black text-[#0B132B] tracking-wider uppercase">
+            <label className="block text-xs font-headline font-black text-[#0B1E36] tracking-wider uppercase">
               FILTER BY POSITION:
             </label>
             <div className="relative">
@@ -670,7 +670,7 @@ export default function GMASmartMapStation({
 
           {/* Filter by Location */}
           <div className="space-y-2 pt-2 border-t border-slate-100">
-            <label className="block text-xs font-headline font-black text-[#0B132B] tracking-wider uppercase">
+            <label className="block text-xs font-headline font-black text-[#0B1E36] tracking-wider uppercase">
               FILTER BY LOCATION
             </label>
 
@@ -872,7 +872,7 @@ export default function GMASmartMapStation({
               <span className="text-[9px] text-[#004B93] font-bold">2028 POLL</span>
             </div>
 
-            <div className="font-headline font-extrabold text-sm text-[#0B132B] uppercase">
+            <div className="font-headline font-extrabold text-sm text-[#0B1E36] uppercase">
               {activeHoverData.name}
             </div>
 
@@ -972,7 +972,7 @@ export default function GMASmartMapStation({
                 >
                   <defs>
                     <filter id="geoDrop" x="-10%" y="-10%" width="120%" height="120%">
-                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0B132B" floodOpacity="0.15" />
+                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0B1E36" floodOpacity="0.15" />
                     </filter>
                   </defs>
 
@@ -1026,7 +1026,7 @@ export default function GMASmartMapStation({
                         <path
                           d={reg.d}
                           fill={fillColor}
-                          stroke={isRegionSelected ? "#FFB703" : isRegionHovered ? "#0B132B" : "#94A3B8"}
+                          stroke={isRegionSelected ? "#FFB703" : isRegionHovered ? "#0B1E36" : "#94A3B8"}
                           strokeWidth={isRegionSelected ? 3.5 : isRegionHovered ? 2.5 : 1.2}
                           strokeLinejoin="round"
                           strokeLinecap="round"
@@ -1110,7 +1110,7 @@ export default function GMASmartMapStation({
                           cy={p.svgY}
                           r={isSelected ? 10 : isHovered ? 8 : 4.5}
                           fill={fillColor}
-                          stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
+                          stroke={isSelected ? "#FFB703" : isHovered ? "#0B1E36" : "#FFFFFF"}
                           strokeWidth={isSelected ? 2.5 : 1}
                           className="transition-colors duration-75"
                         />
@@ -1126,7 +1126,7 @@ export default function GMASmartMapStation({
                 >
                   <defs>
                     <filter id="hexDrop" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0B132B" floodOpacity="0.12" />
+                      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0B1E36" floodOpacity="0.12" />
                     </filter>
                   </defs>
 
@@ -1216,7 +1216,7 @@ export default function GMASmartMapStation({
                         <polygon
                           points={points}
                           fill={fillColor}
-                          stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
+                          stroke={isSelected ? "#FFB703" : isHovered ? "#0B1E36" : "#FFFFFF"}
                           strokeWidth={isSelected ? 3.5 : isHovered ? 2.5 : 1.5}
                           filter="url(#hexDrop)"
                           className="transition-colors duration-75"
@@ -1371,7 +1371,7 @@ export default function GMASmartMapStation({
           <div>
             {/* Header */}
             <div className="border-b-2 border-[#004B93] pb-2">
-              <h3 className="font-headline font-black text-sm text-[#0B132B] uppercase tracking-wider">
+              <h3 className="font-headline font-black text-sm text-[#0B1E36] uppercase tracking-wider">
                 {selectedPosition.replace("_", "-")} TALLY
               </h3>
               <div className="text-[10px] text-slate-500 font-semibold uppercase mt-0.5">
@@ -1404,7 +1404,7 @@ export default function GMASmartMapStation({
                     <div className="flex-shrink-0">
                       <span
                         className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-headline font-bold text-white ${
-                          isLeader || isMagic12 ? "bg-gma-red" : "bg-slate-400"
+                          isLeader || isMagic12 ? "bg-blue-600" : "bg-slate-400"
                         }`}
                       >
                         {rank}
@@ -1414,7 +1414,7 @@ export default function GMASmartMapStation({
                     {/* Candidate Name & Party */}
                     <div className="flex-1 min-w-0 pr-1">
                       <div className="truncate">
-                        <span className="font-headline font-bold text-xs text-[#0B132B] uppercase tracking-tight truncate block">
+                        <span className="font-headline font-bold text-xs text-[#0B1E36] uppercase tracking-tight truncate block">
                           {c.name}
                         </span>
                         {c.party && (
@@ -1427,7 +1427,7 @@ export default function GMASmartMapStation({
 
                     {/* Votes Count */}
                     <div className="flex-shrink-0 text-right">
-                      <span className="font-headline font-bold text-xs text-[#0B132B] tabular-nums tracking-tight">
+                      <span className="font-headline font-bold text-xs text-[#0B1E36] tabular-nums tracking-tight">
                         {c.votes.toLocaleString()}
                       </span>
                     </div>

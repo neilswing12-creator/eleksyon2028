@@ -5,8 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Vote, MapPin, BarChart3, Users, BookOpen, Menu, X, ShieldCheck } from "lucide-react";
 
-import ElectionLiveBadge from "./ElectionLiveBadge";
-
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -19,32 +17,34 @@ export default function Navbar() {
     { name: "Candidates", href: "/candidates", icon: Users },
     { name: "Platforms", href: "/platforms", icon: BookOpen },
     { name: "Methodology", href: "/methodology" },
-    { name: "Cast Vote", href: "/survey", icon: Vote, highlight: true },
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0B1E36] text-white border-b border-slate-700/60 shadow-md">
-      {/* Top Civic-Tech Official Bar */}
-      <div className="bg-[#071324] border-b border-white/10 px-4 py-1.5 text-xs">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
+      {/* Top Civic Service Ticker */}
+      <div className="bg-[#F8FAFC] border-b border-slate-200/60 px-4 py-1.5 text-xs">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
           <div className="flex items-center gap-2">
-            <ElectionLiveBadge label="CIVIC MONITOR" sublabel="Swing Labs" />
-            <span className="text-slate-300 font-medium text-[11px] hidden sm:inline">
-              Independent Philippine Pre-Election Poll & Legislative Records Registry
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-semibold border border-blue-200/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+              Civic Survey
+            </span>
+            <span className="hidden sm:inline text-slate-600 font-medium">
+              Independent Philippine 2028 National Pre-Election Public Opinion Poll
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px] text-slate-300 font-medium">
-            <span className="hidden md:inline text-sky-400 font-semibold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Verified Public Records
+          <div className="flex items-center gap-3">
+            <span className="hidden md:inline-flex items-center gap-1 text-slate-500 font-medium">
+              <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+              Non-binding Public Opinion Research
             </span>
-            <span className="hidden sm:inline text-slate-500">&bull;</span>
+            <span className="hidden sm:inline text-slate-300">&bull;</span>
             <Link
               href="/survey"
-              className="text-amber-300 hover:text-white font-semibold flex items-center gap-1 transition-colors"
+              className="font-semibold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1"
             >
-              <span>Cast Your Ballot</span>
+              <span>Submit Survey Response</span>
               <span>&rarr;</span>
             </Link>
           </div>
@@ -56,67 +56,61 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand Identity */}
           <Link href="/" className="flex items-center gap-3 group min-w-0">
-            <div className="relative flex-shrink-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#004B93] to-sky-600 border border-sky-400/30 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
-                <Vote className="w-5 h-5 text-amber-300" />
-              </div>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-700 shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
+              <Vote className="w-5 h-5 text-blue-600" />
             </div>
             <div className="min-w-0">
-              <div className="text-base sm:text-lg font-bold tracking-tight text-white group-hover:text-sky-300 transition-colors uppercase leading-none truncate">
-                ELEKSYON <span className="text-red-500">2028</span>
+              <div className="text-base sm:text-lg font-bold tracking-tight text-[#0B1E36] group-hover:text-blue-700 transition-colors uppercase leading-none truncate">
+                ELEKSYON <span className="text-blue-600 font-extrabold">2028</span>
               </div>
-              <div className="text-[10px] font-medium tracking-wide text-slate-300 uppercase mt-1 truncate">
-                PHILIPPINES &bull; PUBLIC OPINION & LEGISLATIVE ARCHIVE
+              <div className="text-[10px] font-medium tracking-wide text-slate-500 uppercase mt-1 truncate">
+                Philippine Public Opinion &amp; Civic Registry
               </div>
             </div>
           </Link>
 
-          {/* Desktop Nav Items */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => {
               const isActive =
                 pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
 
-              if (link.highlight) {
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="ml-3 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs tracking-wider uppercase shadow flex items-center gap-1.5 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-                  >
-                    <Vote className="w-3.5 h-3.5 text-amber-300" />
-                    <span>{link.name}</span>
-                  </Link>
-                );
-              }
-
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-normal transition-colors ${
                     isActive
-                      ? "text-sky-300 bg-white/10"
-                      : "text-slate-200 hover:text-white hover:bg-white/5"
+                      ? "text-blue-700 bg-blue-50/80 border border-blue-200/50"
+                      : "text-slate-600 hover:text-blue-700 hover:bg-slate-50"
                   }`}
                 >
                   {link.name}
                 </Link>
               );
             })}
+
+            {/* Prominent CTA */}
+            <Link
+              href="/survey"
+              className="ml-3 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs tracking-normal shadow-sm flex items-center gap-1.5 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            >
+              <Vote className="w-3.5 h-3.5" />
+              <span>Participate in Survey</span>
+            </Link>
           </nav>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Actions */}
           <div className="flex lg:hidden items-center gap-2 flex-shrink-0">
             <Link
               href="/survey"
-              className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs tracking-wider uppercase shadow transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs tracking-normal shadow-xs transition-colors"
             >
-              VOTE
+              Vote
             </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               aria-label="Toggle navigation"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -127,7 +121,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#071324] border-t border-white/10 px-4 pt-3 pb-6 space-y-1 animate-in slide-in-from-top duration-150">
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 pt-3 pb-6 space-y-1 animate-in slide-in-from-top duration-150 shadow-lg">
           {navLinks.map((link) => {
             const isActive =
               pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
@@ -136,16 +130,25 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-colors ${
+                className={`block px-3 py-2 rounded-lg text-sm font-semibold tracking-normal transition-colors ${
                   isActive
-                    ? "bg-[#004B93] text-sky-200"
-                    : "text-slate-200 hover:bg-white/5 hover:text-white"
+                    ? "bg-blue-50 text-blue-700 font-bold border border-blue-200/60"
+                    : "text-slate-700 hover:bg-slate-50 hover:text-blue-700"
                 }`}
               >
                 {link.name}
               </Link>
             );
           })}
+          <div className="pt-2">
+            <Link
+              href="/survey"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full text-center px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-sm"
+            >
+              Participate in Survey &rarr;
+            </Link>
+          </div>
         </div>
       )}
     </header>

@@ -283,7 +283,7 @@ export default function Philippine3DMap({
       <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
       {/* Broadcast HUD Banner */}
-      <div className="absolute top-4 left-4 z-10 bg-[#0B132B]/90 backdrop-blur-md border border-white/20 rounded-xl p-3 shadow-broadcast text-xs text-white space-y-1">
+      <div className="absolute top-4 left-4 z-10 bg-[#0B1E36]/90 backdrop-blur-md border border-white/20 rounded-xl p-3 shadow-md text-xs text-white space-y-1">
         <div className="flex items-center gap-2">
           <ElectionLiveBadge label="3D SPATIAL STUDIO" sublabel="Made by Swing Labs" />
         </div>
@@ -295,7 +295,7 @@ export default function Philippine3DMap({
       {/* Hover Card */}
       {hoveredProvince && (
         <div
-          className="absolute z-20 pointer-events-none bg-[#0B132B] text-white rounded-xl p-3.5 shadow-broadcast border-2 border-amber-400 text-xs min-w-[210px] animate-in fade-in duration-100"
+          className="absolute z-20 pointer-events-none bg-[#0B1E36] text-white rounded-xl p-3.5 shadow-md border-2 border-amber-400 text-xs min-w-[210px] animate-in fade-in duration-100"
           style={{
             left: Math.min(tooltipPos.x, (mountRef.current?.clientWidth || 300) - 230),
             top: Math.min(tooltipPos.y, (mountRef.current?.clientHeight || 500) - 130),

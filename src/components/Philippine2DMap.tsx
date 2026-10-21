@@ -171,42 +171,44 @@ export default function Philippine2DMap({
   return (
     <div className="bg-white rounded-2xl border-2 border-slate-200 overflow-hidden shadow-card flex flex-col">
       {/* Map Header Toolbar */}
-      <div className="bg-[#0B132B] text-white p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b-2 border-gma-red">
+      <div className="bg-white p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2">
-            <ElectionLiveBadge label="RESULTS MAP" />
-            <span className="text-[11px] font-headline font-bold tracking-widest text-amber-400 uppercase">
-              MADE BY SWING LABS
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-xs font-semibold text-blue-700 uppercase tracking-wider">
+              Interactive Results Map
             </span>
+            <span className="text-slate-300">•</span>
+            <span className="text-[11px] font-medium text-slate-500">Made by Swing Labs</span>
           </div>
-          <h2 className="text-xl font-headline font-bold uppercase tracking-wide text-white mt-1">
+          <h2 className="text-xl font-bold text-[#0B1E36] mt-0.5">
             {mapStyle === "HEX_CARTOGRAM" ? "Hexagonal Cartogram" : "Geographic Heatmap"}
           </h2>
         </div>
 
         {/* View Mode Toggle: Hex Cartogram vs Geographic */}
-        <div className="flex items-center gap-2 bg-[#070D1F] p-1 rounded-xl border border-white/10 font-headline text-xs">
+        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
           <button
             onClick={() => setMapStyle("HEX_CARTOGRAM")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold tracking-wider uppercase transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
               mapStyle === "HEX_CARTOGRAM"
-                ? "bg-gma-red text-white shadow"
-                : "text-slate-300 hover:text-white"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Hexagon className="w-3.5 h-3.5 text-amber-300" />
+            <Hexagon className="w-3.5 h-3.5" />
             <span>Hex Cartogram</span>
           </button>
 
           <button
             onClick={() => setMapStyle("GEOGRAPHIC")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold tracking-wider uppercase transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
               mapStyle === "GEOGRAPHIC"
-                ? "bg-gma-red text-white shadow"
-                : "text-slate-300 hover:text-white"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Map className="w-3.5 h-3.5 text-amber-300" />
+            <Map className="w-3.5 h-3.5" />
             <span>Geographic</span>
           </button>
         </div>
@@ -221,7 +223,7 @@ export default function Philippine2DMap({
             placeholder="Search province (e.g. NCR, Cebu, Davao)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-gma-blue/30 focus:border-gma-blue outline-none"
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none"
           />
         </div>
 
@@ -233,7 +235,7 @@ export default function Philippine2DMap({
               onClick={() => setSelectedIslandGroup(island)}
               className={`px-3 py-1 rounded-lg font-bold uppercase tracking-wider transition-colors ${
                 selectedIslandGroup === island
-                  ? "bg-[#0B132B] text-white shadow-sm"
+                  ? "bg-blue-600 text-white shadow-xs"
                   : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
               }`}
             >
@@ -263,7 +265,7 @@ export default function Philippine2DMap({
             >
               <defs>
                 <filter id="hexShadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0B132B" floodOpacity="0.12" />
+                  <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0B1E36" floodOpacity="0.12" />
                 </filter>
               </defs>
 
@@ -315,7 +317,7 @@ export default function Philippine2DMap({
                     <polygon
                       points={points}
                       fill={color}
-                      stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
+                      stroke={isSelected ? "#2563EB" : isHovered ? "#0B1E36" : "#FFFFFF"}
                       strokeWidth={isSelected ? 3.5 : isHovered ? 2.5 : 1.5}
                       filter="url(#hexShadow)"
                       className="transition-colors duration-75"
@@ -344,7 +346,7 @@ export default function Philippine2DMap({
             >
               <defs>
                 <filter id="geoGlow">
-                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0B132B" floodOpacity="0.15" />
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0B1E36" floodOpacity="0.15" />
                 </filter>
               </defs>
 
@@ -383,7 +385,7 @@ export default function Philippine2DMap({
                       cy={p.svgY}
                       r={radius}
                       fill={color}
-                      stroke={isSelected ? "#FFB703" : isHovered ? "#0B132B" : "#FFFFFF"}
+                      stroke={isSelected ? "#2563EB" : isHovered ? "#0B1E36" : "#FFFFFF"}
                       strokeWidth={isSelected ? 3.5 : 2}
                       filter="url(#geoGlow)"
                     />
@@ -392,7 +394,7 @@ export default function Philippine2DMap({
                         x={p.svgX}
                         y={p.svgY + radius + 11}
                         textAnchor="middle"
-                        className="font-headline font-bold text-[9px] fill-[#0B132B] uppercase tracking-wider drop-shadow-sm select-none"
+                        className="font-headline font-bold text-[9px] fill-[#0B1E36] uppercase tracking-wider drop-shadow-sm select-none"
                       >
                         {p.name.replace(" (NCR)", "").replace(" (Western)", "")}
                       </text>
@@ -406,7 +408,7 @@ export default function Philippine2DMap({
 
         {/* Hover Tooltip (GMA Eleksyon broadcast style card) */}
         {hovered && (
-          <div className="absolute top-4 right-4 bg-[#0B132B] text-white rounded-xl p-3.5 border-2 border-amber-400 shadow-broadcast text-xs min-w-[220px] pointer-events-none animate-in fade-in duration-100">
+          <div className="absolute top-4 right-4 bg-[#0B1E36] text-white rounded-xl p-3.5 border-2 border-amber-400 shadow-md text-xs min-w-[220px] pointer-events-none animate-in fade-in duration-100">
             <div className="text-[10px] font-headline font-bold tracking-widest text-amber-400 uppercase">
               {hovered.islandGroup} &bull; {hovered.regionId}
             </div>
@@ -470,7 +472,7 @@ export default function Philippine2DMap({
       {/* Map Bottom Legend Bar */}
       <div className="bg-slate-50 border-t border-slate-200 p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div className="flex items-center gap-2 text-slate-600 font-sans">
-          <Info className="w-4 h-4 text-gma-blue flex-shrink-0" />
+          <Info className="w-4 h-4 text-blue-600 flex-shrink-0" />
           <span>Click any province or hexagon tile to view localized provincial vote tallies.</span>
         </div>
         <div className="font-headline font-bold text-[11px] uppercase text-slate-400 tracking-wider">

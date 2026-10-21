@@ -36,16 +36,16 @@ export default function CandidatesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-brand-light pb-16">
+    <div className="min-h-screen bg-[#F8FAFC] pb-16">
       {/* Header */}
       <div className="bg-white border-b border-brand-border py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-gma-blue/10 text-gma-blue text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold mb-2">
               <Users className="w-3.5 h-3.5" />
               <span>Comprehensive 2028 Electoral Registry</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-headline font-bold uppercase tracking-tight text-brand-navy">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#0B1E36] tracking-tight">
               Candidate Directory &amp; Biographies
             </h1>
             <p className="text-xs sm:text-sm text-brand-slate mt-1 max-w-2xl">
@@ -79,7 +79,7 @@ export default function CandidatesPage() {
                   onClick={() => setSelectedPosition(tab.value)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                     selectedPosition === tab.value
-                      ? "bg-brand-navy text-white shadow-sm"
+                      ? "bg-blue-600 text-white shadow-xs"
                       : "bg-slate-100 text-brand-slate hover:bg-slate-200"
                   }`}
                 >
@@ -128,7 +128,7 @@ export default function CandidatesPage() {
                         <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-brand-slate mb-1">
                           {c.position.replace("_", " ")}
                         </span>
-                        <h3 className="font-headline font-bold text-base sm:text-lg text-brand-navy leading-snug uppercase tracking-tight truncate">{c.name}</h3>
+                        <h3 className="font-bold text-base sm:text-lg text-[#0B1E36] leading-snug truncate">{c.name}</h3>
                         <p className="text-xs text-brand-slate font-medium truncate">{c.party || "Independent"}</p>
                       </div>
                     </div>
@@ -155,13 +155,13 @@ export default function CandidatesPage() {
                 <div className="p-4 bg-slate-50 border-t border-brand-border flex items-center justify-between gap-2">
                   <Link
                     href={`/candidates/${c.slug}`}
-                    className="w-full text-center py-2 px-3 rounded-lg bg-white border border-brand-border text-xs font-bold text-brand-navy hover:bg-slate-100 transition-colors"
+                    className="w-full text-center py-2 px-3 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                   >
                     View Biography
                   </Link>
                   <Link
                     href={`/platforms?candidate=${c.slug}`}
-                    className="w-full text-center py-2 px-3 rounded-lg bg-brand-blue text-white text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-1"
+                    className="w-full text-center py-2 px-3 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-1"
                   >
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Platforms</span>

@@ -117,11 +117,11 @@ export default function VotersProfilePage() {
         {/* ================= 4 KEY STAT CARDS ================= */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Card 1: Total Registered */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-2 min-w-0">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between space-y-2 min-w-0">
             <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Total Registered Voters (COMELEC)
             </div>
-            <div className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tabular-nums break-words">
+            <div className="text-xl sm:text-2xl lg:text-[22px] xl:text-3xl font-bold text-[#0B1E36] tabular-nums whitespace-nowrap">
               {baseline.totalRegisteredVoters.toLocaleString()}
             </div>
             <div className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
@@ -131,11 +131,11 @@ export default function VotersProfilePage() {
           </div>
 
           {/* Card 2: The Youth Vote */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-2 min-w-0">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between space-y-2 min-w-0">
             <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Youth Electorate (Gen Z + Millennials)
             </div>
-            <div className="text-2xl sm:text-3xl font-bold text-blue-600 tabular-nums break-words">
+            <div className="text-xl sm:text-2xl lg:text-[22px] xl:text-3xl font-bold text-blue-600 tabular-nums whitespace-nowrap">
               {baseline.youthVoteShare}%
             </div>
             <div className="text-xs text-slate-500 font-medium">
@@ -144,13 +144,18 @@ export default function VotersProfilePage() {
           </div>
 
           {/* Card 3: Gender Distribution */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-2 min-w-0">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between space-y-2 min-w-0">
             <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Gender Ratio (Nationwide)
             </div>
-            <div className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tabular-nums break-words">
-              51.2% <span className="text-sm text-slate-400 font-normal">F</span> / 48.8%{" "}
-              <span className="text-sm text-slate-400 font-normal">M</span>
+            <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+              <span className="text-xl sm:text-2xl lg:text-[22px] xl:text-3xl font-bold text-[#0B1E36] tabular-nums whitespace-nowrap">
+                51.2%<span className="text-xs sm:text-sm font-semibold text-purple-600 ml-1">F</span>
+              </span>
+              <span className="text-slate-300 font-light text-base sm:text-lg lg:text-xl">/</span>
+              <span className="text-xl sm:text-2xl lg:text-[22px] xl:text-3xl font-bold text-[#0B1E36] tabular-nums whitespace-nowrap">
+                48.8%<span className="text-xs sm:text-sm font-semibold text-blue-600 ml-1">M</span>
+              </span>
             </div>
             <div className="text-xs text-slate-500 font-medium">
               33.6M Female &bull; 32.1M Male
@@ -158,11 +163,11 @@ export default function VotersProfilePage() {
           </div>
 
           {/* Card 4: Survey Participation */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-2 min-w-0">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between space-y-2 min-w-0">
             <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Voluntary Survey Submissions
             </div>
-            <div className="text-2xl sm:text-3xl font-bold text-blue-600 tabular-nums break-words">
+            <div className="text-xl sm:text-2xl lg:text-[22px] xl:text-3xl font-bold text-blue-600 tabular-nums whitespace-nowrap">
               {analytics?.summary?.totalActiveSubmissions?.toLocaleString() || "0"}
             </div>
             <div className="text-xs text-slate-500 font-medium flex items-center gap-1.5">

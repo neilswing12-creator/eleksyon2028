@@ -75,7 +75,7 @@ export default function VotersProfilePage() {
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-gma-red text-white text-xs font-headline font-bold uppercase tracking-wider">
                 <Users className="w-3.5 h-3.5" />
-                <span>ELEKSYON 2028 &bull; VOTERS COVERAGE &bull; MADE BY NEIL SWING</span>
+                <span>ELEKSYON 2028 &bull; VOTERS COVERAGE &bull; MADE BY SWING LABS</span>
               </div>
               <h1 className="text-3xl sm:text-5xl font-headline font-black uppercase tracking-tight text-white leading-none">
                 VOTERS&apos; PROFILE &amp; DEMOGRAPHICS
@@ -229,7 +229,7 @@ export default function VotersProfilePage() {
             <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-relaxed flex items-start gap-3">
               <Award className="w-5 h-5 text-[#004B93] flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold uppercase font-headline">Research Insight by Neil Swing: </span>
+                <span className="font-bold uppercase font-headline">Research Insight by Swing Labs: </span>
                 Combined, <strong>Millennials and Gen Z account for over 56.4%</strong> of the entire
                 registered voting population. With over 36.9 million young voters heading to the polls,
                 candidates who resonate with issues of digital employment, education access, public transport,

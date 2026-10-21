@@ -139,6 +139,17 @@ model SurveyCampaign {
   geographicQuestion       String?
   methodologyDisclaimer    String?
   privacyNotice            String?
+  
+  // Survey Statistics Management (Manual Adjustments & Display Overrides)
+  activeVotesAdjustment      Int                @default(0)
+  todayVotesAdjustment       Int                @default(0)
+  provincesReportingOverride Int?               // null = calculated from distinct reporting provinces
+  activeVotesReason          String?
+  todayVotesReason           String?
+  provincesReportingReason   String?
+  statsLastAdjustedAt        DateTime?
+  statsLastAdjustedBy        String?
+
   submissions              SurveySubmission[]
   adjustments              SurveyAdjustment[]
   createdAt                DateTime           @default(now())

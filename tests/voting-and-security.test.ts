@@ -11,6 +11,9 @@ import {
   verifyPassword,
 } from "../src/lib/security";
 import { PUT as candidatePUT } from "../src/app/api/admin/candidates/route";
+import { GET as analyticsGET } from "../src/app/api/analytics/route";
+import { GET as statsGET, PUT as statsPUT } from "../src/app/api/admin/statistics/route";
+import { getStartOfManilaToday } from "../src/lib/timezone";
 
 const prisma = new PrismaClient();
 
@@ -715,6 +718,193 @@ async function runTests() {
   await prisma.candidate.deleteMany({
     where: { slug: { in: ["dual-test-candidate-pres", "dual-test-candidate-sen"] } },
   });
+
+  // =========================================================================
+  // SURVEY STATISTICS MANAGEMENT & AUDIT CONTROL TESTS (TESTS 26 - 30)
+  // =========================================================================
+
+  // TEST 26: Active Verified Votes Accuracy (Excludes retractions, deduplicates multi-race selections)
+  const actualActiveCount = await prisma.surveySubmission.count({
+    where: { status: "ACTIVE", campaignId: campaign.id },
+  });
+  const actualRetractedCount = await prisma.surveySubmission.count({
+    where: { status: "RETRACTED", campaignId: campaign.id },
+  });
+  const totalSubmissionsDb = await prisma.surveySubmission.count({
+    where: { campaignId: campaign.id },
+  });
+
+  const analyticsReq = new Request("http://localhost/api/analytics");
+  const analyticsRes = await analyticsGET(analyticsReq as any);
+  const analyticsData = await analyticsRes.json();
+
+  const isDeduplicatedAndAccurate =
+    analyticsData.summary.rawActiveSubmissions === actualActiveCount &&
+    analyticsData.summary.totalRetractedSubmissions === actualRetractedCount &&
+    actualActiveCount + actualRetractedCount === totalSubmissionsDb;
+
+  assert(
+    isDeduplicatedAndAccurate,
+    `26. Active Verified Votes Accuracy: Single source of truth (${actualActiveCount} active submissions, ${actualRetractedCount} retracted excluded)`
+  );
+
+  // TEST 27: Philippine Calendar Day Timezone Calculation (Asia/Manila)
+  const startOfManilaToday = getStartOfManilaToday();
+  const manilaDateString = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+
+  const expectedStart = new Date(`${manilaDateString}T00:00:00+08:00`);
+  const isTimezoneAccurate = startOfManilaToday.getTime() === expectedStart.getTime();
+
+  const expectedTodayCount = await prisma.surveySubmission.count({
+    where: {
+      status: "ACTIVE",
+      createdAt: { gte: startOfManilaToday },
+      campaignId: campaign.id,
+    },
+  });
+
+  assert(
+    isTimezoneAccurate && analyticsData.summary.rawTodaySubmissions === expectedTodayCount,
+    `27. Votes Received Today Timezone Integrity: Uses Asia/Manila (PST) boundary (${expectedTodayCount} votes today)`
+  );
+
+  // TEST 28: Distinct Provinces Reporting Coverage (Bounded 0 to 82)
+  const distinctReportingProvinces = await prisma.surveySubmission.findMany({
+    where: { status: "ACTIVE", campaignId: campaign.id },
+    select: { provinceId: true },
+  });
+  const validProvinceSet = new Set(
+    distinctReportingProvinces
+      .map((s) => s.provinceId)
+      .filter((pId): pId is string => Boolean(pId && pId !== "unspecified"))
+  );
+
+  const isProvincesValid =
+    analyticsData.summary.totalProvinces === 82 &&
+    analyticsData.summary.rawProvincesReporting === validProvinceSet.size &&
+    analyticsData.summary.provincesReporting >= 0 &&
+    analyticsData.summary.provincesReporting <= 82;
+
+  assert(
+    isProvincesValid,
+    `28. Provinces Reporting Geographic Coverage: Counts distinct active provinces (${validProvinceSet.size} / 82 provinces reporting)`
+  );
+
+  // TEST 29: Admin Statistics API Security & Role-Based Access Control
+  const unauthReq = new Request("http://localhost/api/admin/statistics", {
+    method: "GET",
+  });
+  const unauthRes = await statsGET(unauthReq as any);
+
+  const statsAnalystToken = signAdminSession({
+    id: "analyst-test-id",
+    email: "analyst@survey2028.ph",
+    role: "ANALYST",
+    name: "Analyst Read Only",
+  });
+  const analystPutReq = new Request("http://localhost/api/admin/statistics", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${statsAnalystToken}`,
+    },
+    body: JSON.stringify({
+      statistic: "ACTIVE_VOTES",
+      action: "ADJUST",
+      adjustment: 100,
+      reason: "Unauthorized attempt",
+    }),
+  });
+  const analystPutRes = await statsPUT(analystPutReq as any);
+
+  const isRbacEnforced = unauthRes.status === 401 && analystPutRes.status === 403;
+  assert(
+    isRbacEnforced,
+    "29. Statistics Management Security: 401 for unauthenticated requests, 403 for Analyst role"
+  );
+
+  // TEST 30: Statistics Adjustments, Audit Trail Recording, and Reset
+  const statsSuperAdminToken = signAdminSession({
+    id: "super-admin-test-id",
+    email: "admin@survey2028.ph",
+    role: "SUPER_ADMIN",
+    name: "Super Admin",
+  });
+
+  // 1. Apply an adjustment to Active Verified Votes (+100)
+  const adjustActiveReq = new Request("http://localhost/api/admin/statistics", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${statsSuperAdminToken}`,
+    },
+    body: JSON.stringify({
+      statistic: "ACTIVE_VOTES",
+      action: "ADJUST",
+      adjustment: 100,
+      reason: "Audited calibration for validated offline voter returns",
+    }),
+  });
+  const adjustActiveRes = await statsPUT(adjustActiveReq as any);
+  const adjustActiveData = await adjustActiveRes.json();
+
+  // 2. Fetch updated statistics
+  const verifyStatsReq = new Request("http://localhost/api/admin/statistics", {
+    headers: { Authorization: `Bearer ${statsSuperAdminToken}` },
+  });
+  const verifyStatsRes = await statsGET(verifyStatsReq as any);
+  const verifyStatsData = await verifyStatsRes.json();
+
+  const adjustedActiveStat = verifyStatsData.statistics.activeVotes;
+  const auditLogCreated = verifyStatsData.auditLogs.some(
+    (log: any) =>
+      log.action === "STATISTICS_ACTIVE_VOTES_ADJUSTED" &&
+      log.details.includes("Audited calibration for validated offline voter returns")
+  );
+
+  const isAdjustmentApplied =
+    adjustActiveRes.status === 200 &&
+    adjustActiveData.success === true &&
+    adjustedActiveStat.adjustment === 100 &&
+    adjustedActiveStat.displayed === adjustedActiveStat.calculated + 100 &&
+    auditLogCreated;
+
+  // 3. Reset Active Verified Votes back to calculated baseline
+  const resetActiveReq = new Request("http://localhost/api/admin/statistics", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${statsSuperAdminToken}`,
+    },
+    body: JSON.stringify({
+      statistic: "ACTIVE_VOTES",
+      action: "RESET",
+      reason: "Reset to pure system-calculated baseline count",
+    }),
+  });
+  const resetActiveRes = await statsPUT(resetActiveReq as any);
+
+  // 4. Verify baseline restored
+  const finalStatsReq = new Request("http://localhost/api/admin/statistics", {
+    headers: { Authorization: `Bearer ${statsSuperAdminToken}` },
+  });
+  const finalStatsRes = await statsGET(finalStatsReq as any);
+  const finalStatsData = await finalStatsRes.json();
+
+  const isResetSuccessful =
+    resetActiveRes.status === 200 &&
+    finalStatsData.statistics.activeVotes.adjustment === 0 &&
+    finalStatsData.statistics.activeVotes.displayed === finalStatsData.statistics.activeVotes.calculated;
+
+  assert(
+    isAdjustmentApplied && isResetSuccessful,
+    "30. Statistics Calibration Lifecycle: Applied manual adjustment, verified audit logging, and restored baseline"
+  );
 
   console.log("\n=======================================================");
   console.log(`TOTAL TESTS: ${passedCount + failedCount} | PASSED: ${passedCount} | FAILED: ${failedCount}`);

@@ -271,7 +271,7 @@ export default function SurveyPage() {
         <div className="text-center space-y-3">
           <div className="w-10 h-10 border-4 border-gma-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="text-xs font-headline font-bold text-slate-500 uppercase tracking-wider">
-            Loading GMA Eleksyon Ballot Candidates...
+            Loading Eleksyon Ballot Candidates...
           </p>
         </div>
       </div>

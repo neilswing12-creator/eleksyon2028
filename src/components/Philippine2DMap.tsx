@@ -176,7 +176,7 @@ export default function Philippine2DMap({
           <div className="flex items-center gap-2">
             <ElectionLiveBadge label="RESULTS MAP" />
             <span className="text-[11px] font-headline font-bold tracking-widest text-amber-400 uppercase">
-              MADE BY NEIL SWING
+              MADE BY SWING LABS
             </span>
           </div>
           <h2 className="text-xl font-headline font-bold uppercase tracking-wide text-white mt-1">
@@ -474,7 +474,7 @@ export default function Philippine2DMap({
           <span>Click any province or hexagon tile to view localized provincial vote tallies.</span>
         </div>
         <div className="font-headline font-bold text-[11px] uppercase text-slate-400 tracking-wider">
-          Philippine 2028 National Election Survey &bull; Made by Neil Swing
+          Philippine 2028 National Election Survey &bull; Made by Swing Labs
         </div>
       </div>
     </div>

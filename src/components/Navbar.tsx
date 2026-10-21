@@ -27,7 +27,7 @@ export default function Navbar() {
       {/* Top Live Survey Ticker */}
       <div className="bg-[#070D1F] border-b border-white/10 px-4 py-1.5 text-xs flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <ElectionLiveBadge label="LIVE SURVEY" sublabel="Made by Neil Swing" />
+          <ElectionLiveBadge label="LIVE SURVEY" sublabel="Made by Swing Labs" />
           <span className="text-slate-300 font-medium text-[11px] hidden sm:inline">
             Partial, Unofficial Results &bull; 2028 Philippine National Pre-Election Poll
           </span>
@@ -46,7 +46,7 @@ export default function Navbar() {
       {/* Main Broadcast Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo with Neil Swing Branding */}
+          {/* Logo with Swing Labs Branding */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
             <div className="relative flex-shrink-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-tr from-gma-blue to-blue-600 border border-blue-400/40 flex items-center justify-center text-white shadow group-hover:scale-105 transition-transform">
@@ -58,7 +58,7 @@ export default function Navbar() {
                 ELEKSYON <span className="text-gma-red">2028</span>
               </div>
               <div className="text-[9px] sm:text-[10px] font-sans font-bold tracking-wider sm:tracking-widest text-slate-300 uppercase mt-0.5 truncate">
-                PHILIPPINE 2028 SURVEY &bull; NEIL SWING
+                PHILIPPINE 2028 SURVEY &bull; SWING LABS
               </div>
             </div>
           </Link>

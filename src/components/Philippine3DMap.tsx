@@ -285,7 +285,7 @@ export default function Philippine3DMap({
       {/* Broadcast HUD Banner */}
       <div className="absolute top-4 left-4 z-10 bg-[#0B132B]/90 backdrop-blur-md border border-white/20 rounded-xl p-3 shadow-broadcast text-xs text-white space-y-1">
         <div className="flex items-center gap-2">
-          <ElectionLiveBadge label="3D SPATIAL STUDIO" sublabel="Made by Neil Swing" />
+          <ElectionLiveBadge label="3D SPATIAL STUDIO" sublabel="Made by Swing Labs" />
         </div>
         <p className="text-[11px] text-slate-300 font-sans">
           Click &amp; drag to orbit &bull; Pillar height = Vote concentration

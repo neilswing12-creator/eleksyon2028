@@ -230,6 +230,14 @@ exports.Prisma.SurveyCampaignScalarFieldEnum = {
   geographicQuestion: 'geographicQuestion',
   methodologyDisclaimer: 'methodologyDisclaimer',
   privacyNotice: 'privacyNotice',
+  activeVotesAdjustment: 'activeVotesAdjustment',
+  todayVotesAdjustment: 'todayVotesAdjustment',
+  provincesReportingOverride: 'provincesReportingOverride',
+  activeVotesReason: 'activeVotesReason',
+  todayVotesReason: 'todayVotesReason',
+  provincesReportingReason: 'provincesReportingReason',
+  statsLastAdjustedAt: 'statsLastAdjustedAt',
+  statsLastAdjustedBy: 'statsLastAdjustedBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -72,7 +72,7 @@ export default function HomePage() {
             <div className="flex justify-center">
               <ElectionLiveBadge
                 label="PHILIPPINE 2028 ELECTION SURVEY DESK"
-                sublabel="Made by Neil Swing"
+                sublabel="Made by Swing Labs"
                 className="text-xs py-1.5 px-4"
               />
             </div>
@@ -84,7 +84,7 @@ export default function HomePage() {
 
             <p className="text-xs sm:text-base text-slate-300 font-sans leading-relaxed max-w-2xl mx-auto">
               Track voluntary public opinion on the 2028 Philippine National Elections in real time. Examine
-              live tallies across Luzon, Visayas, and Mindanao with interactive cartograms and geographic heatmaps made by Neil Swing.
+              live tallies across Luzon, Visayas, and Mindanao with interactive cartograms and geographic heatmaps made by Swing Labs.
             </p>
 
             {/* Quick CTAs */}
@@ -174,9 +174,9 @@ export default function HomePage() {
               Votes Received Today
             </span>
             <div className="text-xl sm:text-3xl font-headline font-black text-emerald-600 mt-1 tabular-nums truncate">
-              {(analytics?.summary?.todaySubmissions || 0).toLocaleString()}
+              {(analytics?.summary?.todaySubmissions ?? 0).toLocaleString()}
             </div>
-            <p className="text-[10px] text-slate-400 mt-0.5 truncate">Last 24 hours</p>
+            <p className="text-[10px] text-slate-400 mt-0.5 truncate">Philippine calendar day (PST)</p>
           </div>
 
           <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-5 shadow-subtle min-w-0">
@@ -184,7 +184,7 @@ export default function HomePage() {
               Provinces Reporting
             </span>
             <div className="text-xl sm:text-3xl font-headline font-black text-[#0B132B] mt-1 tabular-nums truncate">
-              {analytics?.provinces?.filter((p: any) => p.totalSubmissions > 0).length || 0} / 82
+              {analytics?.summary?.provincesReporting ?? (analytics?.provinces?.filter((p: any) => p.totalSubmissions > 0).length || 0)} / {analytics?.summary?.totalProvinces ?? 82}
             </div>
             <p className="text-[10px] text-slate-400 mt-0.5 truncate">Nationwide geographic coverage</p>
           </div>
@@ -374,7 +374,7 @@ export default function HomePage() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-gma-red text-white text-xs font-headline font-bold uppercase tracking-wider">
               <Users className="w-3.5 h-3.5" />
-              <span>VOTERS&apos; DEMOGRAPHIC PROFILE &bull; MADE BY NEIL SWING</span>
+              <span>VOTERS&apos; DEMOGRAPHIC PROFILE &bull; MADE BY SWING LABS</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-headline font-black text-white uppercase tracking-wide">
               WHO DECIDES ELEKSYON 2028?

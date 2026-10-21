@@ -40,7 +40,7 @@ export default function GMALeaderboardWidget({
       <div className="bg-[#0B132B] text-white p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <ElectionLiveBadge label="OFFICIAL TALLY" sublabel="Made by Neil Swing" />
+            <ElectionLiveBadge label="OFFICIAL TALLY" sublabel="Made by Swing Labs" />
           </div>
 
           <span className="text-[11px] font-sans text-slate-300">

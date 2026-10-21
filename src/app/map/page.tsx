@@ -63,14 +63,14 @@ export default function InteractiveMapPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <ElectionLiveBadge label="ELECTION DATA DESK" sublabel="Made by Neil Swing" />
+                <ElectionLiveBadge label="ELECTION DATA DESK" sublabel="Made by Swing Labs" />
               </div>
               <h1 className="text-2xl sm:text-4xl font-headline font-black text-white tracking-wide uppercase mt-1">
                 Philippine Survey Map &amp; Real-Time Tally
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 font-sans mt-0.5 max-w-2xl">
                 Explore voting trends across all 82 provinces using the interactive hexagonal cartogram,
-                geographic heatmap, or 3D spatial studio view created by Neil Swing.
+                geographic heatmap, or 3D spatial studio view created by Swing Labs.
               </p>
             </div>
 

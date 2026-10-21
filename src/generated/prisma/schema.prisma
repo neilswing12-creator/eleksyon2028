@@ -119,30 +119,41 @@ model CandidateSource {
 }
 
 model SurveyCampaign {
-  id                       String             @id @default(cuid())
+  id                       String    @id @default(cuid())
   title                    String
   description              String?
-  status                   String             @default("ACTIVE") // ACTIVE, PAUSED, CLOSED
-  startDate                DateTime           @default(now())
+  status                   String    @default("ACTIVE") // ACTIVE, PAUSED, CLOSED
+  startDate                DateTime  @default(now())
   endDate                  DateTime?
-  enablePresident          Boolean            @default(true)
-  enableVicePresident      Boolean            @default(true)
-  enableSenators           Boolean            @default(true)
-  maxSenatorSelections     Int                @default(12)
-  ipRestrictionEnabled     Boolean            @default(true)
-  minResponseThreshold     Int                @default(1)
-  publicResultsVisible     Boolean            @default(true)
-  geographicResultsVisible Boolean            @default(true)
+  enablePresident          Boolean   @default(true)
+  enableVicePresident      Boolean   @default(true)
+  enableSenators           Boolean   @default(true)
+  maxSenatorSelections     Int       @default(12)
+  ipRestrictionEnabled     Boolean   @default(true)
+  minResponseThreshold     Int       @default(1)
+  publicResultsVisible     Boolean   @default(true)
+  geographicResultsVisible Boolean   @default(true)
   presidentialQuestion     String?
   vicePresidentialQuestion String?
   senatorialQuestion       String?
   geographicQuestion       String?
   methodologyDisclaimer    String?
   privacyNotice            String?
-  submissions              SurveySubmission[]
-  adjustments              SurveyAdjustment[]
-  createdAt                DateTime           @default(now())
-  updatedAt                DateTime           @updatedAt
+
+  // Survey Statistics Management (Manual Adjustments & Display Overrides)
+  activeVotesAdjustment      Int       @default(0)
+  todayVotesAdjustment       Int       @default(0)
+  provincesReportingOverride Int? // null = calculated from distinct reporting provinces
+  activeVotesReason          String?
+  todayVotesReason           String?
+  provincesReportingReason   String?
+  statsLastAdjustedAt        DateTime?
+  statsLastAdjustedBy        String?
+
+  submissions SurveySubmission[]
+  adjustments SurveyAdjustment[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 }
 
 model SurveyAdjustment {

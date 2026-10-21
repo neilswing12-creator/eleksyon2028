@@ -56,7 +56,7 @@ export default function LiveResultsPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <ElectionLiveBadge label="OFFICIAL TALLY REPORT" sublabel="Made by Neil Swing" />
+                <ElectionLiveBadge label="OFFICIAL TALLY REPORT" sublabel="Made by Swing Labs" />
               </div>
               <h1 className="text-2xl sm:text-4xl font-headline font-black text-white tracking-wide uppercase mt-1">
                 National Election Survey Results
@@ -104,7 +104,7 @@ export default function LiveResultsPage() {
               <div className="text-2xl font-headline font-black text-emerald-400 mt-1 tabular-nums">
                 {(analytics?.summary?.todaySubmissions || 0).toLocaleString()}
               </div>
-              <p className="text-[10px] text-slate-400 mt-0.5">Last 24 hours</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Philippine calendar day (PST)</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10">

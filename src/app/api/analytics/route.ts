@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS, PHILIPPINE_VOTERS_DEMOGRAPHICS } from "@/lib/philippines-geo";
 import { verifyAdminSession } from "@/lib/security";
+import { getStartOfManilaToday } from "@/lib/timezone";
 
 export const dynamic = "force-dynamic";
 
-function getAdmin(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
+function getAdmin(req: NextRequest | Request) {
+  const authHeader = req.headers?.get("authorization");
   let token = "";
   if (authHeader && authHeader.startsWith("Bearer ")) {
     token = authHeader.substring(7);
-  } else {
-    token = req.cookies.get("admin_session")?.value || "";
+  } else if ((req as any).cookies?.get) {
+    token = (req as any).cookies.get("admin_session")?.value || "";
   }
   return verifyAdminSession(token);
 }
@@ -49,7 +50,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // 1. Overall counts
+    // 1. Overall counts (Single source of truth: active, eligible submissions)
     const activeSubmissionsCount = await prisma.surveySubmission.count({
       where: { status: "ACTIVE", ...(campaignId ? { campaignId } : {}) },
     });
@@ -58,16 +59,24 @@ export async function GET(req: NextRequest) {
       where: { status: "RETRACTED", ...(campaignId ? { campaignId } : {}) },
     });
 
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
+    // Calculate today's submissions strictly according to Philippine calendar day (Asia/Manila, UTC+08:00)
+    const startOfManilaToday = getStartOfManilaToday();
 
     const todaySubmissionsCount = await prisma.surveySubmission.count({
       where: {
         status: "ACTIVE",
-        createdAt: { gte: startOfToday },
+        createdAt: { gte: startOfManilaToday },
         ...(campaignId ? { campaignId } : {}),
       },
     });
+
+    // Read administrative adjustments and overrides for official statistics
+    const activeVotesAdjustment = campaign?.activeVotesAdjustment ?? 0;
+    const todayVotesAdjustment = campaign?.todayVotesAdjustment ?? 0;
+    const provincesReportingOverride = campaign?.provincesReportingOverride ?? null;
+
+    const displayedActiveVotes = Math.max(0, activeSubmissionsCount + activeVotesAdjustment);
+    const displayedTodayVotes = Math.max(0, todaySubmissionsCount + todayVotesAdjustment);
 
     // 2. Fetch all published candidates
     const candidates = await prisma.candidate.findMany({
@@ -120,7 +129,7 @@ export async function GET(req: NextRequest) {
     // Calculate total net adjustment amounts added manually by admin
     const totalAdjustmentAmount = approvedAdjustments.reduce((sum, adj) => sum + adj.amount, 0);
     const todayAdjustmentAmount = approvedAdjustments
-      .filter((adj) => adj.createdAt >= startOfToday)
+      .filter((adj) => adj.createdAt >= startOfManilaToday)
       .reduce((sum, adj) => sum + adj.amount, 0);
 
     // National adjustments grouped by candidate & category
@@ -259,7 +268,7 @@ export async function GET(req: NextRequest) {
       rawSenMap[s.candidateId] = (rawSenMap[s.candidateId] || 0) + 1;
     });
 
-    const totalActiveVotes = Math.max(1, activeSubmissionsCount + totalAdjustmentAmount);
+    const totalActiveVotes = Math.max(1, displayedActiveVotes);
 
     const senatorialRankings = candidates
       .filter((c) => c.position === "SENATOR")
@@ -302,6 +311,19 @@ export async function GET(req: NextRequest) {
         regionId: true,
       },
     });
+
+    // Count distinct provinces with active qualifying submissions
+    const distinctReportingProvinceIds = new Set(
+      activeSubmissions
+        .map((s) => s.provinceId)
+        .filter((pId): pId is string => Boolean(pId && PHILIPPINE_PROVINCES.some((p) => p.id === pId)))
+    );
+    const calculatedProvincesReporting = distinctReportingProvinceIds.size;
+    const totalProvincesCount = PHILIPPINE_PROVINCES.length; // 82
+    const displayedProvincesReporting =
+      provincesReportingOverride !== null && provincesReportingOverride !== undefined
+        ? Math.min(totalProvincesCount, Math.max(0, provincesReportingOverride))
+        : calculatedProvincesReporting;
 
     activeSubmissions.forEach((sub) => {
       const pKey = sub.provinceId || "unspecified";
@@ -657,15 +679,21 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       summary: {
-        totalActiveSubmissions: Math.max(0, activeSubmissionsCount + totalAdjustmentAmount),
+        totalActiveSubmissions: displayedActiveVotes,
         rawActiveSubmissions: activeSubmissionsCount,
+        activeVotesAdjustment,
         totalRetractedSubmissions: retractedSubmissionsCount,
-        todaySubmissions: Math.max(0, todaySubmissionsCount + todayAdjustmentAmount),
+        todaySubmissions: displayedTodayVotes,
         rawTodaySubmissions: todaySubmissionsCount,
+        todayVotesAdjustment,
+        provincesReporting: displayedProvincesReporting,
+        rawProvincesReporting: calculatedProvincesReporting,
+        provincesReportingOverride,
+        totalProvinces: totalProvincesCount,
         presidentialTotalVotes: totalPresDisplayedVotes,
         vicePresidentialTotalVotes: totalVpDisplayedVotes,
         totalAdjustmentsCount: approvedAdjustments.length,
-        totalAdjustmentAmount,
+        totalCandidateAdjustmentAmount: totalAdjustmentAmount,
         minResponseThreshold: minThreshold,
         campaignStatus: campaign?.status || "ACTIVE",
         publicResultsVisible,

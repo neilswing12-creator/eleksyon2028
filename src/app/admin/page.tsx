@@ -40,6 +40,9 @@ import {
   Check,
   ChevronRight,
   TrendingUp,
+  Activity,
+  RotateCcw,
+  CheckCircle,
 } from "lucide-react";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS } from "@/lib/philippines-geo";
 
@@ -53,9 +56,9 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
 
-  // Active Tab: SURVEY_MGMT | ADJUSTMENTS | CANDIDATES | PLATFORMS | SETTINGS | LOGS
+  // Active Tab: SURVEY_MGMT | STATISTICS | ADJUSTMENTS | CANDIDATES | PLATFORMS | SETTINGS | LOGS
   const [activeTab, setActiveTab] = useState<
-    "SURVEY_MGMT" | "ADJUSTMENTS" | "CANDIDATES" | "PLATFORMS" | "SETTINGS" | "LOGS"
+    "SURVEY_MGMT" | "STATISTICS" | "ADJUSTMENTS" | "CANDIDATES" | "PLATFORMS" | "SETTINGS" | "LOGS"
   >("SURVEY_MGMT");
 
   // Admin Data State
@@ -66,7 +69,36 @@ export default function AdminPage() {
   const [adjustments, setAdjustments] = useState<any[]>([]);
   const [candidateSummaries, setCandidateSummaries] = useState<any[]>([]);
   const [analytics, setAnalytics] = useState<any>(null);
+  const [surveyStats, setSurveyStats] = useState<any>(null);
+  const [statsAuditLogs, setStatsAuditLogs] = useState<any[]>([]);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // Statistics Management Form State
+  const [activeVotesMode, setActiveVotesMode] = useState<"TARGET" | "ADJUSTMENT">("TARGET");
+  const [activeVotesInput, setActiveVotesInput] = useState<string>("");
+  const [activeVotesReason, setActiveVotesReason] = useState<string>("");
+
+  const [todayVotesMode, setTodayVotesMode] = useState<"TARGET" | "ADJUSTMENT">("TARGET");
+  const [todayVotesInput, setTodayVotesInput] = useState<string>("");
+  const [todayVotesReason, setTodayVotesReason] = useState<string>("");
+
+  const [provincesOverrideInput, setProvincesOverrideInput] = useState<string>("");
+  const [provincesReason, setProvincesReason] = useState<string>("");
+
+  const [savingStatKey, setSavingStatKey] = useState<string | null>(null);
+  const [statsConfirmModal, setStatsConfirmModal] = useState<{
+    open: boolean;
+    title: string;
+    statisticName: string;
+    action: "ADJUST" | "RESET";
+    calculatedValue: number | string;
+    currentAdjustment: number | string;
+    newAdjustment: number | string;
+    currentDisplayed: number | string;
+    resultingDisplayed: number | string;
+    reason: string;
+    onConfirm: () => Promise<void>;
+  } | null>(null);
 
   // Modals & Action States
   const [showCandidateModal, setShowCandidateModal] = useState(false);
@@ -154,13 +186,14 @@ export default function AdminPage() {
 
   const loadAdminData = async () => {
     try {
-      const [candRes, platRes, campRes, logsRes, adjRes, analyticsRes] = await Promise.all([
+      const [candRes, platRes, campRes, logsRes, adjRes, analyticsRes, statsRes] = await Promise.all([
         fetch("/api/admin/candidates"),
         fetch("/api/admin/platforms"),
         fetch("/api/admin/campaign"),
         fetch("/api/admin/logs"),
         fetch("/api/admin/adjustments"),
         fetch("/api/analytics"),
+        fetch("/api/admin/statistics"),
       ]);
 
       if (candRes.ok) setCandidates((await candRes.json()).candidates || []);
@@ -173,6 +206,11 @@ export default function AdminPage() {
         setCandidateSummaries(adjData.candidateSummaries || []);
       }
       if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setSurveyStats(statsData.statistics || null);
+        setStatsAuditLogs(statsData.auditLogs || []);
+      }
     } catch (e) {
       console.error("Error loading admin data:", e);
     }
@@ -510,6 +548,77 @@ export default function AdminPage() {
     }
   };
 
+  // Survey Statistics Management Handlers
+  const handleApplyStat = async (
+    statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "PROVINCES_REPORTING",
+    payload: { adjustment?: number; targetTotal?: number; override?: number; reason: string }
+  ) => {
+    if (isAnalyst) {
+      showNotify("error", "Analyst role is read-only. Cannot modify statistics.");
+      return;
+    }
+    setSavingStatKey(statistic);
+    try {
+      const res = await fetch("/api/admin/statistics", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          statistic,
+          action: "ADJUST",
+          ...payload,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showNotify("error", data.error || "Failed to update statistic.");
+        return;
+      }
+
+      showNotify("success", data.message || "Statistic updated successfully.");
+      await loadAdminData();
+    } catch (err) {
+      showNotify("error", "Network connection error.");
+    } finally {
+      setSavingStatKey(null);
+    }
+  };
+
+  const handleResetStat = async (
+    statistic: "ACTIVE_VOTES" | "TODAY_VOTES" | "PROVINCES_REPORTING" | "ALL",
+    reason: string
+  ) => {
+    if (isAnalyst) {
+      showNotify("error", "Analyst role is read-only.");
+      return;
+    }
+    setSavingStatKey(statistic);
+    try {
+      const res = await fetch("/api/admin/statistics", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          statistic,
+          action: "RESET",
+          reason,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        showNotify("error", data.error || "Failed to reset statistic.");
+        return;
+      }
+
+      showNotify("success", data.message || "Statistic reset to system-calculated value.");
+      await loadAdminData();
+    } catch (err) {
+      showNotify("error", "Network connection error.");
+    } finally {
+      setSavingStatKey(null);
+    }
+  };
+
   // Campaign Save
   const handleSaveCampaign = async (customSettings?: any) => {
     if (isAnalyst) return;
@@ -740,7 +849,8 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2.5 scrollbar-none">
           {[
             { id: "SURVEY_MGMT", label: "Survey Operations & Overview", icon: BarChart2 },
-            { id: "ADJUSTMENTS", label: "Manual Voting Adjustments", icon: Sliders },
+            { id: "STATISTICS", label: "Survey Statistics Management", icon: Activity },
+            { id: "ADJUSTMENTS", label: "Candidate Voting Adjustments", icon: Sliders },
             { id: "CANDIDATES", label: "Candidate Profiles & Photos", icon: Users },
             { id: "PLATFORMS", label: "Platforms & Agendas", icon: BookOpen },
             { id: "SETTINGS", label: "Survey Campaign Settings", icon: Settings },
@@ -840,13 +950,26 @@ export default function AdminPage() {
             {/* Real-Time Database Metrics Ticker */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
-                  Active Submissions
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
+                    Active Submissions
+                  </span>
+                  <button
+                    onClick={() => setActiveTab("STATISTICS")}
+                    className="text-[10px] text-brand-blue font-bold hover:underline"
+                    title="Open Survey Statistics Management"
+                  >
+                    Manage &rarr;
+                  </button>
+                </div>
                 <div className="text-2xl sm:text-3xl font-black text-brand-navy mt-1 tabular-nums">
                   {(analytics?.summary?.totalActiveSubmissions ?? 0).toLocaleString()}
                 </div>
-                <p className="text-[10px] text-emerald-600 font-semibold mt-0.5">Contributing to official tallies</p>
+                <p className="text-[10px] text-emerald-600 font-semibold mt-0.5 truncate">
+                  {(analytics?.summary?.activeVotesAdjustment ?? 0) !== 0
+                    ? `Calculated: ${(analytics?.summary?.rawActiveSubmissions ?? 0).toLocaleString()} (Adj: ${(analytics?.summary?.activeVotesAdjustment ?? 0) >= 0 ? `+${analytics?.summary?.activeVotesAdjustment}` : analytics?.summary?.activeVotesAdjustment})`
+                    : "100% organic verified submissions"}
+                </p>
               </div>
 
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
@@ -860,23 +983,49 @@ export default function AdminPage() {
               </div>
 
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
-                  Today&apos;s Responses
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
+                    Today&apos;s Responses
+                  </span>
+                  <button
+                    onClick={() => setActiveTab("STATISTICS")}
+                    className="text-[10px] text-brand-blue font-bold hover:underline"
+                    title="Open Survey Statistics Management"
+                  >
+                    Manage &rarr;
+                  </button>
+                </div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-600 mt-1 tabular-nums">
                   {(analytics?.summary?.todaySubmissions ?? 0).toLocaleString()}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-0.5">Last 24 hours</p>
+                <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                  {(analytics?.summary?.todayVotesAdjustment ?? 0) !== 0
+                    ? `Calculated: ${(analytics?.summary?.rawTodaySubmissions ?? 0).toLocaleString()} (Adj: ${(analytics?.summary?.todayVotesAdjustment ?? 0) >= 0 ? `+${analytics?.summary?.todayVotesAdjustment}` : analytics?.summary?.todayVotesAdjustment})`
+                    : "Philippine calendar day (PST)"}
+                </p>
               </div>
 
               <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-subtle min-w-0">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
-                  Approved Adjustments
-                </span>
-                <div className="text-2xl sm:text-3xl font-black text-brand-blue mt-1 tabular-nums">
-                  {adjustments.filter((a) => a.status === "APPROVED").length}
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-brand-slate block truncate">
+                    Provinces Reporting
+                  </span>
+                  <button
+                    onClick={() => setActiveTab("STATISTICS")}
+                    className="text-[10px] text-brand-blue font-bold hover:underline"
+                    title="Open Survey Statistics Management"
+                  >
+                    Manage &rarr;
+                  </button>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-0.5">Auditable corrections</p>
+                <div className="text-2xl sm:text-3xl font-black text-[#0B132B] mt-1 tabular-nums">
+                  {analytics?.summary?.provincesReporting ?? 0} / {analytics?.summary?.totalProvinces ?? 82}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+                  {analytics?.summary?.provincesReportingOverride !== null && analytics?.summary?.provincesReportingOverride !== undefined
+                    ? `Manual override: ${analytics.summary.provincesReportingOverride} / 82`
+                    : `Calculated distinct provinces`}
+                </p>
               </div>
             </div>
 
@@ -1022,6 +1171,812 @@ export default function AdminPage() {
                           </td>
                         </tr>
                       ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB: SURVEY STATISTICS MANAGEMENT (VOTES & COVERAGE)      */}
+        {/* ========================================================= */}
+        {activeTab === "STATISTICS" && (
+          <div className="space-y-6">
+            {/* Header & Control Center Banner */}
+            <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-brand-blue" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand-blue bg-blue-50 px-2.5 py-0.5 rounded-full">
+                    Official Survey Counter Calibration
+                  </span>
+                </div>
+                <h2 className="text-lg font-bold text-brand-navy">Survey Statistics Management</h2>
+                <p className="text-xs text-brand-slate max-w-3xl leading-relaxed">
+                  Calibrate and audit high-level nationwide survey statistics displayed on the live public results page.
+                  Each counter separates pure system-calculated baseline records from authorized administrative adjustments,
+                  ensuring complete auditability and integrity without fabricating participant responses.
+                </p>
+              </div>
+
+              {!isAnalyst && (
+                <button
+                  type="button"
+                  disabled={savingStatKey === "ALL"}
+                  onClick={() => {
+                    setStatsConfirmModal({
+                      open: true,
+                      title: "Reset All Survey Statistics",
+                      statisticName: "All High-Level Survey Counters",
+                      action: "RESET",
+                      calculatedValue: "All Organic Baselines",
+                      currentAdjustment: "All Custom Adjustments",
+                      newAdjustment: "0 / None",
+                      currentDisplayed: "Current Displayed Values",
+                      resultingDisplayed: "100% Calculated Database Counts",
+                      reason: "Administrative reset of all counters to pure system-calculated baselines",
+                      onConfirm: async () => {
+                        await handleResetStat("ALL", "Administrative reset of all survey counters to system-calculated baselines");
+                        setStatsConfirmModal(null);
+                      },
+                    });
+                  }}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-2 transition-colors self-start md:self-auto flex-shrink-0"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Reset All to Calculated</span>
+                </button>
+              )}
+            </div>
+
+            {/* THREE PRIMARY STATISTIC CONTROLS */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* STATISTIC 1: ACTIVE VERIFIED VOTES */}
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-brand-navy">Active Verified Votes</h3>
+                        <span className="text-[10px] text-slate-400">Total Valid Voter Submissions</span>
+                      </div>
+                    </div>
+                    {surveyStats?.activeVotes?.isAdjusted ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                        Manual Adjustment
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        100% Organic
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Accurately reflects unique, eligible active submissions in the survey database. Multiple candidate
+                    selections across races are deduplicated into a single verified submission.
+                  </p>
+
+                  {/* 3 Metric Pills */}
+                  <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-center">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Calculated</span>
+                      <span className="font-mono font-black text-sm text-slate-700">
+                        {(surveyStats?.activeVotes?.calculated ?? analytics?.summary?.rawActiveSubmissions ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Adjustment</span>
+                      <span
+                        className={`font-mono font-bold text-sm ${
+                          (surveyStats?.activeVotes?.adjustment ?? 0) !== 0
+                            ? (surveyStats?.activeVotes?.adjustment ?? 0) > 0
+                              ? "text-emerald-600"
+                              : "text-amber-600"
+                            : "text-slate-400"
+                        }`}
+                      >
+                        {(surveyStats?.activeVotes?.adjustment ?? 0) > 0
+                          ? `+${(surveyStats?.activeVotes?.adjustment ?? 0).toLocaleString()}`
+                          : (surveyStats?.activeVotes?.adjustment ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-brand-blue block truncate">Public Total</span>
+                      <span className="font-mono font-black text-sm text-brand-blue">
+                        {(surveyStats?.activeVotes?.displayed ?? analytics?.summary?.totalActiveSubmissions ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Adjustment Controls */}
+                  <div className="pt-2 border-t border-slate-100 space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-brand-navy">
+                      <span>Adjust Statistic</span>
+                      <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-[10px]">
+                        <button
+                          type="button"
+                          onClick={() => setActiveVotesMode("TARGET")}
+                          className={`px-2 py-0.5 rounded-md font-bold transition-all ${
+                            activeVotesMode === "TARGET"
+                              ? "bg-white text-brand-navy shadow-xs"
+                              : "text-slate-500 hover:text-slate-800"
+                          }`}
+                        >
+                          Target Total
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveVotesMode("ADJUSTMENT")}
+                          className={`px-2 py-0.5 rounded-md font-bold transition-all ${
+                            activeVotesMode === "ADJUSTMENT"
+                              ? "bg-white text-brand-navy shadow-xs"
+                              : "text-slate-500 hover:text-slate-800"
+                          }`}
+                        >
+                          Adjustment (+/-)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        {activeVotesMode === "TARGET"
+                          ? "Approved Displayed Total (e.g. 1000)"
+                          : "Manual Count Adjustment (+/-)"}
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        disabled={isAnalyst}
+                        placeholder={
+                          activeVotesMode === "TARGET"
+                            ? `Current displayed: ${(surveyStats?.activeVotes?.displayed ?? 0).toLocaleString()}`
+                            : "e.g. +250 or -50"
+                        }
+                        value={activeVotesInput}
+                        onChange={(e) => setActiveVotesInput(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30 font-mono font-bold"
+                      />
+                      {activeVotesInput !== "" && !isNaN(parseInt(activeVotesInput, 10)) && (
+                        <p className="text-[10px] text-brand-blue mt-1 font-mono">
+                          {activeVotesMode === "TARGET" ? (
+                            <>
+                              Calculated (
+                              {(surveyStats?.activeVotes?.calculated ?? 0).toLocaleString()}) + Adjustment (
+                              {parseInt(activeVotesInput, 10) - (surveyStats?.activeVotes?.calculated ?? 0) >= 0
+                                ? `+${parseInt(activeVotesInput, 10) - (surveyStats?.activeVotes?.calculated ?? 0)}`
+                                : parseInt(activeVotesInput, 10) - (surveyStats?.activeVotes?.calculated ?? 0)}
+                              ) = <strong>{Math.max(0, parseInt(activeVotesInput, 10)).toLocaleString()} displayed</strong>
+                            </>
+                          ) : (
+                            <>
+                              Calculated (
+                              {(surveyStats?.activeVotes?.calculated ?? 0).toLocaleString()}) + Adjustment (
+                              {parseInt(activeVotesInput, 10) >= 0
+                                ? `+${parseInt(activeVotesInput, 10)}`
+                                : parseInt(activeVotesInput, 10)}
+                              ) ={" "}
+                              <strong>
+                                {Math.max(
+                                  0,
+                                  (surveyStats?.activeVotes?.calculated ?? 0) + parseInt(activeVotesInput, 10)
+                                ).toLocaleString()}{" "}
+                                displayed
+                              </strong>
+                            </>
+                          )}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        Audit Reason <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isAnalyst}
+                        placeholder="e.g. Turnout calibration against verified precinct census"
+                        value={activeVotesReason}
+                        onChange={(e) => setActiveVotesReason(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    disabled={
+                      isAnalyst ||
+                      savingStatKey === "ACTIVE_VOTES" ||
+                      (surveyStats?.activeVotes?.adjustment ?? 0) === 0
+                    }
+                    onClick={() => {
+                      const calc = surveyStats?.activeVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.activeVotes?.adjustment ?? 0;
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Reset Active Verified Votes",
+                        statisticName: "Active Verified Votes",
+                        action: "RESET",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: "0 (Zero Adjustment)",
+                        currentDisplayed: (calc + curAdj).toLocaleString(),
+                        resultingDisplayed: calc.toLocaleString(),
+                        reason: "Reset to system-calculated baseline count",
+                        onConfirm: async () => {
+                          await handleResetStat("ACTIVE_VOTES", "Reset to calculated baseline");
+                          setActiveVotesInput("");
+                          setActiveVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-40 text-slate-600 text-xs font-bold"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isAnalyst || savingStatKey === "ACTIVE_VOTES" || activeVotesInput === ""}
+                    onClick={() => {
+                      if (!activeVotesReason.trim() || activeVotesReason.trim().length < 3) {
+                        alert("Please provide an audit reason (minimum 3 characters) explaining this adjustment.");
+                        return;
+                      }
+                      const calc = surveyStats?.activeVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.activeVotes?.adjustment ?? 0;
+                      let newAdj = 0;
+                      let newTotal = 0;
+                      if (activeVotesMode === "TARGET") {
+                        const target = parseInt(activeVotesInput, 10);
+                        if (isNaN(target) || target < 0) {
+                          alert("Target must be a non-negative number.");
+                          return;
+                        }
+                        newAdj = target - calc;
+                        newTotal = target;
+                      } else {
+                        const adj = parseInt(activeVotesInput, 10);
+                        if (isNaN(adj)) {
+                          alert("Adjustment must be a valid integer.");
+                          return;
+                        }
+                        newAdj = adj;
+                        newTotal = Math.max(0, calc + adj);
+                      }
+
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Confirm Active Verified Votes Adjustment",
+                        statisticName: "Active Verified Votes",
+                        action: "ADJUST",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: newAdj >= 0 ? `+${newAdj}` : newAdj,
+                        currentDisplayed: Math.max(0, calc + curAdj).toLocaleString(),
+                        resultingDisplayed: newTotal.toLocaleString(),
+                        reason: activeVotesReason.trim(),
+                        onConfirm: async () => {
+                          await handleApplyStat("ACTIVE_VOTES", {
+                            adjustment: newAdj,
+                            reason: activeVotesReason.trim(),
+                          });
+                          setActiveVotesInput("");
+                          setActiveVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl bg-brand-blue hover:bg-blue-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-colors"
+                  >
+                    {savingStatKey === "ACTIVE_VOTES" ? "Saving..." : "Save Adjustment"}
+                  </button>
+                </div>
+              </div>
+
+              {/* STATISTIC 2: VOTES RECEIVED TODAY */}
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-brand-navy">Votes Received Today</h3>
+                        <span className="text-[10px] text-emerald-600 font-semibold font-mono">Asia/Manila (PST, UTC+08:00)</span>
+                      </div>
+                    </div>
+                    {surveyStats?.todayVotes?.isAdjusted ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                        Manual Adjustment
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        100% Organic
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Calculated strictly using the Philippine calendar day boundary (00:00:00 PST). Submissions from
+                    previous calendar days are accurately partitioned.
+                  </p>
+
+                  {/* 3 Metric Pills */}
+                  <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-center">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Calculated</span>
+                      <span className="font-mono font-black text-sm text-slate-700">
+                        {(surveyStats?.todayVotes?.calculated ?? analytics?.summary?.rawTodaySubmissions ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Adjustment</span>
+                      <span
+                        className={`font-mono font-bold text-sm ${
+                          (surveyStats?.todayVotes?.adjustment ?? 0) !== 0
+                            ? (surveyStats?.todayVotes?.adjustment ?? 0) > 0
+                              ? "text-emerald-600"
+                              : "text-amber-600"
+                            : "text-slate-400"
+                        }`}
+                      >
+                        {(surveyStats?.todayVotes?.adjustment ?? 0) > 0
+                          ? `+${(surveyStats?.todayVotes?.adjustment ?? 0).toLocaleString()}`
+                          : (surveyStats?.todayVotes?.adjustment ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-emerald-600 block truncate">Public Total</span>
+                      <span className="font-mono font-black text-sm text-emerald-600">
+                        {(surveyStats?.todayVotes?.displayed ?? analytics?.summary?.todaySubmissions ?? 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Adjustment Controls */}
+                  <div className="pt-2 border-t border-slate-100 space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-brand-navy">
+                      <span>Adjust Today&apos;s Counter</span>
+                      <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-[10px]">
+                        <button
+                          type="button"
+                          onClick={() => setTodayVotesMode("TARGET")}
+                          className={`px-2 py-0.5 rounded-md font-bold transition-all ${
+                            todayVotesMode === "TARGET"
+                              ? "bg-white text-brand-navy shadow-xs"
+                              : "text-slate-500 hover:text-slate-800"
+                          }`}
+                        >
+                          Target Total
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTodayVotesMode("ADJUSTMENT")}
+                          className={`px-2 py-0.5 rounded-md font-bold transition-all ${
+                            todayVotesMode === "ADJUSTMENT"
+                              ? "bg-white text-brand-navy shadow-xs"
+                              : "text-slate-500 hover:text-slate-800"
+                          }`}
+                        >
+                          Adjustment (+/-)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        {todayVotesMode === "TARGET"
+                          ? "Approved Displayed Today (e.g. 500)"
+                          : "Manual Daily Adjustment (+/-)"}
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        disabled={isAnalyst}
+                        placeholder={
+                          todayVotesMode === "TARGET"
+                            ? `Current displayed: ${(surveyStats?.todayVotes?.displayed ?? 0).toLocaleString()}`
+                            : "e.g. +100 or -20"
+                        }
+                        value={todayVotesInput}
+                        onChange={(e) => setTodayVotesInput(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30 font-mono font-bold"
+                      />
+                      {todayVotesInput !== "" && !isNaN(parseInt(todayVotesInput, 10)) && (
+                        <p className="text-[10px] text-emerald-600 mt-1 font-mono">
+                          {todayVotesMode === "TARGET" ? (
+                            <>
+                              Calculated Today (
+                              {(surveyStats?.todayVotes?.calculated ?? 0).toLocaleString()}) + Adjustment (
+                              {parseInt(todayVotesInput, 10) - (surveyStats?.todayVotes?.calculated ?? 0) >= 0
+                                ? `+${parseInt(todayVotesInput, 10) - (surveyStats?.todayVotes?.calculated ?? 0)}`
+                                : parseInt(todayVotesInput, 10) - (surveyStats?.todayVotes?.calculated ?? 0)}
+                              ) = <strong>{Math.max(0, parseInt(todayVotesInput, 10)).toLocaleString()} displayed</strong>
+                            </>
+                          ) : (
+                            <>
+                              Calculated Today (
+                              {(surveyStats?.todayVotes?.calculated ?? 0).toLocaleString()}) + Adjustment (
+                              {parseInt(todayVotesInput, 10) >= 0
+                                ? `+${parseInt(todayVotesInput, 10)}`
+                                : parseInt(todayVotesInput, 10)}
+                              ) ={" "}
+                              <strong>
+                                {Math.max(
+                                  0,
+                                  (surveyStats?.todayVotes?.calculated ?? 0) + parseInt(todayVotesInput, 10)
+                                ).toLocaleString()}{" "}
+                                displayed
+                              </strong>
+                            </>
+                          )}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        Audit Reason <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isAnalyst}
+                        placeholder="e.g. Daily synchronization with regional verification hubs"
+                        value={todayVotesReason}
+                        onChange={(e) => setTodayVotesReason(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    disabled={
+                      isAnalyst ||
+                      savingStatKey === "TODAY_VOTES" ||
+                      (surveyStats?.todayVotes?.adjustment ?? 0) === 0
+                    }
+                    onClick={() => {
+                      const calc = surveyStats?.todayVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.todayVotes?.adjustment ?? 0;
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Reset Votes Received Today",
+                        statisticName: "Votes Received Today",
+                        action: "RESET",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: "0 (Zero Adjustment)",
+                        currentDisplayed: (calc + curAdj).toLocaleString(),
+                        resultingDisplayed: calc.toLocaleString(),
+                        reason: "Reset to calculated Philippine calendar day baseline",
+                        onConfirm: async () => {
+                          await handleResetStat("TODAY_VOTES", "Reset to calculated baseline");
+                          setTodayVotesInput("");
+                          setTodayVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-40 text-slate-600 text-xs font-bold"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isAnalyst || savingStatKey === "TODAY_VOTES" || todayVotesInput === ""}
+                    onClick={() => {
+                      if (!todayVotesReason.trim() || todayVotesReason.trim().length < 3) {
+                        alert("Please provide an audit reason (minimum 3 characters) explaining this adjustment.");
+                        return;
+                      }
+                      const calc = surveyStats?.todayVotes?.calculated ?? 0;
+                      const curAdj = surveyStats?.todayVotes?.adjustment ?? 0;
+                      let newAdj = 0;
+                      let newTotal = 0;
+                      if (todayVotesMode === "TARGET") {
+                        const target = parseInt(todayVotesInput, 10);
+                        if (isNaN(target) || target < 0) {
+                          alert("Target must be a non-negative number.");
+                          return;
+                        }
+                        newAdj = target - calc;
+                        newTotal = target;
+                      } else {
+                        const adj = parseInt(todayVotesInput, 10);
+                        if (isNaN(adj)) {
+                          alert("Adjustment must be a valid integer.");
+                          return;
+                        }
+                        newAdj = adj;
+                        newTotal = Math.max(0, calc + adj);
+                      }
+
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Confirm Votes Received Today Adjustment",
+                        statisticName: "Votes Received Today",
+                        action: "ADJUST",
+                        calculatedValue: calc.toLocaleString(),
+                        currentAdjustment: curAdj >= 0 ? `+${curAdj}` : curAdj,
+                        newAdjustment: newAdj >= 0 ? `+${newAdj}` : newAdj,
+                        currentDisplayed: Math.max(0, calc + curAdj).toLocaleString(),
+                        resultingDisplayed: newTotal.toLocaleString(),
+                        reason: todayVotesReason.trim(),
+                        onConfirm: async () => {
+                          await handleApplyStat("TODAY_VOTES", {
+                            adjustment: newAdj,
+                            reason: todayVotesReason.trim(),
+                          });
+                          setTodayVotesInput("");
+                          setTodayVotesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-colors"
+                  >
+                    {savingStatKey === "TODAY_VOTES" ? "Saving..." : "Save Adjustment"}
+                  </button>
+                </div>
+              </div>
+
+              {/* STATISTIC 3: PROVINCES REPORTING */}
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-brand-navy">Provinces Reporting</h3>
+                        <span className="text-[10px] text-purple-700 font-semibold font-mono">82 Provinces Configured</span>
+                      </div>
+                    </div>
+                    {surveyStats?.provincesReporting?.isOverridden ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                        Coverage Override
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        100% Calculated
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Calculates distinct provinces with at least one active, qualifying submission. Submissions without
+                    a province are excluded from geographic coverage tallies.
+                  </p>
+
+                  {/* 3 Metric Pills */}
+                  <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-center">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Calculated</span>
+                      <span className="font-mono font-black text-sm text-slate-700">
+                        {surveyStats?.provincesReporting?.calculated ?? analytics?.summary?.rawProvincesReporting ?? 0} / 82
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block truncate">Override</span>
+                      <span
+                        className={`font-mono font-bold text-sm ${
+                          surveyStats?.provincesReporting?.override !== null && surveyStats?.provincesReporting?.override !== undefined
+                            ? "text-purple-700"
+                            : "text-slate-400"
+                        }`}
+                      >
+                        {surveyStats?.provincesReporting?.override !== null && surveyStats?.provincesReporting?.override !== undefined
+                          ? `${surveyStats.provincesReporting.override} / 82`
+                          : "None"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-[#0B132B] block truncate">Public Total</span>
+                      <span className="font-mono font-black text-sm text-[#0B132B]">
+                        {surveyStats?.provincesReporting?.displayed ?? analytics?.summary?.provincesReporting ?? 0} / 82
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Override Controls */}
+                  <div className="pt-2 border-t border-slate-100 space-y-3">
+                    <span className="text-xs font-bold text-brand-navy block">Configure Coverage Override</span>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        Approved Provinces Reporting (0 to 82)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="82"
+                        disabled={isAnalyst}
+                        placeholder={`e.g. 66 (out of 82 total provinces)`}
+                        value={provincesOverrideInput}
+                        onChange={(e) => setProvincesOverrideInput(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30 font-mono font-bold"
+                      />
+                      {provincesOverrideInput !== "" && !isNaN(parseInt(provincesOverrideInput, 10)) && (
+                        <p className="text-[10px] text-purple-700 mt-1 font-mono">
+                          Public display will show:{" "}
+                          <strong>
+                            {Math.min(82, Math.max(0, parseInt(provincesOverrideInput, 10)))} / 82 provinces (
+                            {((Math.min(82, Math.max(0, parseInt(provincesOverrideInput, 10))) / 82) * 100).toFixed(1)}% coverage)
+                          </strong>
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                        Audit Reason <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        disabled={isAnalyst}
+                        placeholder="e.g. Verification of provincial return coverage across island groups"
+                        value={provincesReason}
+                        onChange={(e) => setProvincesReason(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    disabled={
+                      isAnalyst ||
+                      savingStatKey === "PROVINCES_REPORTING" ||
+                      surveyStats?.provincesReporting?.override === null ||
+                      surveyStats?.provincesReporting?.override === undefined
+                    }
+                    onClick={() => {
+                      const calc = surveyStats?.provincesReporting?.calculated ?? 0;
+                      const curOver = surveyStats?.provincesReporting?.override;
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Reset Provinces Reporting Override",
+                        statisticName: "Provinces Reporting",
+                        action: "RESET",
+                        calculatedValue: `${calc} / 82`,
+                        currentAdjustment: curOver !== null && curOver !== undefined ? `${curOver} / 82` : "None",
+                        newAdjustment: "None (Calculated)",
+                        currentDisplayed: `${surveyStats?.provincesReporting?.displayed ?? calc} / 82`,
+                        resultingDisplayed: `${calc} / 82`,
+                        reason: "Reset to calculated distinct reporting provinces",
+                        onConfirm: async () => {
+                          await handleResetStat("PROVINCES_REPORTING", "Reset to calculated baseline");
+                          setProvincesOverrideInput("");
+                          setProvincesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-40 text-slate-600 text-xs font-bold"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isAnalyst || savingStatKey === "PROVINCES_REPORTING" || provincesOverrideInput === ""}
+                    onClick={() => {
+                      if (!provincesReason.trim() || provincesReason.trim().length < 3) {
+                        alert("Please provide an audit reason (minimum 3 characters) explaining this coverage override.");
+                        return;
+                      }
+                      const val = parseInt(provincesOverrideInput, 10);
+                      if (isNaN(val) || val < 0 || val > 82) {
+                        alert("Provinces Reporting must be an integer between 0 and 82.");
+                        return;
+                      }
+                      const calc = surveyStats?.provincesReporting?.calculated ?? 0;
+                      const curOver = surveyStats?.provincesReporting?.override;
+
+                      setStatsConfirmModal({
+                        open: true,
+                        title: "Confirm Provinces Reporting Override",
+                        statisticName: "Provinces Reporting",
+                        action: "ADJUST",
+                        calculatedValue: `${calc} / 82`,
+                        currentAdjustment: curOver !== null && curOver !== undefined ? `${curOver} / 82` : "None",
+                        newAdjustment: `${val} / 82 override`,
+                        currentDisplayed: `${surveyStats?.provincesReporting?.displayed ?? calc} / 82`,
+                        resultingDisplayed: `${val} / 82`,
+                        reason: provincesReason.trim(),
+                        onConfirm: async () => {
+                          await handleApplyStat("PROVINCES_REPORTING", {
+                            override: val,
+                            reason: provincesReason.trim(),
+                          });
+                          setProvincesOverrideInput("");
+                          setProvincesReason("");
+                          setStatsConfirmModal(null);
+                        },
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-colors"
+                  >
+                    {savingStatKey === "PROVINCES_REPORTING" ? "Saving..." : "Save Override"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* AUDIT LOG TABLE FOR SURVEY STATISTICS */}
+            <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <History className="w-4 h-4 text-brand-blue" />
+                  <h3 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+                    Survey Statistics Calibration Audit Trail
+                  </h3>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">
+                  {statsAuditLogs.length} audit record{statsAuditLogs.length !== 1 ? "s" : ""}
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-brand-border text-slate-400 uppercase text-[10px] tracking-wider">
+                      <th className="py-2.5 px-3">Timestamp (UTC+8)</th>
+                      <th className="py-2.5 px-3">Administrator</th>
+                      <th className="py-2.5 px-3">Action</th>
+                      <th className="py-2.5 px-3">Calibration Audit Details &amp; Reason</th>
+                      <th className="py-2.5 px-3 text-right">IP Address</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {statsAuditLogs.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-8 text-center text-xs text-slate-400 italic">
+                          No statistics adjustments recorded. All survey counters currently reflect 100% organic system-calculated baselines.
+                        </td>
+                      </tr>
+                    ) : (
+                      statsAuditLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-slate-50/50">
+                          <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap font-mono text-[11px]">
+                            {new Date(log.createdAt).toLocaleString("en-US", { timeZone: "Asia/Manila" })}
+                          </td>
+                          <td className="py-2.5 px-3 font-bold text-brand-navy">
+                            {log.adminEmail}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-brand-blue">
+                              {log.action.replace("STATISTICS_", "")}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-700 text-xs">
+                            {log.details}
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-mono text-slate-400 text-[10px]">
+                            {log.ipAddress || "::1"}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -2472,6 +3427,73 @@ export default function AdminPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* SURVEY STATISTICS ADJUSTMENT CONFIRMATION MODAL           */}
+      {/* ========================================================= */}
+      {statsConfirmModal?.open && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-brand-border p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-2 text-brand-blue">
+              <ShieldAlert className="w-5 h-5 flex-shrink-0 text-amber-500" />
+              <h3 className="font-headline font-bold text-base text-brand-navy uppercase">
+                {statsConfirmModal.title}
+              </h3>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Please review the proposed survey counter calibration. This action will be permanently recorded in the
+              official audit trail under your administrator credentials.
+            </p>
+
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Target Statistic:</span>
+                <span className="font-bold text-brand-navy">{statsConfirmModal.statisticName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Calculated Baseline:</span>
+                <span className="font-mono font-bold text-slate-700">{statsConfirmModal.calculatedValue}</span>
+              </div>
+              <div className="flex justify-between border-t border-slate-200/80 pt-1.5">
+                <span className="text-slate-500">Current Adjustment / Override:</span>
+                <span className="font-mono font-bold text-slate-600">{statsConfirmModal.currentAdjustment}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">New Adjustment / Override:</span>
+                <span className="font-mono font-bold text-emerald-600">{statsConfirmModal.newAdjustment}</span>
+              </div>
+              <div className="flex justify-between border-t border-slate-200/80 pt-1.5">
+                <span className="text-slate-500">Resulting Public Display:</span>
+                <span className="font-mono font-black text-brand-blue text-sm">
+                  {statsConfirmModal.resultingDisplayed}
+                </span>
+              </div>
+              <div className="border-t border-slate-200/80 pt-1.5">
+                <span className="text-slate-500 block mb-0.5">Audit Reason:</span>
+                <span className="text-slate-800 italic block">{statsConfirmModal.reason}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setStatsConfirmModal(null)}
+                className="px-4 py-2 rounded-xl border border-brand-border text-xs font-bold hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={statsConfirmModal.onConfirm}
+                className="px-5 py-2 rounded-xl bg-brand-blue hover:bg-blue-700 text-white text-xs font-bold shadow transition-colors"
+              >
+                Confirm &amp; Apply
+              </button>
+            </div>
           </div>
         </div>
       )}

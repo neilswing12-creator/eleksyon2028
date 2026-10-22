@@ -349,3 +349,36 @@ export function parseUserAgent(ua?: string | null): { browser: string; os: strin
 
   return { browser, os };
 }
+
+export interface LogDuplicateAttemptParams {
+  campaignId: string;
+  ipAddress: string;
+  ipHash: string;
+  attemptedName?: string;
+  rejectionReason: string; // DUPLICATE_ACTIVE_IP, CONCURRENT_DUPLICATE_IP, IP_BLOCKED, RATE_LIMITED
+  existingSubmissionId?: string;
+  userAgent?: string;
+}
+
+/**
+ * Logs a duplicate survey submission attempt for authorized administrator auditing.
+ */
+export async function logDuplicateAttempt(params: LogDuplicateAttemptParams) {
+  try {
+    return await prisma.duplicateSubmissionAttempt.create({
+      data: {
+        campaignId: params.campaignId,
+        ipAddress: normalizeIp(params.ipAddress),
+        ipHash: params.ipHash,
+        attemptedName: params.attemptedName ? params.attemptedName.slice(0, 150) : null,
+        rejectionReason: params.rejectionReason,
+        existingSubmissionId: params.existingSubmissionId || null,
+        userAgent: params.userAgent ? params.userAgent.slice(0, 500) : null,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to log duplicate submission attempt:", err);
+    return null;
+  }
+}
+

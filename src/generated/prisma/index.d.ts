@@ -88,6 +88,11 @@ export type AdminLoginAttempt = $Result.DefaultSelection<Prisma.$AdminLoginAttem
  * 
  */
 export type BlockedIpAddress = $Result.DefaultSelection<Prisma.$BlockedIpAddressPayload>
+/**
+ * Model DuplicateSubmissionAttempt
+ * 
+ */
+export type DuplicateSubmissionAttempt = $Result.DefaultSelection<Prisma.$DuplicateSubmissionAttemptPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -361,6 +366,16 @@ export class PrismaClient<
     * ```
     */
   get blockedIpAddress(): Prisma.BlockedIpAddressDelegate<ExtArgs>;
+
+  /**
+   * `prisma.duplicateSubmissionAttempt`: Exposes CRUD operations for the **DuplicateSubmissionAttempt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DuplicateSubmissionAttempts
+    * const duplicateSubmissionAttempts = await prisma.duplicateSubmissionAttempt.findMany()
+    * ```
+    */
+  get duplicateSubmissionAttempt(): Prisma.DuplicateSubmissionAttemptDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -816,7 +831,8 @@ export namespace Prisma {
     CandidateLegislativeRecord: 'CandidateLegislativeRecord',
     LegislativeImportJob: 'LegislativeImportJob',
     AdminLoginAttempt: 'AdminLoginAttempt',
-    BlockedIpAddress: 'BlockedIpAddress'
+    BlockedIpAddress: 'BlockedIpAddress',
+    DuplicateSubmissionAttempt: 'DuplicateSubmissionAttempt'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -832,7 +848,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "adminUser" | "candidate" | "candidateEducation" | "candidatePublicService" | "candidatePlatform" | "candidateSource" | "surveyCampaign" | "surveyAdjustment" | "surveySubmission" | "candidateSelection" | "adminAuditLog" | "candidateLegislativeRecord" | "legislativeImportJob" | "adminLoginAttempt" | "blockedIpAddress"
+      modelProps: "adminUser" | "candidate" | "candidateEducation" | "candidatePublicService" | "candidatePlatform" | "candidateSource" | "surveyCampaign" | "surveyAdjustment" | "surveySubmission" | "candidateSelection" | "adminAuditLog" | "candidateLegislativeRecord" | "legislativeImportJob" | "adminLoginAttempt" | "blockedIpAddress" | "duplicateSubmissionAttempt"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1883,6 +1899,76 @@ export namespace Prisma {
           count: {
             args: Prisma.BlockedIpAddressCountArgs<ExtArgs>
             result: $Utils.Optional<BlockedIpAddressCountAggregateOutputType> | number
+          }
+        }
+      }
+      DuplicateSubmissionAttempt: {
+        payload: Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>
+        fields: Prisma.DuplicateSubmissionAttemptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DuplicateSubmissionAttemptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DuplicateSubmissionAttemptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>
+          }
+          findFirst: {
+            args: Prisma.DuplicateSubmissionAttemptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DuplicateSubmissionAttemptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>
+          }
+          findMany: {
+            args: Prisma.DuplicateSubmissionAttemptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>[]
+          }
+          create: {
+            args: Prisma.DuplicateSubmissionAttemptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>
+          }
+          createMany: {
+            args: Prisma.DuplicateSubmissionAttemptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DuplicateSubmissionAttemptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>[]
+          }
+          delete: {
+            args: Prisma.DuplicateSubmissionAttemptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>
+          }
+          update: {
+            args: Prisma.DuplicateSubmissionAttemptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>
+          }
+          deleteMany: {
+            args: Prisma.DuplicateSubmissionAttemptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DuplicateSubmissionAttemptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.DuplicateSubmissionAttemptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DuplicateSubmissionAttemptPayload>
+          }
+          aggregate: {
+            args: Prisma.DuplicateSubmissionAttemptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDuplicateSubmissionAttempt>
+          }
+          groupBy: {
+            args: Prisma.DuplicateSubmissionAttemptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DuplicateSubmissionAttemptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DuplicateSubmissionAttemptCountArgs<ExtArgs>
+            result: $Utils.Optional<DuplicateSubmissionAttemptCountAggregateOutputType> | number
           }
         }
       }
@@ -11074,6 +11160,7 @@ export namespace Prisma {
     gender: string | null
     civilStatus: string | null
     isFirstTimeVoter: boolean | null
+    ipAddress: string | null
     ipHash: string | null
     tokenHash: string | null
     retractedAt: Date | null
@@ -11101,6 +11188,7 @@ export namespace Prisma {
     gender: string | null
     civilStatus: string | null
     isFirstTimeVoter: boolean | null
+    ipAddress: string | null
     ipHash: string | null
     tokenHash: string | null
     retractedAt: Date | null
@@ -11128,6 +11216,7 @@ export namespace Prisma {
     gender: number
     civilStatus: number
     isFirstTimeVoter: number
+    ipAddress: number
     ipHash: number
     tokenHash: number
     retractedAt: number
@@ -11157,6 +11246,7 @@ export namespace Prisma {
     gender?: true
     civilStatus?: true
     isFirstTimeVoter?: true
+    ipAddress?: true
     ipHash?: true
     tokenHash?: true
     retractedAt?: true
@@ -11184,6 +11274,7 @@ export namespace Prisma {
     gender?: true
     civilStatus?: true
     isFirstTimeVoter?: true
+    ipAddress?: true
     ipHash?: true
     tokenHash?: true
     retractedAt?: true
@@ -11211,6 +11302,7 @@ export namespace Prisma {
     gender?: true
     civilStatus?: true
     isFirstTimeVoter?: true
+    ipAddress?: true
     ipHash?: true
     tokenHash?: true
     retractedAt?: true
@@ -11311,6 +11403,7 @@ export namespace Prisma {
     gender: string | null
     civilStatus: string | null
     isFirstTimeVoter: boolean | null
+    ipAddress: string | null
     ipHash: string
     tokenHash: string
     retractedAt: Date | null
@@ -11355,6 +11448,7 @@ export namespace Prisma {
     gender?: boolean
     civilStatus?: boolean
     isFirstTimeVoter?: boolean
+    ipAddress?: boolean
     ipHash?: boolean
     tokenHash?: boolean
     retractedAt?: boolean
@@ -11385,6 +11479,7 @@ export namespace Prisma {
     gender?: boolean
     civilStatus?: boolean
     isFirstTimeVoter?: boolean
+    ipAddress?: boolean
     ipHash?: boolean
     tokenHash?: boolean
     retractedAt?: boolean
@@ -11413,6 +11508,7 @@ export namespace Prisma {
     gender?: boolean
     civilStatus?: boolean
     isFirstTimeVoter?: boolean
+    ipAddress?: boolean
     ipHash?: boolean
     tokenHash?: boolean
     retractedAt?: boolean
@@ -11455,6 +11551,7 @@ export namespace Prisma {
       gender: string | null
       civilStatus: string | null
       isFirstTimeVoter: boolean | null
+      ipAddress: string | null
       ipHash: string
       tokenHash: string
       retractedAt: Date | null
@@ -11874,6 +11971,7 @@ export namespace Prisma {
     readonly gender: FieldRef<"SurveySubmission", 'String'>
     readonly civilStatus: FieldRef<"SurveySubmission", 'String'>
     readonly isFirstTimeVoter: FieldRef<"SurveySubmission", 'Boolean'>
+    readonly ipAddress: FieldRef<"SurveySubmission", 'String'>
     readonly ipHash: FieldRef<"SurveySubmission", 'String'>
     readonly tokenHash: FieldRef<"SurveySubmission", 'String'>
     readonly retractedAt: FieldRef<"SurveySubmission", 'DateTime'>
@@ -18205,6 +18303,930 @@ export namespace Prisma {
 
 
   /**
+   * Model DuplicateSubmissionAttempt
+   */
+
+  export type AggregateDuplicateSubmissionAttempt = {
+    _count: DuplicateSubmissionAttemptCountAggregateOutputType | null
+    _min: DuplicateSubmissionAttemptMinAggregateOutputType | null
+    _max: DuplicateSubmissionAttemptMaxAggregateOutputType | null
+  }
+
+  export type DuplicateSubmissionAttemptMinAggregateOutputType = {
+    id: string | null
+    campaignId: string | null
+    ipAddress: string | null
+    ipHash: string | null
+    attemptedName: string | null
+    rejectionReason: string | null
+    existingSubmissionId: string | null
+    userAgent: string | null
+    createdAt: Date | null
+  }
+
+  export type DuplicateSubmissionAttemptMaxAggregateOutputType = {
+    id: string | null
+    campaignId: string | null
+    ipAddress: string | null
+    ipHash: string | null
+    attemptedName: string | null
+    rejectionReason: string | null
+    existingSubmissionId: string | null
+    userAgent: string | null
+    createdAt: Date | null
+  }
+
+  export type DuplicateSubmissionAttemptCountAggregateOutputType = {
+    id: number
+    campaignId: number
+    ipAddress: number
+    ipHash: number
+    attemptedName: number
+    rejectionReason: number
+    existingSubmissionId: number
+    userAgent: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DuplicateSubmissionAttemptMinAggregateInputType = {
+    id?: true
+    campaignId?: true
+    ipAddress?: true
+    ipHash?: true
+    attemptedName?: true
+    rejectionReason?: true
+    existingSubmissionId?: true
+    userAgent?: true
+    createdAt?: true
+  }
+
+  export type DuplicateSubmissionAttemptMaxAggregateInputType = {
+    id?: true
+    campaignId?: true
+    ipAddress?: true
+    ipHash?: true
+    attemptedName?: true
+    rejectionReason?: true
+    existingSubmissionId?: true
+    userAgent?: true
+    createdAt?: true
+  }
+
+  export type DuplicateSubmissionAttemptCountAggregateInputType = {
+    id?: true
+    campaignId?: true
+    ipAddress?: true
+    ipHash?: true
+    attemptedName?: true
+    rejectionReason?: true
+    existingSubmissionId?: true
+    userAgent?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DuplicateSubmissionAttemptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DuplicateSubmissionAttempt to aggregate.
+     */
+    where?: DuplicateSubmissionAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DuplicateSubmissionAttempts to fetch.
+     */
+    orderBy?: DuplicateSubmissionAttemptOrderByWithRelationInput | DuplicateSubmissionAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DuplicateSubmissionAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DuplicateSubmissionAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DuplicateSubmissionAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DuplicateSubmissionAttempts
+    **/
+    _count?: true | DuplicateSubmissionAttemptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DuplicateSubmissionAttemptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DuplicateSubmissionAttemptMaxAggregateInputType
+  }
+
+  export type GetDuplicateSubmissionAttemptAggregateType<T extends DuplicateSubmissionAttemptAggregateArgs> = {
+        [P in keyof T & keyof AggregateDuplicateSubmissionAttempt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDuplicateSubmissionAttempt[P]>
+      : GetScalarType<T[P], AggregateDuplicateSubmissionAttempt[P]>
+  }
+
+
+
+
+  export type DuplicateSubmissionAttemptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DuplicateSubmissionAttemptWhereInput
+    orderBy?: DuplicateSubmissionAttemptOrderByWithAggregationInput | DuplicateSubmissionAttemptOrderByWithAggregationInput[]
+    by: DuplicateSubmissionAttemptScalarFieldEnum[] | DuplicateSubmissionAttemptScalarFieldEnum
+    having?: DuplicateSubmissionAttemptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DuplicateSubmissionAttemptCountAggregateInputType | true
+    _min?: DuplicateSubmissionAttemptMinAggregateInputType
+    _max?: DuplicateSubmissionAttemptMaxAggregateInputType
+  }
+
+  export type DuplicateSubmissionAttemptGroupByOutputType = {
+    id: string
+    campaignId: string
+    ipAddress: string
+    ipHash: string
+    attemptedName: string | null
+    rejectionReason: string
+    existingSubmissionId: string | null
+    userAgent: string | null
+    createdAt: Date
+    _count: DuplicateSubmissionAttemptCountAggregateOutputType | null
+    _min: DuplicateSubmissionAttemptMinAggregateOutputType | null
+    _max: DuplicateSubmissionAttemptMaxAggregateOutputType | null
+  }
+
+  type GetDuplicateSubmissionAttemptGroupByPayload<T extends DuplicateSubmissionAttemptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DuplicateSubmissionAttemptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DuplicateSubmissionAttemptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DuplicateSubmissionAttemptGroupByOutputType[P]>
+            : GetScalarType<T[P], DuplicateSubmissionAttemptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DuplicateSubmissionAttemptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    campaignId?: boolean
+    ipAddress?: boolean
+    ipHash?: boolean
+    attemptedName?: boolean
+    rejectionReason?: boolean
+    existingSubmissionId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["duplicateSubmissionAttempt"]>
+
+  export type DuplicateSubmissionAttemptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    campaignId?: boolean
+    ipAddress?: boolean
+    ipHash?: boolean
+    attemptedName?: boolean
+    rejectionReason?: boolean
+    existingSubmissionId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["duplicateSubmissionAttempt"]>
+
+  export type DuplicateSubmissionAttemptSelectScalar = {
+    id?: boolean
+    campaignId?: boolean
+    ipAddress?: boolean
+    ipHash?: boolean
+    attemptedName?: boolean
+    rejectionReason?: boolean
+    existingSubmissionId?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+  }
+
+
+  export type $DuplicateSubmissionAttemptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DuplicateSubmissionAttempt"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      campaignId: string
+      ipAddress: string
+      ipHash: string
+      attemptedName: string | null
+      rejectionReason: string
+      existingSubmissionId: string | null
+      userAgent: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["duplicateSubmissionAttempt"]>
+    composites: {}
+  }
+
+  type DuplicateSubmissionAttemptGetPayload<S extends boolean | null | undefined | DuplicateSubmissionAttemptDefaultArgs> = $Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload, S>
+
+  type DuplicateSubmissionAttemptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<DuplicateSubmissionAttemptFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: DuplicateSubmissionAttemptCountAggregateInputType | true
+    }
+
+  export interface DuplicateSubmissionAttemptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DuplicateSubmissionAttempt'], meta: { name: 'DuplicateSubmissionAttempt' } }
+    /**
+     * Find zero or one DuplicateSubmissionAttempt that matches the filter.
+     * @param {DuplicateSubmissionAttemptFindUniqueArgs} args - Arguments to find a DuplicateSubmissionAttempt
+     * @example
+     * // Get one DuplicateSubmissionAttempt
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DuplicateSubmissionAttemptFindUniqueArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptFindUniqueArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one DuplicateSubmissionAttempt that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {DuplicateSubmissionAttemptFindUniqueOrThrowArgs} args - Arguments to find a DuplicateSubmissionAttempt
+     * @example
+     * // Get one DuplicateSubmissionAttempt
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DuplicateSubmissionAttemptFindUniqueOrThrowArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first DuplicateSubmissionAttempt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptFindFirstArgs} args - Arguments to find a DuplicateSubmissionAttempt
+     * @example
+     * // Get one DuplicateSubmissionAttempt
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DuplicateSubmissionAttemptFindFirstArgs>(args?: SelectSubset<T, DuplicateSubmissionAttemptFindFirstArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first DuplicateSubmissionAttempt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptFindFirstOrThrowArgs} args - Arguments to find a DuplicateSubmissionAttempt
+     * @example
+     * // Get one DuplicateSubmissionAttempt
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DuplicateSubmissionAttemptFindFirstOrThrowArgs>(args?: SelectSubset<T, DuplicateSubmissionAttemptFindFirstOrThrowArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more DuplicateSubmissionAttempts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DuplicateSubmissionAttempts
+     * const duplicateSubmissionAttempts = await prisma.duplicateSubmissionAttempt.findMany()
+     * 
+     * // Get first 10 DuplicateSubmissionAttempts
+     * const duplicateSubmissionAttempts = await prisma.duplicateSubmissionAttempt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const duplicateSubmissionAttemptWithIdOnly = await prisma.duplicateSubmissionAttempt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DuplicateSubmissionAttemptFindManyArgs>(args?: SelectSubset<T, DuplicateSubmissionAttemptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a DuplicateSubmissionAttempt.
+     * @param {DuplicateSubmissionAttemptCreateArgs} args - Arguments to create a DuplicateSubmissionAttempt.
+     * @example
+     * // Create one DuplicateSubmissionAttempt
+     * const DuplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.create({
+     *   data: {
+     *     // ... data to create a DuplicateSubmissionAttempt
+     *   }
+     * })
+     * 
+     */
+    create<T extends DuplicateSubmissionAttemptCreateArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptCreateArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many DuplicateSubmissionAttempts.
+     * @param {DuplicateSubmissionAttemptCreateManyArgs} args - Arguments to create many DuplicateSubmissionAttempts.
+     * @example
+     * // Create many DuplicateSubmissionAttempts
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DuplicateSubmissionAttemptCreateManyArgs>(args?: SelectSubset<T, DuplicateSubmissionAttemptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DuplicateSubmissionAttempts and returns the data saved in the database.
+     * @param {DuplicateSubmissionAttemptCreateManyAndReturnArgs} args - Arguments to create many DuplicateSubmissionAttempts.
+     * @example
+     * // Create many DuplicateSubmissionAttempts
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DuplicateSubmissionAttempts and only return the `id`
+     * const duplicateSubmissionAttemptWithIdOnly = await prisma.duplicateSubmissionAttempt.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DuplicateSubmissionAttemptCreateManyAndReturnArgs>(args?: SelectSubset<T, DuplicateSubmissionAttemptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a DuplicateSubmissionAttempt.
+     * @param {DuplicateSubmissionAttemptDeleteArgs} args - Arguments to delete one DuplicateSubmissionAttempt.
+     * @example
+     * // Delete one DuplicateSubmissionAttempt
+     * const DuplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.delete({
+     *   where: {
+     *     // ... filter to delete one DuplicateSubmissionAttempt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DuplicateSubmissionAttemptDeleteArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptDeleteArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one DuplicateSubmissionAttempt.
+     * @param {DuplicateSubmissionAttemptUpdateArgs} args - Arguments to update one DuplicateSubmissionAttempt.
+     * @example
+     * // Update one DuplicateSubmissionAttempt
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DuplicateSubmissionAttemptUpdateArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptUpdateArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more DuplicateSubmissionAttempts.
+     * @param {DuplicateSubmissionAttemptDeleteManyArgs} args - Arguments to filter DuplicateSubmissionAttempts to delete.
+     * @example
+     * // Delete a few DuplicateSubmissionAttempts
+     * const { count } = await prisma.duplicateSubmissionAttempt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DuplicateSubmissionAttemptDeleteManyArgs>(args?: SelectSubset<T, DuplicateSubmissionAttemptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DuplicateSubmissionAttempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DuplicateSubmissionAttempts
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DuplicateSubmissionAttemptUpdateManyArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one DuplicateSubmissionAttempt.
+     * @param {DuplicateSubmissionAttemptUpsertArgs} args - Arguments to update or create a DuplicateSubmissionAttempt.
+     * @example
+     * // Update or create a DuplicateSubmissionAttempt
+     * const duplicateSubmissionAttempt = await prisma.duplicateSubmissionAttempt.upsert({
+     *   create: {
+     *     // ... data to create a DuplicateSubmissionAttempt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DuplicateSubmissionAttempt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DuplicateSubmissionAttemptUpsertArgs>(args: SelectSubset<T, DuplicateSubmissionAttemptUpsertArgs<ExtArgs>>): Prisma__DuplicateSubmissionAttemptClient<$Result.GetResult<Prisma.$DuplicateSubmissionAttemptPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of DuplicateSubmissionAttempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptCountArgs} args - Arguments to filter DuplicateSubmissionAttempts to count.
+     * @example
+     * // Count the number of DuplicateSubmissionAttempts
+     * const count = await prisma.duplicateSubmissionAttempt.count({
+     *   where: {
+     *     // ... the filter for the DuplicateSubmissionAttempts we want to count
+     *   }
+     * })
+    **/
+    count<T extends DuplicateSubmissionAttemptCountArgs>(
+      args?: Subset<T, DuplicateSubmissionAttemptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DuplicateSubmissionAttemptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DuplicateSubmissionAttempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DuplicateSubmissionAttemptAggregateArgs>(args: Subset<T, DuplicateSubmissionAttemptAggregateArgs>): Prisma.PrismaPromise<GetDuplicateSubmissionAttemptAggregateType<T>>
+
+    /**
+     * Group by DuplicateSubmissionAttempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DuplicateSubmissionAttemptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DuplicateSubmissionAttemptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DuplicateSubmissionAttemptGroupByArgs['orderBy'] }
+        : { orderBy?: DuplicateSubmissionAttemptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DuplicateSubmissionAttemptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDuplicateSubmissionAttemptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DuplicateSubmissionAttempt model
+   */
+  readonly fields: DuplicateSubmissionAttemptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DuplicateSubmissionAttempt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DuplicateSubmissionAttemptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DuplicateSubmissionAttempt model
+   */ 
+  interface DuplicateSubmissionAttemptFieldRefs {
+    readonly id: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly campaignId: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly ipAddress: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly ipHash: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly attemptedName: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly rejectionReason: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly existingSubmissionId: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly userAgent: FieldRef<"DuplicateSubmissionAttempt", 'String'>
+    readonly createdAt: FieldRef<"DuplicateSubmissionAttempt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DuplicateSubmissionAttempt findUnique
+   */
+  export type DuplicateSubmissionAttemptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which DuplicateSubmissionAttempt to fetch.
+     */
+    where: DuplicateSubmissionAttemptWhereUniqueInput
+  }
+
+  /**
+   * DuplicateSubmissionAttempt findUniqueOrThrow
+   */
+  export type DuplicateSubmissionAttemptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which DuplicateSubmissionAttempt to fetch.
+     */
+    where: DuplicateSubmissionAttemptWhereUniqueInput
+  }
+
+  /**
+   * DuplicateSubmissionAttempt findFirst
+   */
+  export type DuplicateSubmissionAttemptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which DuplicateSubmissionAttempt to fetch.
+     */
+    where?: DuplicateSubmissionAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DuplicateSubmissionAttempts to fetch.
+     */
+    orderBy?: DuplicateSubmissionAttemptOrderByWithRelationInput | DuplicateSubmissionAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DuplicateSubmissionAttempts.
+     */
+    cursor?: DuplicateSubmissionAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DuplicateSubmissionAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DuplicateSubmissionAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DuplicateSubmissionAttempts.
+     */
+    distinct?: DuplicateSubmissionAttemptScalarFieldEnum | DuplicateSubmissionAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * DuplicateSubmissionAttempt findFirstOrThrow
+   */
+  export type DuplicateSubmissionAttemptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which DuplicateSubmissionAttempt to fetch.
+     */
+    where?: DuplicateSubmissionAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DuplicateSubmissionAttempts to fetch.
+     */
+    orderBy?: DuplicateSubmissionAttemptOrderByWithRelationInput | DuplicateSubmissionAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DuplicateSubmissionAttempts.
+     */
+    cursor?: DuplicateSubmissionAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DuplicateSubmissionAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DuplicateSubmissionAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DuplicateSubmissionAttempts.
+     */
+    distinct?: DuplicateSubmissionAttemptScalarFieldEnum | DuplicateSubmissionAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * DuplicateSubmissionAttempt findMany
+   */
+  export type DuplicateSubmissionAttemptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which DuplicateSubmissionAttempts to fetch.
+     */
+    where?: DuplicateSubmissionAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DuplicateSubmissionAttempts to fetch.
+     */
+    orderBy?: DuplicateSubmissionAttemptOrderByWithRelationInput | DuplicateSubmissionAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DuplicateSubmissionAttempts.
+     */
+    cursor?: DuplicateSubmissionAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DuplicateSubmissionAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DuplicateSubmissionAttempts.
+     */
+    skip?: number
+    distinct?: DuplicateSubmissionAttemptScalarFieldEnum | DuplicateSubmissionAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * DuplicateSubmissionAttempt create
+   */
+  export type DuplicateSubmissionAttemptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * The data needed to create a DuplicateSubmissionAttempt.
+     */
+    data: XOR<DuplicateSubmissionAttemptCreateInput, DuplicateSubmissionAttemptUncheckedCreateInput>
+  }
+
+  /**
+   * DuplicateSubmissionAttempt createMany
+   */
+  export type DuplicateSubmissionAttemptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DuplicateSubmissionAttempts.
+     */
+    data: DuplicateSubmissionAttemptCreateManyInput | DuplicateSubmissionAttemptCreateManyInput[]
+  }
+
+  /**
+   * DuplicateSubmissionAttempt createManyAndReturn
+   */
+  export type DuplicateSubmissionAttemptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many DuplicateSubmissionAttempts.
+     */
+    data: DuplicateSubmissionAttemptCreateManyInput | DuplicateSubmissionAttemptCreateManyInput[]
+  }
+
+  /**
+   * DuplicateSubmissionAttempt update
+   */
+  export type DuplicateSubmissionAttemptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * The data needed to update a DuplicateSubmissionAttempt.
+     */
+    data: XOR<DuplicateSubmissionAttemptUpdateInput, DuplicateSubmissionAttemptUncheckedUpdateInput>
+    /**
+     * Choose, which DuplicateSubmissionAttempt to update.
+     */
+    where: DuplicateSubmissionAttemptWhereUniqueInput
+  }
+
+  /**
+   * DuplicateSubmissionAttempt updateMany
+   */
+  export type DuplicateSubmissionAttemptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DuplicateSubmissionAttempts.
+     */
+    data: XOR<DuplicateSubmissionAttemptUpdateManyMutationInput, DuplicateSubmissionAttemptUncheckedUpdateManyInput>
+    /**
+     * Filter which DuplicateSubmissionAttempts to update
+     */
+    where?: DuplicateSubmissionAttemptWhereInput
+  }
+
+  /**
+   * DuplicateSubmissionAttempt upsert
+   */
+  export type DuplicateSubmissionAttemptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * The filter to search for the DuplicateSubmissionAttempt to update in case it exists.
+     */
+    where: DuplicateSubmissionAttemptWhereUniqueInput
+    /**
+     * In case the DuplicateSubmissionAttempt found by the `where` argument doesn't exist, create a new DuplicateSubmissionAttempt with this data.
+     */
+    create: XOR<DuplicateSubmissionAttemptCreateInput, DuplicateSubmissionAttemptUncheckedCreateInput>
+    /**
+     * In case the DuplicateSubmissionAttempt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DuplicateSubmissionAttemptUpdateInput, DuplicateSubmissionAttemptUncheckedUpdateInput>
+  }
+
+  /**
+   * DuplicateSubmissionAttempt delete
+   */
+  export type DuplicateSubmissionAttemptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+    /**
+     * Filter which DuplicateSubmissionAttempt to delete.
+     */
+    where: DuplicateSubmissionAttemptWhereUniqueInput
+  }
+
+  /**
+   * DuplicateSubmissionAttempt deleteMany
+   */
+  export type DuplicateSubmissionAttemptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DuplicateSubmissionAttempts to delete
+     */
+    where?: DuplicateSubmissionAttemptWhereInput
+  }
+
+  /**
+   * DuplicateSubmissionAttempt without action
+   */
+  export type DuplicateSubmissionAttemptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DuplicateSubmissionAttempt
+     */
+    select?: DuplicateSubmissionAttemptSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18405,6 +19427,7 @@ export namespace Prisma {
     gender: 'gender',
     civilStatus: 'civilStatus',
     isFirstTimeVoter: 'isFirstTimeVoter',
+    ipAddress: 'ipAddress',
     ipHash: 'ipHash',
     tokenHash: 'tokenHash',
     retractedAt: 'retractedAt',
@@ -18517,6 +19540,21 @@ export namespace Prisma {
   };
 
   export type BlockedIpAddressScalarFieldEnum = (typeof BlockedIpAddressScalarFieldEnum)[keyof typeof BlockedIpAddressScalarFieldEnum]
+
+
+  export const DuplicateSubmissionAttemptScalarFieldEnum: {
+    id: 'id',
+    campaignId: 'campaignId',
+    ipAddress: 'ipAddress',
+    ipHash: 'ipHash',
+    attemptedName: 'attemptedName',
+    rejectionReason: 'rejectionReason',
+    existingSubmissionId: 'existingSubmissionId',
+    userAgent: 'userAgent',
+    createdAt: 'createdAt'
+  };
+
+  export type DuplicateSubmissionAttemptScalarFieldEnum = (typeof DuplicateSubmissionAttemptScalarFieldEnum)[keyof typeof DuplicateSubmissionAttemptScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -19487,6 +20525,7 @@ export namespace Prisma {
     gender?: StringNullableFilter<"SurveySubmission"> | string | null
     civilStatus?: StringNullableFilter<"SurveySubmission"> | string | null
     isFirstTimeVoter?: BoolNullableFilter<"SurveySubmission"> | boolean | null
+    ipAddress?: StringNullableFilter<"SurveySubmission"> | string | null
     ipHash?: StringFilter<"SurveySubmission"> | string
     tokenHash?: StringFilter<"SurveySubmission"> | string
     retractedAt?: DateTimeNullableFilter<"SurveySubmission"> | Date | string | null
@@ -19516,6 +20555,7 @@ export namespace Prisma {
     gender?: SortOrderInput | SortOrder
     civilStatus?: SortOrderInput | SortOrder
     isFirstTimeVoter?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
     ipHash?: SortOrder
     tokenHash?: SortOrder
     retractedAt?: SortOrderInput | SortOrder
@@ -19548,6 +20588,7 @@ export namespace Prisma {
     gender?: StringNullableFilter<"SurveySubmission"> | string | null
     civilStatus?: StringNullableFilter<"SurveySubmission"> | string | null
     isFirstTimeVoter?: BoolNullableFilter<"SurveySubmission"> | boolean | null
+    ipAddress?: StringNullableFilter<"SurveySubmission"> | string | null
     ipHash?: StringFilter<"SurveySubmission"> | string
     tokenHash?: StringFilter<"SurveySubmission"> | string
     retractedAt?: DateTimeNullableFilter<"SurveySubmission"> | Date | string | null
@@ -19577,6 +20618,7 @@ export namespace Prisma {
     gender?: SortOrderInput | SortOrder
     civilStatus?: SortOrderInput | SortOrder
     isFirstTimeVoter?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
     ipHash?: SortOrder
     tokenHash?: SortOrder
     retractedAt?: SortOrderInput | SortOrder
@@ -19610,6 +20652,7 @@ export namespace Prisma {
     gender?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
     civilStatus?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
     isFirstTimeVoter?: BoolNullableWithAggregatesFilter<"SurveySubmission"> | boolean | null
+    ipAddress?: StringNullableWithAggregatesFilter<"SurveySubmission"> | string | null
     ipHash?: StringWithAggregatesFilter<"SurveySubmission"> | string
     tokenHash?: StringWithAggregatesFilter<"SurveySubmission"> | string
     retractedAt?: DateTimeNullableWithAggregatesFilter<"SurveySubmission"> | Date | string | null
@@ -20135,6 +21178,78 @@ export namespace Prisma {
     unblockReason?: StringNullableWithAggregatesFilter<"BlockedIpAddress"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"BlockedIpAddress"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"BlockedIpAddress"> | Date | string
+  }
+
+  export type DuplicateSubmissionAttemptWhereInput = {
+    AND?: DuplicateSubmissionAttemptWhereInput | DuplicateSubmissionAttemptWhereInput[]
+    OR?: DuplicateSubmissionAttemptWhereInput[]
+    NOT?: DuplicateSubmissionAttemptWhereInput | DuplicateSubmissionAttemptWhereInput[]
+    id?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    campaignId?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    ipAddress?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    ipHash?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    attemptedName?: StringNullableFilter<"DuplicateSubmissionAttempt"> | string | null
+    rejectionReason?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    existingSubmissionId?: StringNullableFilter<"DuplicateSubmissionAttempt"> | string | null
+    userAgent?: StringNullableFilter<"DuplicateSubmissionAttempt"> | string | null
+    createdAt?: DateTimeFilter<"DuplicateSubmissionAttempt"> | Date | string
+  }
+
+  export type DuplicateSubmissionAttemptOrderByWithRelationInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    ipAddress?: SortOrder
+    ipHash?: SortOrder
+    attemptedName?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrder
+    existingSubmissionId?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DuplicateSubmissionAttemptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DuplicateSubmissionAttemptWhereInput | DuplicateSubmissionAttemptWhereInput[]
+    OR?: DuplicateSubmissionAttemptWhereInput[]
+    NOT?: DuplicateSubmissionAttemptWhereInput | DuplicateSubmissionAttemptWhereInput[]
+    campaignId?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    ipAddress?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    ipHash?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    attemptedName?: StringNullableFilter<"DuplicateSubmissionAttempt"> | string | null
+    rejectionReason?: StringFilter<"DuplicateSubmissionAttempt"> | string
+    existingSubmissionId?: StringNullableFilter<"DuplicateSubmissionAttempt"> | string | null
+    userAgent?: StringNullableFilter<"DuplicateSubmissionAttempt"> | string | null
+    createdAt?: DateTimeFilter<"DuplicateSubmissionAttempt"> | Date | string
+  }, "id">
+
+  export type DuplicateSubmissionAttemptOrderByWithAggregationInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    ipAddress?: SortOrder
+    ipHash?: SortOrder
+    attemptedName?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrder
+    existingSubmissionId?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: DuplicateSubmissionAttemptCountOrderByAggregateInput
+    _max?: DuplicateSubmissionAttemptMaxOrderByAggregateInput
+    _min?: DuplicateSubmissionAttemptMinOrderByAggregateInput
+  }
+
+  export type DuplicateSubmissionAttemptScalarWhereWithAggregatesInput = {
+    AND?: DuplicateSubmissionAttemptScalarWhereWithAggregatesInput | DuplicateSubmissionAttemptScalarWhereWithAggregatesInput[]
+    OR?: DuplicateSubmissionAttemptScalarWhereWithAggregatesInput[]
+    NOT?: DuplicateSubmissionAttemptScalarWhereWithAggregatesInput | DuplicateSubmissionAttemptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string
+    campaignId?: StringWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string
+    ipAddress?: StringWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string
+    ipHash?: StringWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string
+    attemptedName?: StringNullableWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string | null
+    rejectionReason?: StringWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string
+    existingSubmissionId?: StringNullableWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"DuplicateSubmissionAttempt"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"DuplicateSubmissionAttempt"> | Date | string
   }
 
   export type AdminUserCreateInput = {
@@ -21212,6 +22327,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -21241,6 +22357,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -21268,6 +22385,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21297,6 +22415,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21325,6 +22444,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -21351,6 +22471,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21378,6 +22499,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21981,6 +23103,90 @@ export namespace Prisma {
     unblockReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DuplicateSubmissionAttemptCreateInput = {
+    id?: string
+    campaignId: string
+    ipAddress: string
+    ipHash: string
+    attemptedName?: string | null
+    rejectionReason: string
+    existingSubmissionId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DuplicateSubmissionAttemptUncheckedCreateInput = {
+    id?: string
+    campaignId: string
+    ipAddress: string
+    ipHash: string
+    attemptedName?: string | null
+    rejectionReason: string
+    existingSubmissionId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DuplicateSubmissionAttemptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    ipHash?: StringFieldUpdateOperationsInput | string
+    attemptedName?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: StringFieldUpdateOperationsInput | string
+    existingSubmissionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DuplicateSubmissionAttemptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    ipHash?: StringFieldUpdateOperationsInput | string
+    attemptedName?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: StringFieldUpdateOperationsInput | string
+    existingSubmissionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DuplicateSubmissionAttemptCreateManyInput = {
+    id?: string
+    campaignId: string
+    ipAddress: string
+    ipHash: string
+    attemptedName?: string | null
+    rejectionReason: string
+    existingSubmissionId?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DuplicateSubmissionAttemptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    ipHash?: StringFieldUpdateOperationsInput | string
+    attemptedName?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: StringFieldUpdateOperationsInput | string
+    existingSubmissionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DuplicateSubmissionAttemptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    ipHash?: StringFieldUpdateOperationsInput | string
+    attemptedName?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: StringFieldUpdateOperationsInput | string
+    existingSubmissionId?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -22790,6 +23996,7 @@ export namespace Prisma {
     gender?: SortOrder
     civilStatus?: SortOrder
     isFirstTimeVoter?: SortOrder
+    ipAddress?: SortOrder
     ipHash?: SortOrder
     tokenHash?: SortOrder
     retractedAt?: SortOrder
@@ -22817,6 +24024,7 @@ export namespace Prisma {
     gender?: SortOrder
     civilStatus?: SortOrder
     isFirstTimeVoter?: SortOrder
+    ipAddress?: SortOrder
     ipHash?: SortOrder
     tokenHash?: SortOrder
     retractedAt?: SortOrder
@@ -22844,6 +24052,7 @@ export namespace Prisma {
     gender?: SortOrder
     civilStatus?: SortOrder
     isFirstTimeVoter?: SortOrder
+    ipAddress?: SortOrder
     ipHash?: SortOrder
     tokenHash?: SortOrder
     retractedAt?: SortOrder
@@ -23188,6 +24397,42 @@ export namespace Prisma {
     unblockReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DuplicateSubmissionAttemptCountOrderByAggregateInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    ipAddress?: SortOrder
+    ipHash?: SortOrder
+    attemptedName?: SortOrder
+    rejectionReason?: SortOrder
+    existingSubmissionId?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DuplicateSubmissionAttemptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    ipAddress?: SortOrder
+    ipHash?: SortOrder
+    attemptedName?: SortOrder
+    rejectionReason?: SortOrder
+    existingSubmissionId?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DuplicateSubmissionAttemptMinOrderByAggregateInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    ipAddress?: SortOrder
+    ipHash?: SortOrder
+    attemptedName?: SortOrder
+    rejectionReason?: SortOrder
+    existingSubmissionId?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -25188,6 +26433,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -25215,6 +26461,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -25316,6 +26563,7 @@ export namespace Prisma {
     gender?: StringNullableFilter<"SurveySubmission"> | string | null
     civilStatus?: StringNullableFilter<"SurveySubmission"> | string | null
     isFirstTimeVoter?: BoolNullableFilter<"SurveySubmission"> | boolean | null
+    ipAddress?: StringNullableFilter<"SurveySubmission"> | string | null
     ipHash?: StringFilter<"SurveySubmission"> | string
     tokenHash?: StringFilter<"SurveySubmission"> | string
     retractedAt?: DateTimeNullableFilter<"SurveySubmission"> | Date | string | null
@@ -25857,6 +27105,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -25885,6 +27134,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -25986,6 +27236,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26014,6 +27265,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26829,6 +28081,7 @@ export namespace Prisma {
     gender?: string | null
     civilStatus?: string | null
     isFirstTimeVoter?: boolean | null
+    ipAddress?: string | null
     ipHash: string
     tokenHash: string
     retractedAt?: Date | string | null
@@ -26873,6 +28126,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26900,6 +28154,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26927,6 +28182,7 @@ export namespace Prisma {
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     civilStatus?: NullableStringFieldUpdateOperationsInput | string | null
     isFirstTimeVoter?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     ipHash?: StringFieldUpdateOperationsInput | string
     tokenHash?: StringFieldUpdateOperationsInput | string
     retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27093,6 +28349,10 @@ export namespace Prisma {
      * @deprecated Use BlockedIpAddressDefaultArgs instead
      */
     export type BlockedIpAddressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BlockedIpAddressDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use DuplicateSubmissionAttemptDefaultArgs instead
+     */
+    export type DuplicateSubmissionAttemptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DuplicateSubmissionAttemptDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

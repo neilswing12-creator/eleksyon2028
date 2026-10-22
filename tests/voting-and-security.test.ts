@@ -14,7 +14,8 @@ import { PUT as candidatePUT } from "../src/app/api/admin/candidates/route";
 import { GET as analyticsGET } from "../src/app/api/analytics/route";
 import { GET as statsGET, PUT as statsPUT } from "../src/app/api/admin/statistics/route";
 import { POST as submitPOST } from "../src/app/api/survey/submit/route";
-import { GET as manageGET, PUT as managePUT } from "../src/app/api/survey/manage/[token]/route";
+import { GET as manageGET, PUT as managePUT, DELETE as manageDELETE } from "../src/app/api/survey/manage/[token]/route";
+import { GET as duplicateAttemptsGET } from "../src/app/api/admin/security/duplicate-attempts/route";
 import { GET as candidatesPublicGET } from "../src/app/api/candidates/route";
 import { importCandidateLegislativeRecords } from "../src/lib/legislative-importer";
 import { GET as legGET, PUT as legPUT, DELETE as legDELETE } from "../src/app/api/admin/candidates/[id]/legislative/route";
@@ -1785,6 +1786,223 @@ SB-1234,Valid Title,INVALID_CHAMBER,19,PRINCIPAL_AUTHOR,not-a-url`;
   assert(
     true,
     "55. IP Security Lifecycle: Unblock restores access, expired blocks self-reconcile, and RBAC is strictly enforced"
+  );
+
+  // =========================================================================
+  // TEST 56: REPEAT VOTING RESTRICTION ACROSS DAYS & CAMPAIGN DURATION (10-POINT SUITE)
+  // =========================================================================
+  console.log("\n--- TEST 56: Repeat Voting Restriction, Across-Day Integrity & Security ---");
+
+  const testIpA = "120.29.76.101";
+  const testIpB = "120.29.76.102";
+  const testCandidatePres = await prisma.candidate.findFirst({ where: { position: "PRESIDENT" } });
+  const testCandidateVP = await prisma.candidate.findFirst({ where: { position: "VICE_PRESIDENT" } });
+
+  // Cleanup any leftover test submissions for clean slate
+  const hashA = hashIP(testIpA);
+  const hashB = hashIP(testIpB);
+  const hashC = hashIP("120.29.76.103");
+  await prisma.candidateSelection.deleteMany({
+    where: { submission: { ipHash: { in: [hashA, hashB, hashC] } } }
+  });
+  await prisma.surveySubmission.deleteMany({
+    where: { ipHash: { in: [hashA, hashB, hashC] } }
+  });
+  await prisma.duplicateSubmissionAttempt.deleteMany({
+    where: { ipAddress: { in: [testIpA, testIpB, "120.29.76.103"] } }
+  });
+
+  // 1. First submission from IP A is accepted
+  const submitReq1 = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "cf-connecting-ip": testIpA,
+      "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    },
+    body: JSON.stringify({
+      participantName: "Voter Alpha Day 1",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: testCandidatePres?.id,
+      vicePresidentialCandidateId: testCandidateVP?.id,
+    }),
+  });
+  const submitRes1 = await submitPOST(submitReq1 as any);
+  const submitData1 = await submitRes1.json();
+  assert(submitRes1.status === 201 && submitData1.success, "56a. (1) First submission from IP A is accepted");
+
+  const tokenA = submitData1.managementToken;
+  const submissionIdA = submitData1.submissionId;
+
+  // 2. Second initial submission from IP A on same day is rejected (409)
+  const submitReq2 = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "cf-connecting-ip": testIpA,
+      "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    },
+    body: JSON.stringify({
+      participantName: "Voter Alpha Repeat Same Day",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: testCandidatePres?.id,
+    }),
+  });
+  const submitRes2 = await submitPOST(submitReq2 as any);
+  const submitData2 = await submitRes2.json();
+  assert(submitRes2.status === 409 && submitData2.isDuplicateIP, "56b. (2) Second initial submission from IP A on same day is rejected (409)");
+
+  // 3. Second initial submission from IP A on following day is also rejected under survey-wide rule
+  // We simulate date change by backdating the created submission to yesterday
+  await prisma.surveySubmission.update({
+    where: { id: submissionIdA },
+    data: { createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // 24 hours ago (yesterday)
+  });
+
+  const submitReq3 = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "cf-connecting-ip": testIpA,
+      "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    },
+    body: JSON.stringify({
+      participantName: "Voter Alpha Day 2",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: testCandidatePres?.id,
+    }),
+  });
+  const submitRes3 = await submitPOST(submitReq3 as any);
+  const submitData3 = await submitRes3.json();
+  assert(
+    submitRes3.status === 409 && submitData3.isDuplicateIP,
+    "56c. (3) Second initial submission from IP A on the following day is strictly rejected (survey-wide rule)"
+  );
+
+  // 4. Request with spoofed forwarding header cannot evade restriction
+  // Client tries to spoof by passing x-forwarded-for: 1.2.3.4, but cf-connecting-ip identifies real IP A
+  const submitReqSpoofed = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "cf-connecting-ip": testIpA,
+      "x-forwarded-for": "1.2.3.4, 5.6.7.8",
+      "user-agent": "Mozilla/5.0 (iPhone)",
+    },
+    body: JSON.stringify({
+      participantName: "Voter Alpha Spoofed Header",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: testCandidatePres?.id,
+    }),
+  });
+  const submitResSpoofed = await submitPOST(submitReqSpoofed as any);
+  assert(
+    submitResSpoofed.status === 409,
+    "56d. (4) Request with spoofed x-forwarded-for header cannot evade restriction when behind trusted proxy"
+  );
+
+  // 5. Concurrent duplicate requests: atomic concurrency lock rejects simultaneous duplicate attempt
+  const concurrentIp = "120.29.76.103";
+  // Run two requests simultaneously
+  const makeReq = () =>
+    submitPOST(
+      new Request("http://localhost/api/survey/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "cf-connecting-ip": concurrentIp,
+        },
+        body: JSON.stringify({
+          participantName: "Concurrent Voter",
+          residenceType: "DOMESTIC",
+          presidentialCandidateId: testCandidatePres?.id,
+        }),
+      }) as any
+    );
+
+  const [resA, resB] = await Promise.all([makeReq(), makeReq()]);
+  const statuses = [resA.status, resB.status].sort();
+  assert(
+    statuses[0] === 201 && statuses[1] === 409,
+    "56e. (5) Concurrent requests are handled atomically: exactly one succeeds (201) and duplicate is rejected (409)"
+  );
+
+  // 6. IP B follows the same rule independently
+  const submitReqB = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "cf-connecting-ip": testIpB,
+    },
+    body: JSON.stringify({
+      participantName: "Voter Beta Independent",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: testCandidatePres?.id,
+    }),
+  });
+  const submitResB = await submitPOST(submitReqB as any);
+  assert(submitResB.status === 201, "56f. (6) IP B follows the same rule independently and succeeds on first attempt");
+
+  // 7. Authorized private management link can update existing submission (PUT)
+  const manageUpdateReq = new Request(`http://localhost/api/survey/manage/${tokenA}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      presidentialCandidateId: testCandidatePres?.id,
+      vicePresidentialCandidateId: testCandidateVP?.id,
+      senatorialCandidateIds: [],
+    }),
+  });
+  const manageUpdateRes = await managePUT(manageUpdateReq as any, { params: { token: tokenA } });
+  assert(manageUpdateRes.status === 200, "56g. (7) Authorized private management link can update existing submission");
+
+  // 8. Invalid or unauthorized management link cannot modify submission
+  const invalidManageReq = new Request("http://localhost/api/survey/manage/invalid-token-12345", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ presidentialCandidateId: testCandidatePres?.id }),
+  });
+  const invalidManageRes = await managePUT(invalidManageReq as any, { params: { token: "invalid-token-12345" } });
+  assert(
+    invalidManageRes.status === 404,
+    "56h. (8) Invalid management link cannot modify any survey response"
+  );
+
+  // 9. Retracted submissions follow documented policy: retracting allows a new submission from IP
+  const retractReq = new Request(`http://localhost/api/survey/manage/${tokenA}`, {
+    method: "DELETE",
+  });
+  const retractRes = await manageDELETE(retractReq as any, { params: { token: tokenA } });
+  assert(retractRes.status === 200, "56i. (9a) Private link allows successful vote retraction");
+
+  // After retraction, a new submission from IP A is permitted under documented retraction rules
+  const postRetractReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "cf-connecting-ip": testIpA,
+    },
+    body: JSON.stringify({
+      participantName: "Voter Alpha Re-cast",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: testCandidatePres?.id,
+    }),
+  });
+  const postRetractRes = await submitPOST(postRetractReq as any);
+  assert(
+    postRetractRes.status === 201,
+    "56j. (9b) After retraction, new initial submission from same network is allowed per survey policy"
+  );
+
+  // 10. Admin visibility for duplicate attempts
+  const dupQueryReq = new Request("http://localhost/api/admin/security/duplicate-attempts?search=120.29.76.101", {
+    headers: { Authorization: `Bearer ${superAdminToken}` },
+  });
+  const dupQueryRes = await duplicateAttemptsGET(dupQueryReq as any);
+  const dupQueryData = await dupQueryRes.json();
+  assert(
+    dupQueryRes.status === 200 && dupQueryData.total >= 1 && dupQueryData.attempts[0].ipAddress === testIpA,
+    "56k. (10) Admin visibility: Duplicate attempts are logged with plain text client IP and rejection reason"
   );
 
   console.log("\n=======================================================");

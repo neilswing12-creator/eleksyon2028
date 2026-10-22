@@ -672,12 +672,12 @@ export default function SurveyPage() {
 
         {/* STEP 2: Presidential Ballot */}
         {step === 2 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-6 md:p-8 shadow-card space-y-6">
             <div>
               <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                 CATEGORY A &bull; EXACTLY 1 SELECTION
               </span>
-              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
+              <h2 className="text-2xl sm:text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                 President of the Philippines
               </h2>
               <p className="text-xs text-slate-500 font-sans mt-1">
@@ -692,16 +692,16 @@ export default function SurveyPage() {
                   <div
                     key={c.id}
                     onClick={() => setPresidentialChoice(c.id)}
-                    className={`cursor-pointer rounded-xl border-2 p-4 transition-all flex items-center justify-between ${
+                    className={`cursor-pointer rounded-xl border-2 p-3 sm:p-4 transition-all flex items-center justify-between gap-2.5 sm:gap-4 ${
                       isSelected
                         ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
                         : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
                       {/* Color Bar */}
                       <span
-                        className="w-3 h-12 rounded-full flex-shrink-0"
+                        className="w-2 sm:w-2.5 h-11 sm:h-12 rounded-full flex-shrink-0"
                         style={{ backgroundColor: c.color }}
                       ></span>
 
@@ -710,27 +710,27 @@ export default function SurveyPage() {
                         <img
                           src={c.photoUrl}
                           alt={c.name}
-                          className="w-12 h-12 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
+                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
                           style={{ borderColor: c.color }}
                         />
                       ) : (
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
+                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
                           style={{ backgroundColor: c.color }}
                         >
                           {c.name.slice(0, 2)}
                         </div>
                       )}
 
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-sm sm:text-base font-semibold text-[#0B1E36] uppercase tracking-wide truncate">
+                      <div className="min-w-0 flex-1 pr-1">
+                        <h4 className="text-xs sm:text-sm md:text-base font-bold text-[#0B1E36] uppercase tracking-wide leading-tight break-words">
                           {c.name}
                         </h4>
-                        <p className="text-xs font-sans font-semibold text-slate-500 truncate">
+                        <p className="text-[11px] sm:text-xs font-sans font-semibold text-slate-500 break-words mt-0.5 leading-snug">
                           {c.party || "INDEPENDENT"}
                         </p>
                         {c.bio && (
-                          <p className="text-[11px] font-sans text-slate-600 line-clamp-1 mt-0.5 max-w-md">
+                          <p className="text-[10px] sm:text-[11px] font-sans text-slate-600 line-clamp-2 mt-0.5 leading-snug">
                             {c.bio}
                           </p>
                         )}
@@ -738,11 +738,11 @@ export default function SurveyPage() {
                     </div>
 
                     <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
+                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 bg-white"
                       }`}
                     >
-                      {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white"></div>}
+                      {isSelected && <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white"></div>}
                     </div>
                   </div>
                 );
@@ -771,12 +771,12 @@ export default function SurveyPage() {
 
         {/* STEP 3: Vice Presidential Ballot */}
         {step === 3 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-6 md:p-8 shadow-card space-y-6">
             <div>
               <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                 CATEGORY B &bull; EXACTLY 1 SELECTION
               </span>
-              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
+              <h2 className="text-2xl sm:text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                 Vice President of the Philippines
               </h2>
               <p className="text-xs text-slate-500 font-sans mt-1">
@@ -791,15 +791,15 @@ export default function SurveyPage() {
                   <div
                     key={c.id}
                     onClick={() => setVicePresidentialChoice(c.id)}
-                    className={`cursor-pointer rounded-xl border-2 p-4 transition-all flex items-center justify-between ${
+                    className={`cursor-pointer rounded-xl border-2 p-3 sm:p-4 transition-all flex items-center justify-between gap-2.5 sm:gap-4 ${
                       isSelected
                         ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
                         : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
                       <span
-                        className="w-3 h-12 rounded-full flex-shrink-0"
+                        className="w-2 sm:w-2.5 h-11 sm:h-12 rounded-full flex-shrink-0"
                         style={{ backgroundColor: c.color }}
                       ></span>
 
@@ -807,27 +807,27 @@ export default function SurveyPage() {
                         <img
                           src={c.photoUrl}
                           alt={c.name}
-                          className="w-12 h-12 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
+                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
                           style={{ borderColor: c.color }}
                         />
                       ) : (
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
+                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
                           style={{ backgroundColor: c.color }}
                         >
                           {c.name.slice(0, 2)}
                         </div>
                       )}
 
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-sm sm:text-base font-semibold text-[#0B1E36] uppercase tracking-wide truncate">
+                      <div className="min-w-0 flex-1 pr-1">
+                        <h4 className="text-xs sm:text-sm md:text-base font-bold text-[#0B1E36] uppercase tracking-wide leading-tight break-words">
                           {c.name}
                         </h4>
-                        <p className="text-xs font-sans font-semibold text-slate-500 truncate">
+                        <p className="text-[11px] sm:text-xs font-sans font-semibold text-slate-500 break-words mt-0.5 leading-snug">
                           {c.party || "INDEPENDENT"}
                         </p>
                         {c.bio && (
-                          <p className="text-[11px] font-sans text-slate-600 line-clamp-1 mt-0.5 max-w-md">
+                          <p className="text-[10px] sm:text-[11px] font-sans text-slate-600 line-clamp-2 mt-0.5 leading-snug">
                             {c.bio}
                           </p>
                         )}
@@ -835,11 +835,11 @@ export default function SurveyPage() {
                     </div>
 
                     <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
+                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 bg-white"
                       }`}
                     >
-                      {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white"></div>}
+                      {isSelected && <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white"></div>}
                     </div>
                   </div>
                 );
@@ -868,13 +868,13 @@ export default function SurveyPage() {
 
         {/* STEP 4: Senatorial Ballot */}
         {step === 4 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-6 md:p-8 shadow-card space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
                 <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                   CATEGORY C &bull; SELECT UP TO 12 CANDIDATES
                 </span>
-                <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
+                <h2 className="text-2xl sm:text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
                   Senatorial Slate Ballot
                 </h2>
                 <p className="text-xs text-slate-500 font-sans mt-0.5">
@@ -884,7 +884,7 @@ export default function SurveyPage() {
 
               {/* Live Counter Badge (Sticky on mobile for ease of 12-selection) */}
               <div
-                className={`sticky top-16 z-30 sm:relative sm:top-0 px-3.5 py-2 rounded-xl font-semibold text-xsr flex items-center justify-between sm:justify-start gap-2 shadow-sm border-2 ${
+                className={`sticky top-16 z-30 sm:relative sm:top-0 px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center justify-between sm:justify-start gap-2 shadow-sm border-2 ${
                   senatorialChoices.length === 12
                     ? "bg-emerald-50 text-emerald-800 border-emerald-400"
                     : "bg-blue-50 text-blue-600 border-blue-300"
@@ -937,18 +937,18 @@ export default function SurveyPage() {
                         </div>
                       )}
 
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-xs sm:text-sm font-semibold text-[#0B1E36] uppercase truncate">
+                      <div className="min-w-0 flex-1 pr-1">
+                        <h4 className="text-xs sm:text-sm font-bold text-[#0B1E36] uppercase leading-tight break-words">
                           {c.name}
                         </h4>
-                        <p className="text-[10px] sm:text-[11px] font-sans font-semibold text-slate-500 truncate">
+                        <p className="text-[10px] sm:text-[11px] font-sans font-semibold text-slate-500 break-words mt-0.5">
                           {c.party || "INDEPENDENT"}
                         </p>
                       </div>
                     </div>
 
                     <div
-                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                         isSelected
                           ? "border-blue-600 bg-blue-600 text-white"
                           : "border-slate-300 bg-white"
@@ -999,9 +999,23 @@ export default function SurveyPage() {
             {errorMessage && (
               <div className="p-4 rounded-xl bg-red-50 border-2 border-red-300 text-red-900 text-xs flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="font-semibold text-sm uppercase">SUBMISSION NOT ACCEPTED</p>
-                  <p className="text-red-700 font-sans">{errorMessage}</p>
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <p className="font-semibold text-sm uppercase text-red-950">SUBMISSION NOT ACCEPTED</p>
+                  <p className="text-red-700 font-sans leading-relaxed">{errorMessage}</p>
+                  {duplicateIPError && (
+                    <div className="mt-2 p-3 bg-white/80 rounded-lg border border-red-200 text-[11px] text-slate-700 space-y-1">
+                      <p className="font-bold text-[#0B1E36]">Network IP Restriction Policy:</p>
+                      <p>
+                        To ensure election integrity, only 1 active vote per public network (Wi-Fi or public IP)
+                        is permitted across the duration of this survey. If someone in your home, office, or Wi-Fi network
+                        has already cast a ballot, this public IP is marked as recorded.
+                      </p>
+                      <p>
+                        If you already voted, you can modify or retract your selections anytime using your{" "}
+                        <span className="font-semibold text-blue-700">Private Vote Management Link</span>.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1147,7 +1161,7 @@ export default function SurveyPage() {
 
         {/* STEP 6: Confirmation */}
         {step === 6 && submissionResult && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-10 shadow-sm text-center space-y-6 animate-in zoom-in-95 duration-200 font-sans">
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-4 sm:p-10 shadow-sm text-center space-y-6 animate-in zoom-in-95 duration-200 font-sans">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-300">
               <CheckCircle2 className="w-10 h-10" />
             </div>
@@ -1156,22 +1170,22 @@ export default function SurveyPage() {
               <div className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
                 SURVEY RESPONSE RECORDED
               </div>
-              <h2 className="text-3xl font-black text-[#0B1E36] uppercase mt-1">
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0B1E36] uppercase mt-1 break-words">
                 Thank You, {submissionResult.participantName}!
               </h2>
-              <p className="text-xs text-slate-600 font-sans mt-1 max-w-md mx-auto">
-                Your vote has been securely recorded and immediately factored into the live public
-                results and Philippine map statistics.
+              <p className="text-xs text-slate-600 font-sans mt-1 max-w-md mx-auto leading-relaxed">
+                Your vote has been verified and securely recorded under survey integrity rules. It is
+                now officially included in active public results and Philippine map statistics.
               </p>
             </div>
 
             {/* Management Link Card */}
-            <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 text-left space-y-2.5 font-sans">
-              <div className="flex items-center justify-between font-sans">
+            <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 sm:p-5 text-left space-y-2.5 font-sans">
+              <div className="flex flex-wrap items-center justify-between gap-1.5 font-sans">
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-900">
                   YOUR PRIVATE VOTE MANAGEMENT LINK
                 </span>
-                <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold uppercase">
+                <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold uppercase flex-shrink-0">
                   CONFIDENTIAL
                 </span>
               </div>
@@ -1180,7 +1194,7 @@ export default function SurveyPage() {
                 private link to <strong>modify your selections</strong> or <strong>retract your vote</strong>.
               </p>
 
-              <div className="flex items-center gap-2 pt-1">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
                 <input
                   type="text"
                   readOnly
@@ -1189,28 +1203,28 @@ export default function SurveyPage() {
                       ? `${window.location.origin}/survey/manage/${submissionResult.managementToken}`
                       : ""
                   }
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-amber-300 bg-white font-mono text-slate-800 select-all"
+                  className="w-full px-3 py-2.5 text-xs rounded-xl border border-amber-300 bg-white font-mono text-slate-800 select-all overflow-x-auto min-h-[44px]"
                 />
                 <button
                   onClick={copyManagementLink}
-                  className="px-4 py-2 bg-amber-600 text-white rounded-xl text-xs font-semibold hover:bg-amber-700 flex items-center gap-1.5 flex-shrink-0 transition-colors shadow"
+                  className="min-h-[44px] px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 flex-shrink-0 transition-colors shadow active:scale-95"
                 >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>{copiedLink ? "Copied!" : "Copy"}</span>
+                  <Copy className="w-4 h-4 flex-shrink-0" />
+                  <span>{copiedLink ? "Copied Link!" : "Copy Link"}</span>
                 </button>
               </div>
             </div>
 
             {/* Share Your Vote 1080x1350 Banner */}
-            <div className="bg-gradient-to-r from-[#0B1E36] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-5 text-left text-white shadow-xl space-y-3 font-sans">
-              <div className="flex items-center justify-between font-sans">
-                <div className="flex items-center gap-2">
-                  <Vote className="w-5 h-5 text-amber-300" />
-                  <span className="text-sm font-black uppercase tracking-wider text-amber-300">
+            <div className="bg-gradient-to-r from-[#0B1E36] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-4 sm:p-5 text-left text-white shadow-xl space-y-3 font-sans overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between gap-2 font-sans">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Vote className="w-5 h-5 text-amber-300 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-300 truncate">
                     SHARE WHO YOU VOTED FOR (1080×1350)
                   </span>
                 </div>
-                <span className="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex-shrink-0">
                   VIRAL CAMPAIGN CARD (4:5)
                 </span>
               </div>
@@ -1223,30 +1237,30 @@ export default function SurveyPage() {
                 {presidentialChoice && (
                   <button
                     onClick={() => openShareModal(presidentialChoice, "PRESIDENT")}
-                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left flex items-center justify-between transition-all group"
+                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left flex items-center justify-between transition-all group min-h-[44px]"
                   >
-                    <div>
+                    <div className="min-w-0 flex-1 pr-2">
                       <span className="text-[10px] font-bold text-amber-300 uppercase block">Presidential Choice</span>
-                      <span className="text-xs font-bold text-white uppercase group-hover:text-amber-200">
+                      <span className="text-xs font-bold text-white uppercase group-hover:text-amber-200 truncate block">
                         {candidates.find((c) => c.id === presidentialChoice)?.name || "President"}
                       </span>
                     </div>
-                    <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                    <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" />
                   </button>
                 )}
 
                 {vicePresidentialChoice && (
                   <button
                     onClick={() => openShareModal(vicePresidentialChoice, "VICE_PRESIDENT")}
-                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left flex items-center justify-between transition-all group"
+                    className="p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left flex items-center justify-between transition-all group min-h-[44px]"
                   >
-                    <div>
+                    <div className="min-w-0 flex-1 pr-2">
                       <span className="text-[10px] font-bold text-amber-300 uppercase block">Vice President Choice</span>
-                      <span className="text-xs font-bold text-white uppercase group-hover:text-amber-200">
+                      <span className="text-xs font-bold text-white uppercase group-hover:text-amber-200 truncate block">
                         {candidates.find((c) => c.id === vicePresidentialChoice)?.name || "Vice President"}
                       </span>
                     </div>
-                    <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                    <Share2 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" />
                   </button>
                 )}
               </div>
@@ -1264,14 +1278,14 @@ export default function SurveyPage() {
                         <button
                           key={sId}
                           onClick={() => openShareModal(sId, "SENATOR")}
-                          className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-400/20 border border-white/10 hover:border-amber-400 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center gap-1 transition-all"
+                          className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-amber-400/20 border border-white/10 hover:border-amber-400 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center gap-1 transition-all min-h-[36px]"
                         >
                           <span
-                            className="w-2 h-2 rounded-full inline-block"
+                            className="w-2 h-2 rounded-full inline-block flex-shrink-0"
                             style={{ backgroundColor: senCand.color }}
                           ></span>
-                          <span>{senCand.name}</span>
-                          <Share2 className="w-3 h-3 text-amber-400 ml-0.5" />
+                          <span className="break-words">{senCand.name}</span>
+                          <Share2 className="w-3 h-3 text-amber-400 ml-0.5 flex-shrink-0" />
                         </button>
                       );
                     })}
@@ -1283,19 +1297,19 @@ export default function SurveyPage() {
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/survey/manage/${submissionResult.managementToken}`}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold uppercase tracking-wider text-[#0B1E36] hover:bg-slate-50 transition-colors"
+                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold uppercase tracking-wider text-[#0B1E36] hover:bg-slate-50 transition-colors flex items-center justify-center"
               >
                 Manage or Retract Vote
               </Link>
               <Link
                 href="/results"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow"
+                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow flex items-center justify-center"
               >
                 View Live Tallies &rarr;
               </Link>
               <Link
                 href="/map"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#0B1E36] text-white text-xs font-bold uppercase tracking-wider hover:bg-slate-900 transition-colors shadow"
+                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-[#0B1E36] text-white text-xs font-bold uppercase tracking-wider hover:bg-slate-900 transition-colors shadow flex items-center justify-center"
               >
                 Explore Live Map &rarr;
               </Link>

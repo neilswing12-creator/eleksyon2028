@@ -6,6 +6,7 @@ import { groupCandidatesByPosition, sortCandidatesByPositionAndName } from "@/li
 import {
   ShieldAlert,
   Ban,
+  Vote,
   Filter,
   Users,
   Settings,
@@ -235,8 +236,13 @@ export default function AdminPage() {
   const [submittingManualBill, setSubmittingManualBill] = useState(false);
 
   // Login Security & IP Monitoring State
-  const [securitySubTab, setSecuritySubTab] = useState<"ATTEMPTS" | "BLOCKED_IPS">("ATTEMPTS");
+  const [securitySubTab, setSecuritySubTab] = useState<"ATTEMPTS" | "BLOCKED_IPS" | "DUPLICATES">("ATTEMPTS");
   const [loginAttempts, setLoginAttempts] = useState<any[]>([]);
+  const [duplicateAttempts, setDuplicateAttempts] = useState<any[]>([]);
+  const [loadingDuplicateAttempts, setLoadingDuplicateAttempts] = useState(false);
+  const [duplicateAttemptsTotal, setDuplicateAttemptsTotal] = useState(0);
+  const [duplicateSearch, setDuplicateSearch] = useState("");
+  const [duplicatePage, setDuplicatePage] = useState(1);
   const [loadingAttempts, setLoadingAttempts] = useState(false);
   const [attemptsPagination, setAttemptsPagination] = useState({ page: 1, limit: 25, totalCount: 0, totalPages: 1 });
   const [attemptsStats, setAttemptsStats] = useState({ total: 0, success: 0, failed: 0, blocked: 0, rateLimited: 0 });
@@ -370,10 +376,33 @@ export default function AdminPage() {
     }
   };
 
+  const loadDuplicateAttempts = async (page = 1) => {
+    setLoadingDuplicateAttempts(true);
+    try {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: "25",
+        search: duplicateSearch,
+      });
+      const res = await fetch(`/api/admin/security/duplicate-attempts?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setDuplicateAttempts(data.attempts || []);
+        setDuplicateAttemptsTotal(data.total || 0);
+        setDuplicatePage(page);
+      }
+    } catch (e) {
+      console.error("Error loading duplicate attempts:", e);
+    } finally {
+      setLoadingDuplicateAttempts(false);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === "SECURITY" && adminUser) {
       loadLoginAttempts(1);
       loadBlockedIps();
+      loadDuplicateAttempts(1);
     }
   }, [activeTab, adminUser]);
 
@@ -4054,6 +4083,134 @@ export default function AdminPage() {
                 </button>
               </div>
             )}
+
+            {/* ========================================================= */}
+            {/* SUBTAB 3: REPEAT VOTING & DUPLICATE IP ATTEMPTS           */}
+            {/* ========================================================= */}
+            {securitySubTab === "DUPLICATES" && (
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">
+                  <div className="flex items-center gap-2 flex-1">
+                    <Search className="w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search by IP, voter name, or rejection reason..."
+                      value={duplicateSearch}
+                      onChange={(e) => setDuplicateSearch(e.target.value)}
+                      className="w-full sm:max-w-md px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => loadDuplicateAttempts(1)}
+                    className="px-4 py-1.5 rounded-lg bg-brand-navy hover:bg-slate-800 text-white font-bold"
+                  >
+                    Search Attempts
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs min-w-[700px]">
+                    <thead>
+                      <tr className="border-b border-brand-border text-brand-slate uppercase text-[10px] tracking-wider">
+                        <th className="py-2.5 px-3">Attempted At</th>
+                        <th className="py-2.5 px-3">Client IP (Plain text)</th>
+                        <th className="py-2.5 px-3">Voter Name</th>
+                        <th className="py-2.5 px-3">Rejection Reason</th>
+                        <th className="py-2.5 px-3">Associated Active Submission</th>
+                        <th className="py-2.5 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-sans">
+                      {loadingDuplicateAttempts ? (
+                        <tr>
+                          <td colSpan={6} className="py-8 text-center text-slate-400">
+                            Loading duplicate survey submission attempts...
+                          </td>
+                        </tr>
+                      ) : duplicateAttempts.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="py-8 text-center text-slate-400">
+                            No duplicate survey submission attempts recorded.
+                          </td>
+                        </tr>
+                      ) : (
+                        duplicateAttempts.map((attempt) => (
+                          <tr key={attempt.id} className="hover:bg-slate-50/50">
+                            <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap font-mono text-[11px]">
+                              {new Date(attempt.createdAt).toLocaleString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </td>
+
+                            <td className="py-2.5 px-3 font-mono font-bold text-slate-800 text-xs">
+                              {attempt.ipAddress}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-[#0B1E36] font-semibold">
+                              {attempt.attemptedName || "Anonymous"}
+                            </td>
+
+                            <td className="py-2.5 px-3">
+                              {attempt.rejectionReason === "DUPLICATE_ACTIVE_IP" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                  DUPLICATE_ACTIVE_IP
+                                </span>
+                              )}
+                              {attempt.rejectionReason === "CONCURRENT_DUPLICATE_IP" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                                  CONCURRENT_DUPLICATE_IP
+                                </span>
+                              )}
+                              {attempt.rejectionReason === "IP_BLOCKED" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                  IP_BLOCKED
+                                </span>
+                              )}
+                              {!["DUPLICATE_ACTIVE_IP", "CONCURRENT_DUPLICATE_IP", "IP_BLOCKED"].includes(attempt.rejectionReason) && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800">
+                                  {attempt.rejectionReason}
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">
+                              {attempt.existingSubmissionId ? (
+                                <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                  ID: {attempt.existingSubmissionId.slice(0, 12)}...
+                                </span>
+                              ) : (
+                                "—"
+                              )}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-right">
+                              <button
+                                disabled={isAnalyst}
+                                onClick={() => {
+                                  setBlockModalTarget({
+                                    ipAddress: attempt.ipAddress,
+                                    defaultReason: `Blocked from duplicate survey attempt (${attempt.rejectionReason})`,
+                                  });
+                                  setBlockReason(`Repeat survey submission attempts (${attempt.rejectionReason})`);
+                                }}
+                                className="px-2 py-1 rounded text-[10px] font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 disabled:opacity-40"
+                              >
+                                Block IP
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -4472,6 +4629,24 @@ export default function AdminPage() {
                   }`}
                 >
                   {blockedIpsActiveCount} active
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setSecuritySubTab("DUPLICATES");
+                  loadDuplicateAttempts(1);
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                  securitySubTab === "DUPLICATES"
+                    ? "bg-amber-600 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                <Vote className="w-4 h-4" />
+                <span>Repeat Voting &amp; Duplicate IP Attempts</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white font-mono">
+                  {duplicateAttemptsTotal}
                 </span>
               </button>
             </div>

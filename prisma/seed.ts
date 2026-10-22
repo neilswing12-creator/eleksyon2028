@@ -35,7 +35,7 @@ async function main() {
   if (!campaign) {
     campaign = await prisma.surveyCampaign.create({
       data: {
-        title: "2028 Philippine National Pre-Election Public Opinion Survey",
+        title: "2028 Philippine  Pre-Election Public Opinion Survey",
         description:
           "An independent, non-partisan, non-binding nationwide public opinion survey measuring voter sentiment for the President, Vice President, and Senators for the 2028 Philippine National Elections.",
         status: "ACTIVE",

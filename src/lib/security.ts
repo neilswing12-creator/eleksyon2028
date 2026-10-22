@@ -1,14 +1,15 @@
 import crypto from "crypto";
+import { getTrustedClientIp, normalizeIp } from "@/lib/ip-security";
 
 const HMAC_SECRET = process.env.SURVEY_HMAC_SECRET || "ph-2028-survey-hmac-keyed-secret-default";
 const JWT_SECRET = process.env.ADMIN_JWT_SECRET || "ph-2028-admin-jwt-secret-default";
 
 /**
  * Derives a privacy-preserving keyed identifier for an IP address using HMAC-SHA256.
- * The raw IP is never saved in the database or exposed.
+ * The raw IP is normalized (resolving IPv4-mapped IPv6, stripping ports) before hashing.
  */
 export function hashIP(ip: string): string {
-  const normalized = (ip || "127.0.0.1").trim().toLowerCase();
+  const normalized = normalizeIp(ip);
   return crypto.createHmac("sha256", HMAC_SECRET).update(normalized).digest("hex");
 }
 
@@ -94,17 +95,8 @@ export function verifyAdminSession(token: string): AdminPayload | null {
 }
 
 /**
- * Extracts client IP from incoming Next.js Request
+ * Extracts client IP from incoming Next.js Request using reverse proxy hierarchy.
  */
 export function getClientIP(headers: Headers): string {
-  const forwarded = headers.get("x-forwarded-for");
-  if (forwarded) {
-    const list = forwarded.split(",");
-    return list[0].trim();
-  }
-  const realIp = headers.get("x-real-ip");
-  if (realIp) return realIp.trim();
-  const cfIp = headers.get("cf-connecting-ip");
-  if (cfIp) return cfIp.trim();
-  return "127.0.0.1";
+  return getTrustedClientIp(headers);
 }

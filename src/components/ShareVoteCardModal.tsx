@@ -705,28 +705,29 @@ export default function ShareVoteCardModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-[#0A1730] border-2 border-slate-700 rounded-3xl max-w-xl w-full max-h-[94vh] flex flex-col overflow-hidden shadow-2xl">
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-[#10224A]/80">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#CE1126] flex items-center justify-center text-white shadow">
+        <div className="p-3 sm:p-5 border-b border-slate-800 flex items-center justify-between gap-2 bg-[#10224A]/80">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="w-8 h-8 rounded-full bg-[#CE1126] flex items-center justify-center text-white shadow flex-shrink-0">
               <Vote className="w-4 h-4 text-amber-300" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm sm:text-base font-headline font-bold text-white uppercase tracking-wider">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <h3 className="text-xs sm:text-sm md:text-base font-headline font-bold text-white uppercase tracking-wider truncate">
                   Official Eleksyon 2028 Share Card
                 </h3>
-                <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-400/30">
+                <span className="text-[9px] sm:text-[10px] bg-amber-400/20 text-amber-300 font-bold px-1.5 py-0.5 rounded-full border border-amber-400/30 flex-shrink-0">
                   1080 × 1350 (4:5)
                 </span>
               </div>
-              <p className="text-[11px] text-[#9FAECB]">
+              <p className="text-[10px] sm:text-[11px] text-[#9FAECB] truncate">
                 High-Definition verified election card for {candidate.name}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+            className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors flex-shrink-0"
+            aria-label="Close share modal"
           >
             <X className="w-5 h-5" />
           </button>
@@ -761,32 +762,32 @@ export default function ShareVoteCardModal({
         </div>
 
         {/* Action Controls */}
-        <div className="p-4 sm:p-5 border-t border-slate-800 bg-[#10224A]/90 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-left text-xs text-slate-300">
+        <div className="p-3 sm:p-5 border-t border-slate-800 bg-[#10224A]/90 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3">
+          <div className="text-center sm:text-left text-[11px] sm:text-xs text-slate-300 w-full sm:w-auto">
             Share on <strong className="text-white">Facebook, Instagram, X, or TikTok</strong>
           </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <button
               onClick={handleDownload}
               disabled={generating || !previewUrl}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-headline font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-headline font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
             >
-              <Download className="w-4 h-4 text-emerald-400" />
+              <Download className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <span>Download Image</span>
             </button>
             <button
               onClick={handleShare}
               disabled={generating || !previewUrl}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-[#CE1126] hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-lg shadow-red-900/30 disabled:opacity-50"
+              className="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#CE1126] hover:bg-red-700 text-white text-xs font-headline font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-lg shadow-red-900/30 disabled:opacity-50"
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4 text-amber-300" />
+                  <Check className="w-4 h-4 text-amber-300 flex-shrink-0" />
                   <span>Link Copied!</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-4 h-4 text-amber-300" />
+                  <Share2 className="w-4 h-4 text-amber-300 flex-shrink-0" />
                   <span>Share My Vote</span>
                 </>
               )}

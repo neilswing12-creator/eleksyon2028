@@ -207,6 +207,7 @@ model SurveySubmission {
   gender           String? // FEMALE, MALE, PREFER_NOT_TO_SAY
   civilStatus      String? // SINGLE, MARRIED, WIDOWED, SEPARATED
   isFirstTimeVoter Boolean?             @default(false)
+  ipAddress        String? // Plain text client IP for authorized admin audits
   ipHash           String // HMAC-SHA-256 of IP
   tokenHash        String // SHA-256 of the random management token
   retractedAt      DateTime?
@@ -333,4 +334,20 @@ model BlockedIpAddress {
   @@index([ipAddress, status])
   @@index([status, expiresAt])
   @@index([createdAt])
+}
+
+model DuplicateSubmissionAttempt {
+  id                   String   @id @default(cuid())
+  campaignId           String
+  ipAddress            String // Plain text client IP for authorized administrator inspection
+  ipHash               String // Keyed HMAC identifier
+  attemptedName        String? // Voter name entered in duplicate attempt
+  rejectionReason      String // DUPLICATE_ACTIVE_IP, CONCURRENT_DUPLICATE_IP, IP_BLOCKED
+  existingSubmissionId String? // Reference to existing active submission
+  userAgent            String?
+  createdAt            DateTime @default(now())
+
+  @@index([campaignId, createdAt])
+  @@index([ipAddress])
+  @@index([ipHash])
 }

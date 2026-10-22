@@ -285,6 +285,7 @@ exports.Prisma.SurveySubmissionScalarFieldEnum = {
   gender: 'gender',
   civilStatus: 'civilStatus',
   isFirstTimeVoter: 'isFirstTimeVoter',
+  ipAddress: 'ipAddress',
   ipHash: 'ipHash',
   tokenHash: 'tokenHash',
   retractedAt: 'retractedAt',
@@ -378,6 +379,18 @@ exports.Prisma.BlockedIpAddressScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DuplicateSubmissionAttemptScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  ipAddress: 'ipAddress',
+  ipHash: 'ipHash',
+  attemptedName: 'attemptedName',
+  rejectionReason: 'rejectionReason',
+  existingSubmissionId: 'existingSubmissionId',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -404,7 +417,8 @@ exports.Prisma.ModelName = {
   CandidateLegislativeRecord: 'CandidateLegislativeRecord',
   LegislativeImportJob: 'LegislativeImportJob',
   AdminLoginAttempt: 'AdminLoginAttempt',
-  BlockedIpAddress: 'BlockedIpAddress'
+  BlockedIpAddress: 'BlockedIpAddress',
+  DuplicateSubmissionAttempt: 'DuplicateSubmissionAttempt'
 };
 
 /**

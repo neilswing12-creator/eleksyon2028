@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { getClientIP, hashIP, generateManagementToken, hashManagementToken } from "@/lib/security";
+import { hashIP, generateManagementToken, hashManagementToken } from "@/lib/security";
+import { getTrustedClientIp, isIpBlocked, logDuplicateAttempt } from "@/lib/ip-security";
 import { isValidCountryCode, getCountryByCode } from "@/lib/overseas-geo";
 
 export async function POST(req: NextRequest) {
+  let clientIP = "127.0.0.1";
+  let ipHash = "";
+  let currentCampaignId = "";
+  let trimmedName = "";
+
   try {
     const body = await req.json();
     const {
@@ -27,7 +33,7 @@ export async function POST(req: NextRequest) {
     } = body;
 
     // 1. Participant name validation
-    const trimmedName = (participantName || "").trim();
+    trimmedName = (participantName || "").trim();
     if (!trimmedName || trimmedName.length < 2) {
       return NextResponse.json(
         { error: "Please provide your name (minimum 2 characters) to participate in the survey." },
@@ -62,7 +68,6 @@ export async function POST(req: NextRequest) {
       resolvedCountryName = country ? country.name : countryCode;
       resolvedOverseasRegion = country ? country.region : "Other";
       resolvedOverseasCity = overseasCity ? String(overseasCity).trim().slice(0, 100) : null;
-      // Overseas submissions must never be assigned to a Philippine province or region
       resolvedRegionId = null;
       resolvedRegionName = null;
       resolvedProvinceId = null;
@@ -83,6 +88,7 @@ export async function POST(req: NextRequest) {
         { status: 403 }
       );
     }
+    currentCampaignId = campaign.id;
 
     const now = new Date();
     if (campaign.startDate && now < new Date(campaign.startDate)) {
@@ -100,7 +106,6 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Selection rules validation
-    // Presidential: exactly 1 if presidential category enabled
     if (campaign.enablePresident && presidentialCandidateId) {
       const presCand = await prisma.candidate.findUnique({
         where: { id: presidentialCandidateId },
@@ -113,7 +118,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Vice Presidential: exactly 1 if VP category enabled
     if (campaign.enableVicePresident && vicePresidentialCandidateId) {
       const vpCand = await prisma.candidate.findUnique({
         where: { id: vicePresidentialCandidateId },
@@ -126,7 +130,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Senatorial: up to 12 distinct candidates, no duplicates
     const senatorIds: string[] = Array.isArray(senatorialCandidateIds) ? senatorialCandidateIds : [];
     const uniqueSenatorIds = Array.from(new Set(senatorIds));
 
@@ -163,10 +166,31 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 4. IP restriction check
-    const clientIP = getClientIP(req.headers);
-    const ipHash = hashIP(clientIP);
+    // 4. IP restriction check with trusted proxy resolution & normalization
+    clientIP = getTrustedClientIp(req.headers);
+    ipHash = hashIP(clientIP);
 
+    // Check if IP is actively blocked under security rules
+    const blockCheck = await isIpBlocked(clientIP);
+    if (blockCheck.isBlocked) {
+      await logDuplicateAttempt({
+        campaignId: campaign.id,
+        ipAddress: clientIP,
+        ipHash,
+        attemptedName: trimmedName,
+        rejectionReason: "IP_BLOCKED",
+        userAgent: req.headers.get("user-agent") || undefined,
+      });
+      return NextResponse.json(
+        {
+          error:
+            "Access from this network address is currently restricted under security integrity rules. Contact support or administration if you believe this is an error.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // Enforce 1 active response per public IP for the active campaign
     if (campaign.ipRestrictionEnabled) {
       const existingActiveSubmission = await prisma.surveySubmission.findFirst({
         where: {
@@ -177,10 +201,20 @@ export async function POST(req: NextRequest) {
       });
 
       if (existingActiveSubmission) {
+        await logDuplicateAttempt({
+          campaignId: campaign.id,
+          ipAddress: clientIP,
+          ipHash,
+          attemptedName: trimmedName,
+          rejectionReason: "DUPLICATE_ACTIVE_IP",
+          existingSubmissionId: existingActiveSubmission.id,
+          userAgent: req.headers.get("user-agent") || undefined,
+        });
+
         return NextResponse.json(
           {
             error:
-              "An active survey response has already been recorded from your public network (IP address). Under survey integrity rules, only one active response per public IP is permitted. If you previously voted and wish to modify or retract your vote, please use your private management link.",
+              "An active survey response has already been recorded from your public network (IP address) for this election poll. Under civic survey integrity standards, only one active response per public network is permitted for the duration of this poll. If you previously voted, use your private management link to modify or retract your selections.",
             isDuplicateIP: true,
           },
           { status: 409 }
@@ -192,8 +226,24 @@ export async function POST(req: NextRequest) {
     const rawManagementToken = generateManagementToken();
     const tokenHash = hashManagementToken(rawManagementToken);
 
-    // 6. Atomic database creation
+    // 6. Atomic database creation with concurrency check
     const submission = await prisma.$transaction(async (tx) => {
+      // Re-verify inside atomic transaction to prevent simultaneous race conditions
+      if (campaign.ipRestrictionEnabled) {
+        const inTxDuplicate = await tx.surveySubmission.findFirst({
+          where: {
+            campaignId: campaign.id,
+            ipHash,
+            status: "ACTIVE",
+          },
+        });
+        if (inTxDuplicate) {
+          const err: any = new Error("CONCURRENT_DUPLICATE_IP");
+          err.existingId = inTxDuplicate.id;
+          throw err;
+        }
+      }
+
       const newSub = await tx.surveySubmission.create({
         data: {
           campaignId: campaign.id,
@@ -214,6 +264,7 @@ export async function POST(req: NextRequest) {
           civilStatus: civilStatus || null,
           isFirstTimeVoter: Boolean(isFirstTimeVoter),
           status: "ACTIVE",
+          ipAddress: clientIP,
           ipHash,
           tokenHash,
         },
@@ -270,6 +321,28 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
+    if (error?.message === "CONCURRENT_DUPLICATE_IP") {
+      if (currentCampaignId) {
+        await logDuplicateAttempt({
+          campaignId: currentCampaignId,
+          ipAddress: clientIP,
+          ipHash,
+          attemptedName: trimmedName,
+          rejectionReason: "CONCURRENT_DUPLICATE_IP",
+          existingSubmissionId: error.existingId,
+          userAgent: req.headers.get("user-agent") || undefined,
+        });
+      }
+      return NextResponse.json(
+        {
+          error:
+            "A concurrent survey response from your public network (IP address) was already recorded. Under survey integrity rules, only one active response per public network is permitted.",
+          isDuplicateIP: true,
+        },
+        { status: 409 }
+      );
+    }
+
     console.error("Survey submission error:", error);
     return NextResponse.json(
       { error: "An unexpected server error occurred while processing your survey." },

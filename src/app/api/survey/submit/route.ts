@@ -198,6 +198,11 @@ export async function POST(req: NextRequest) {
           ipHash,
           status: "ACTIVE",
         },
+        select: {
+          id: true,
+          ipHash: true,
+          status: true,
+        },
       });
 
       if (existingActiveSubmission) {
@@ -236,6 +241,9 @@ export async function POST(req: NextRequest) {
             ipHash,
             status: "ACTIVE",
           },
+          select: {
+            id: true,
+          },
         });
         if (inTxDuplicate) {
           const err: any = new Error("CONCURRENT_DUPLICATE_IP");
@@ -244,31 +252,68 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const newSub = await tx.surveySubmission.create({
-        data: {
-          campaignId: campaign.id,
-          participantName: trimmedName,
-          residenceType: resolvedResidenceType,
-          countryCode: resolvedCountryCode,
-          countryName: resolvedCountryName,
-          overseasRegion: resolvedOverseasRegion,
-          overseasCity: resolvedOverseasCity,
-          regionId: resolvedRegionId,
-          regionName: resolvedRegionName,
-          provinceId: resolvedProvinceId,
-          provinceName: resolvedProvinceName,
-          cityId: resolvedCityId,
-          cityName: resolvedCityName,
-          ageGroup: ageGroup || null,
-          gender: gender || null,
-          civilStatus: civilStatus || null,
-          isFirstTimeVoter: Boolean(isFirstTimeVoter),
-          status: "ACTIVE",
-          ipAddress: clientIP,
-          ipHash,
-          tokenHash,
-        },
-      });
+      let newSub;
+      try {
+        newSub = await tx.surveySubmission.create({
+          data: {
+            campaignId: campaign.id,
+            participantName: trimmedName,
+            residenceType: resolvedResidenceType,
+            countryCode: resolvedCountryCode,
+            countryName: resolvedCountryName,
+            overseasRegion: resolvedOverseasRegion,
+            overseasCity: resolvedOverseasCity,
+            regionId: resolvedRegionId,
+            regionName: resolvedRegionName,
+            provinceId: resolvedProvinceId,
+            provinceName: resolvedProvinceName,
+            cityId: resolvedCityId,
+            cityName: resolvedCityName,
+            ageGroup: ageGroup || null,
+            gender: gender || null,
+            civilStatus: civilStatus || null,
+            isFirstTimeVoter: Boolean(isFirstTimeVoter),
+            status: "ACTIVE",
+            ipAddress: clientIP,
+            ipHash,
+            tokenHash,
+          },
+        });
+      } catch (createErr: any) {
+        // Fallback if SQLite table SurveySubmission does not yet have ipAddress column
+        if (
+          createErr?.message?.includes("ipAddress") ||
+          createErr?.code === "P2021" ||
+          createErr?.code === "P2022"
+        ) {
+          newSub = await tx.surveySubmission.create({
+            data: {
+              campaignId: campaign.id,
+              participantName: trimmedName,
+              residenceType: resolvedResidenceType,
+              countryCode: resolvedCountryCode,
+              countryName: resolvedCountryName,
+              overseasRegion: resolvedOverseasRegion,
+              overseasCity: resolvedOverseasCity,
+              regionId: resolvedRegionId,
+              regionName: resolvedRegionName,
+              provinceId: resolvedProvinceId,
+              provinceName: resolvedProvinceName,
+              cityId: resolvedCityId,
+              cityName: resolvedCityName,
+              ageGroup: ageGroup || null,
+              gender: gender || null,
+              civilStatus: civilStatus || null,
+              isFirstTimeVoter: Boolean(isFirstTimeVoter),
+              status: "ACTIVE",
+              ipHash,
+              tokenHash,
+            },
+          });
+        } else {
+          throw createErr;
+        }
+      }
 
       const selectionsToCreate = [];
 

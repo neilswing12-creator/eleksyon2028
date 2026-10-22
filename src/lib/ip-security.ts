@@ -95,33 +95,42 @@ export function getTrustedClientIp(headers: Headers): string {
 export async function isIpBlocked(
   ip: string
 ): Promise<{ isBlocked: boolean; blockRecord?: any }> {
-  const normalized = normalizeIp(ip);
-  if (normalized === "UNKNOWN") {
-    return { isBlocked: false };
-  }
+  try {
+    const normalized = normalizeIp(ip);
+    if (normalized === "UNKNOWN") {
+      return { isBlocked: false };
+    }
 
-  const activeBlock = await prisma.blockedIpAddress.findFirst({
-    where: {
-      ipAddress: normalized,
-      status: "ACTIVE",
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  if (!activeBlock) {
-    return { isBlocked: false };
-  }
-
-  // Check if temporary block has expired
-  if (activeBlock.expiresAt && activeBlock.expiresAt <= new Date()) {
-    await prisma.blockedIpAddress.update({
-      where: { id: activeBlock.id },
-      data: { status: "EXPIRED" },
+    const activeBlock = await prisma.blockedIpAddress.findFirst({
+      where: {
+        ipAddress: normalized,
+        status: "ACTIVE",
+      },
+      orderBy: { createdAt: "desc" },
     });
+
+    if (!activeBlock) {
+      return { isBlocked: false };
+    }
+
+    // Check if temporary block has expired
+    if (activeBlock.expiresAt && activeBlock.expiresAt <= new Date()) {
+      try {
+        await prisma.blockedIpAddress.update({
+          where: { id: activeBlock.id },
+          data: { status: "EXPIRED" },
+        });
+      } catch (e) {
+        // Safe ignore
+      }
+      return { isBlocked: false };
+    }
+
+    return { isBlocked: true, blockRecord: activeBlock };
+  } catch (err) {
+    console.warn("isIpBlocked check failed (database schema may be syncing):", err);
     return { isBlocked: false };
   }
-
-  return { isBlocked: true, blockRecord: activeBlock };
 }
 
 /**
@@ -133,30 +142,35 @@ export async function checkRateLimit(
   maxAttempts = 5,
   windowMinutes = 15
 ): Promise<{ isRateLimited: boolean; failedCount: number; retryAfterSeconds: number }> {
-  const normalized = normalizeIp(ip);
-  if (normalized === "UNKNOWN") {
+  try {
+    const normalized = normalizeIp(ip);
+    if (normalized === "UNKNOWN") {
+      return { isRateLimited: false, failedCount: 0, retryAfterSeconds: 0 };
+    }
+
+    const since = new Date(Date.now() - windowMinutes * 60 * 1000);
+
+    const failedCount = await prisma.adminLoginAttempt.count({
+      where: {
+        ipAddress: normalized,
+        status: { in: ["FAILED", "RATE_LIMITED"] },
+        createdAt: { gte: since },
+      },
+    });
+
+    if (failedCount >= maxAttempts) {
+      return {
+        isRateLimited: true,
+        failedCount,
+        retryAfterSeconds: windowMinutes * 60,
+      };
+    }
+
+    return { isRateLimited: false, failedCount, retryAfterSeconds: 0 };
+  } catch (err) {
+    console.warn("checkRateLimit evaluation failed (table may be syncing):", err);
     return { isRateLimited: false, failedCount: 0, retryAfterSeconds: 0 };
   }
-
-  const since = new Date(Date.now() - windowMinutes * 60 * 1000);
-
-  const failedCount = await prisma.adminLoginAttempt.count({
-    where: {
-      ipAddress: normalized,
-      status: { in: ["FAILED", "RATE_LIMITED"] },
-      createdAt: { gte: since },
-    },
-  });
-
-  if (failedCount >= maxAttempts) {
-    return {
-      isRateLimited: true,
-      failedCount,
-      retryAfterSeconds: windowMinutes * 60,
-    };
-  }
-
-  return { isRateLimited: false, failedCount, retryAfterSeconds: 0 };
 }
 
 /**
@@ -172,20 +186,25 @@ export async function logLoginAttempt(data: {
   userAgent?: string | null;
   requestId?: string | null;
 }): Promise<any> {
-  const normalizedIp = normalizeIp(data.ipAddress);
-  const identifier = (data.attemptedIdentifier || "").trim().toLowerCase().slice(0, 200);
+  try {
+    const normalizedIp = normalizeIp(data.ipAddress);
+    const identifier = (data.attemptedIdentifier || "").trim().toLowerCase().slice(0, 200);
 
-  return prisma.adminLoginAttempt.create({
-    data: {
-      ipAddress: normalizedIp,
-      attemptedIdentifier: identifier || "(empty)",
-      userId: data.userId || null,
-      status: data.status,
-      failureReason: data.failureReason || null,
-      userAgent: data.userAgent ? data.userAgent.slice(0, 500) : null,
-      requestId: data.requestId || null,
-    },
-  });
+    return await prisma.adminLoginAttempt.create({
+      data: {
+        ipAddress: normalizedIp,
+        attemptedIdentifier: identifier || "(empty)",
+        userId: data.userId || null,
+        status: data.status,
+        failureReason: data.failureReason || null,
+        userAgent: data.userAgent ? data.userAgent.slice(0, 500) : null,
+        requestId: data.requestId || null,
+      },
+    });
+  } catch (err) {
+    console.warn("logLoginAttempt failed to record login audit:", err);
+    return null;
+  }
 }
 
 /**

@@ -999,9 +999,30 @@ export default function SurveyPage() {
             {errorMessage && (
               <div className="p-4 rounded-xl bg-red-50 border-2 border-red-300 text-red-900 text-xs flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="space-y-2 flex-1 min-w-0">
                   <p className="font-semibold text-sm uppercase text-red-950">SUBMISSION NOT ACCEPTED</p>
                   <p className="text-red-700 font-sans leading-relaxed">{errorMessage}</p>
+                  {!duplicateIPError && (
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={submitting}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+                      >
+                        {submitting ? (
+                          <>
+                            <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span>Retrying...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Retry Submission &rarr;</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                   {duplicateIPError && (
                     <div className="mt-2 p-3 bg-white/80 rounded-lg border border-red-200 text-[11px] text-slate-700 space-y-1">
                       <p className="font-bold text-[#0B1E36]">Network IP Restriction Policy:</p>

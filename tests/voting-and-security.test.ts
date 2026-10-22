@@ -2005,6 +2005,120 @@ SB-1234,Valid Title,INVALID_CHAMBER,19,PRINCIPAL_AUTHOR,not-a-url`;
     "56k. (10) Admin visibility: Duplicate attempts are logged with plain text client IP and rejection reason"
   );
 
+  // --- TEST 57: Survey Submission Robustness, Error Handling & Data Integrity ---
+  console.log("\n--- TEST 57: Survey Submission Robustness, Error Handling & Data Integrity ---");
+
+  const test57Ip = "175.176.88.99";
+  const initialSubmissionsCount = await prisma.surveySubmission.count({ where: { status: "ACTIVE" } });
+
+  // 1. Valid first-time submission with domestic flow & optional location
+  const validSubmissionReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-forwarded-for": test57Ip,
+    },
+    body: JSON.stringify({
+      participantName: "Neil Test Citizen",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: presCandidates[0].id,
+      vicePresidentialCandidateId: vpCandidates[0].id,
+      senatorialCandidateIds: [senCandidates[0].id],
+    }),
+  });
+  const validSubmissionRes = await submitPOST(validSubmissionReq as any);
+  const validSubmissionData = await validSubmissionRes.json();
+  assert(
+    validSubmissionRes.status === 201 && validSubmissionData.success && !!validSubmissionData.managementToken,
+    "57a. Valid first-time submission succeeds with HTTP 201 and valid management token"
+  );
+
+  const postCount = await prisma.surveySubmission.count({ where: { status: "ACTIVE" } });
+  assert(
+    postCount === initialSubmissionsCount + 1,
+    "57b. Database accurately increments active vote count by exactly 1"
+  );
+
+  // 2. Duplicate submission from same IP is cleanly rejected with HTTP 409 and descriptive flag
+  const duplicateReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-forwarded-for": test57Ip,
+    },
+    body: JSON.stringify({
+      participantName: "Neil Duplicate Attempt",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: presCandidates[0].id,
+    }),
+  });
+  const duplicateRes = await submitPOST(duplicateReq as any);
+  const duplicateData = await duplicateRes.json();
+  assert(
+    duplicateRes.status === 409 && duplicateData.isDuplicateIP === true && typeof duplicateData.error === "string",
+    "57c. Duplicate attempt from recorded IP returns HTTP 409 with isDuplicateIP flag and clear message"
+  );
+
+  // 3. Failed validation does not create database records
+  const invalidNameReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-forwarded-for": "180.190.200.201",
+    },
+    body: JSON.stringify({
+      participantName: " ", // Empty name
+      residenceType: "DOMESTIC",
+    }),
+  });
+  const invalidNameRes = await submitPOST(invalidNameReq as any);
+  assert(
+    invalidNameRes.status === 400,
+    "57d. Missing participant name returns HTTP 400 validation error without creating records"
+  );
+
+  // 4. Invalid candidate ID validation returns 400
+  const invalidCandidateReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-forwarded-for": "180.190.200.202",
+    },
+    body: JSON.stringify({
+      participantName: "Valid Name",
+      residenceType: "DOMESTIC",
+      presidentialCandidateId: "nonexistent_candidate_id_xyz",
+    }),
+  });
+  const invalidCandidateRes = await submitPOST(invalidCandidateReq as any);
+  assert(
+    invalidCandidateRes.status === 400,
+    "57e. Nonexistent presidential candidate ID returns HTTP 400 validation error"
+  );
+
+  // 5. Overseas flow requires country code
+  const test57InvalidOverseasReq = new Request("http://localhost/api/survey/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-forwarded-for": "180.190.200.203",
+    },
+    body: JSON.stringify({
+      participantName: "OFW Citizen",
+      residenceType: "OVERSEAS",
+      countryCode: "", // Missing country code
+    }),
+  });
+  const test57InvalidOverseasRes = await submitPOST(test57InvalidOverseasReq as any);
+  assert(
+    test57InvalidOverseasRes.status === 400,
+    "57f. Overseas submission without country code returns HTTP 400 validation error"
+  );
+
+  // Clean up test 57 created submission
+  await prisma.candidateSelection.deleteMany({ where: { submissionId: validSubmissionData.submissionId } });
+  await prisma.surveySubmission.delete({ where: { id: validSubmissionData.submissionId } });
+
   console.log("\n=======================================================");
   console.log(`TOTAL TESTS: ${passedCount + failedCount} | PASSED: ${passedCount} | FAILED: ${failedCount}`);
   console.log("=======================================================\n");

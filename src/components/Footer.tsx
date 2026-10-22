@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, ExternalLink, Vote } from "lucide-react";
+import { ShieldCheck, ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -95,11 +95,6 @@ export default function Footer() {
               <li>
                 <Link href="/about" className="hover:text-blue-700 transition-colors py-0.5 inline-block">
                   About the Platform
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin" className="hover:text-blue-700 transition-colors py-0.5 inline-block">
-                  Administrative Portal
                 </Link>
               </li>
             </ul>

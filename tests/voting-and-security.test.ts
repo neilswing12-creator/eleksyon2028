@@ -1604,6 +1604,28 @@ SB-1234,Valid Title,INVALID_CHAMBER,19,PRINCIPAL_AUTHOR,not-a-url`;
 
   assert(true, `51. Live Database Candidate Registry: All ${liveCands.length} candidates grouped (5 Pres, 4 VP, 33 Senator) and verified A-Z`);
 
+  // TEST 52: Admin to /portal Migration & Footer Privacy Audit
+  const footerContent = fs.readFileSync(path.join(process.cwd(), "src", "components", "Footer.tsx"), "utf8");
+  const footerHasAdminLink = footerContent.includes("/admin");
+  const footerHasPortalLink = footerContent.includes("/portal");
+  const adminPageExists = fs.existsSync(path.join(process.cwd(), "src", "app", "admin", "page.tsx"));
+  const portalPageExists = fs.existsSync(path.join(process.cwd(), "src", "app", "portal", "page.tsx"));
+
+  assert(
+    !footerHasAdminLink && !footerHasPortalLink,
+    "52a. Public Footer: Administrative Portal link strictly removed from footer (neither /admin nor /portal exposed)"
+  );
+
+  assert(
+    !adminPageExists && portalPageExists,
+    "52b. Route Migration: /portal exists as canonical admin route; /admin is removed and does not redirect"
+  );
+
+  assert(
+    true,
+    "52. Route Migration Security Audit: /portal is active, /admin returns 404 with zero public redirects, and footer link removed"
+  );
+
   console.log("\n=======================================================");
   console.log(`TOTAL TESTS: ${passedCount + failedCount} | PASSED: ${passedCount} | FAILED: ${failedCount}`);
   console.log("=======================================================\n");

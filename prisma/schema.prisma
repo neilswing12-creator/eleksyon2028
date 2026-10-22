@@ -299,4 +299,40 @@ model LegislativeImportJob {
   @@index([candidateId, startedAt])
 }
 
+model AdminLoginAttempt {
+  id                  String    @id @default(cuid())
+  ipAddress           String    // Plain text IPv4 or IPv6
+  attemptedIdentifier String    // Attempted username or email
+  userId              String?   // Linked AdminUser ID if identified
+  status              String    // SUCCESS, FAILED, BLOCKED, RATE_LIMITED
+  failureReason       String?   // INVALID_CREDENTIALS, INVALID_INPUT, IP_BLOCKED, RATE_LIMITED
+  userAgent           String?   // Browser/Client user-agent string
+  requestId           String?   // Request tracing ID
+  createdAt           DateTime  @default(now())
+
+  @@index([ipAddress, status])
+  @@index([attemptedIdentifier, createdAt])
+  @@index([status, createdAt])
+  @@index([createdAt])
+}
+
+model BlockedIpAddress {
+  id            String    @id @default(cuid())
+  ipAddress     String    // Plain text IPv4 or IPv6 (normalized)
+  reason        String    // Administrative reason for the block
+  adminId       String    // ID of the admin who created the block
+  adminEmail    String    // Email of the admin who created the block
+  status        String    @default("ACTIVE") // ACTIVE, UNBLOCKED, EXPIRED
+  expiresAt     DateTime? // Nullable: null = Permanent block
+  unblockedAt   DateTime? // When unblocked
+  unblockedBy   String?   // Admin email who unblocked
+  unblockReason String?   // Reason provided when unblocked
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([ipAddress, status])
+  @@index([status, expiresAt])
+  @@index([createdAt])
+}
+
 

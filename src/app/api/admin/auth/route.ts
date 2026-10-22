@@ -1,27 +1,132 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { verifyPassword, signAdminSession, verifyAdminSession, getClientIP } from "@/lib/security";
+import { verifyPassword, signAdminSession, verifyAdminSession } from "@/lib/security";
+import {
+  getTrustedClientIp,
+  isIpBlocked,
+  checkRateLimit,
+  logLoginAttempt,
+} from "@/lib/ip-security";
 
 export async function POST(req: NextRequest) {
-  try {
-    const { email, password } = await req.json();
+  const clientIP = getTrustedClientIp(req.headers);
+  const userAgent = req.headers.get("user-agent") || null;
+  const requestId = req.headers.get("x-request-id") || `req_${Date.now()}`;
 
-    if (!email || !password) {
+  try {
+    // 1. Check if the originating IP address is currently blocked
+    const { isBlocked, blockRecord } = await isIpBlocked(clientIP);
+    if (isBlocked) {
+      await logLoginAttempt({
+        ipAddress: clientIP,
+        attemptedIdentifier: "(blocked)",
+        status: "BLOCKED",
+        failureReason: "IP_BLOCKED",
+        userAgent,
+        requestId,
+      });
+
+      return NextResponse.json(
+        {
+          error: "Access denied. Your IP address has been restricted from administrative access.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // 2. Check rate limiting against brute-force attacks (5 failed attempts within 15 mins)
+    const { isRateLimited, retryAfterSeconds } = await checkRateLimit(clientIP, 5, 15);
+    if (isRateLimited) {
+      await logLoginAttempt({
+        ipAddress: clientIP,
+        attemptedIdentifier: "(rate_limited)",
+        status: "RATE_LIMITED",
+        failureReason: "RATE_LIMITED",
+        userAgent,
+        requestId,
+      });
+
+      return NextResponse.json(
+        {
+          error: "Too many failed login attempts. Please try again later.",
+          retryAfter: retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: { "Retry-After": String(retryAfterSeconds) },
+        }
+      );
+    }
+
+    let body: any = {};
+    try {
+      body = await req.json();
+    } catch {
+      await logLoginAttempt({
+        ipAddress: clientIP,
+        attemptedIdentifier: "(malformed_json)",
+        status: "FAILED",
+        failureReason: "INVALID_INPUT",
+        userAgent,
+        requestId,
+      });
+      return NextResponse.json({ error: "Invalid request payload." }, { status: 400 });
+    }
+
+    const { email, password } = body;
+    const identifier = typeof email === "string" ? email.trim().toLowerCase() : "";
+
+    if (!identifier || !password) {
+      await logLoginAttempt({
+        ipAddress: clientIP,
+        attemptedIdentifier: identifier || "(empty)",
+        status: "FAILED",
+        failureReason: "INVALID_INPUT",
+        userAgent,
+        requestId,
+      });
       return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
     const admin = await prisma.adminUser.findUnique({
-      where: { email: email.trim().toLowerCase() },
+      where: { email: identifier },
     });
 
     if (!admin) {
+      await logLoginAttempt({
+        ipAddress: clientIP,
+        attemptedIdentifier: identifier,
+        status: "FAILED",
+        failureReason: "INVALID_CREDENTIALS",
+        userAgent,
+        requestId,
+      });
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
     const isValid = verifyPassword(password, admin.passwordHash);
     if (!isValid) {
+      await logLoginAttempt({
+        ipAddress: clientIP,
+        attemptedIdentifier: identifier,
+        userId: admin.id,
+        status: "FAILED",
+        failureReason: "INVALID_CREDENTIALS",
+        userAgent,
+        requestId,
+      });
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
+
+    // 3. Successful authentication: log attempt and issue session
+    await logLoginAttempt({
+      ipAddress: clientIP,
+      attemptedIdentifier: identifier,
+      userId: admin.id,
+      status: "SUCCESS",
+      userAgent,
+      requestId,
+    });
 
     const token = signAdminSession({
       id: admin.id,
@@ -30,8 +135,7 @@ export async function POST(req: NextRequest) {
       role: admin.role,
     });
 
-    // Record login in audit log
-    const clientIP = getClientIP(req.headers);
+    // Record login in general audit log
     await prisma.adminAuditLog.create({
       data: {
         adminEmail: admin.email,
@@ -54,7 +158,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Also set HTTP-only cookie for seamless browser navigation
     response.cookies.set("admin_session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -66,6 +169,14 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (error) {
     console.error("Admin auth login error:", error);
+    await logLoginAttempt({
+      ipAddress: clientIP,
+      attemptedIdentifier: "(server_error)",
+      status: "FAILED",
+      failureReason: "UNKNOWN",
+      userAgent,
+      requestId,
+    });
     return NextResponse.json({ error: "Authentication failed." }, { status: 500 });
   }
 }

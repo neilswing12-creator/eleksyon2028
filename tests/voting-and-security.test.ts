@@ -20,6 +20,11 @@ import { importCandidateLegislativeRecords } from "../src/lib/legislative-import
 import { GET as legGET, PUT as legPUT, DELETE as legDELETE } from "../src/app/api/admin/candidates/[id]/legislative/route";
 import { isValidCountryCode, getCountryByCode, OVERSEAS_COUNTRIES } from "../src/lib/overseas-geo";
 import { getStartOfManilaToday } from "../src/lib/timezone";
+import { POST as authPOST } from "../src/app/api/admin/auth/route";
+import { GET as loginAttemptsGET } from "../src/app/api/admin/security/login-attempts/route";
+import { GET as blockedIpsGET, POST as blockedIpsPOST } from "../src/app/api/admin/security/blocked-ips/route";
+import { POST as unblockPOST } from "../src/app/api/admin/security/blocked-ips/unblock/route";
+import { normalizeIp, isIpBlocked, checkRateLimit, blockIp, unblockIp } from "../src/lib/ip-security";
 
 const prisma = new PrismaClient();
 
@@ -1624,6 +1629,162 @@ SB-1234,Valid Title,INVALID_CHAMBER,19,PRINCIPAL_AUTHOR,not-a-url`;
   assert(
     true,
     "52. Route Migration Security Audit: /portal is active, /admin returns 404 with zero public redirects, and footer link removed"
+  );
+
+  // TEST 53: IP Address Handling & Plaintext Login Attempt Auditing
+  const normIpv4 = normalizeIp("112.198.120.45");
+  const normIpv6 = normalizeIp("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
+  const normMapped = normalizeIp("::ffff:192.168.1.100");
+  const normPort = normalizeIp("192.168.1.50:8080");
+
+  assert(
+    normIpv4 === "112.198.120.45" &&
+      normIpv6 === "2001:0db8:85a3:0000:0000:8a2e:0370:7334" &&
+      normMapped === "192.168.1.100" &&
+      normPort === "192.168.1.50",
+    "53a. IP Normalization: Accurately normalizes IPv4, IPv6, IPv4-mapped, and port-appended addresses"
+  );
+
+  // Trigger a failed login attempt with known IP
+  const loginAuditTestIp = "112.198.120.45";
+  const failedReq = new Request("http://localhost/api/admin/auth", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-real-ip": loginAuditTestIp,
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+      "x-request-id": "test-req-001",
+    },
+    body: JSON.stringify({ email: "unauthorized-probe@unknown.com", password: "badpassword" }),
+  });
+
+  const failedRes = await authPOST(failedReq as any);
+  assert(failedRes.status === 401, "53b. Invalid credentials return 401 Unauthorized");
+
+  // Verify attempt is recorded in database with plain text IP
+  const recordedAttempt = await prisma.adminLoginAttempt.findFirst({
+    where: { ipAddress: loginAuditTestIp, attemptedIdentifier: "unauthorized-probe@unknown.com" },
+    orderBy: { createdAt: "desc" },
+  });
+
+  assert(
+    recordedAttempt &&
+      recordedAttempt.ipAddress === loginAuditTestIp &&
+      recordedAttempt.status === "FAILED" &&
+      recordedAttempt.failureReason === "INVALID_CREDENTIALS",
+    `53. Login Attempt Monitoring: Recorded attempt with plain text IP (${recordedAttempt?.ipAddress}), status ${recordedAttempt?.status}, and failure category`
+  );
+
+  // TEST 54: Server-Side IP Blocking Enforcement
+  const testIpToBlock = "198.51.100.77";
+
+  // Super Admin blocks the abusive IP
+  const blockReq = new Request("http://localhost/api/admin/security/blocked-ips", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${superAdminToken}`,
+    },
+    body: JSON.stringify({
+      ipAddress: testIpToBlock,
+      reason: "Repeated automated brute-force password spraying",
+      duration: "24h",
+    }),
+  });
+
+  const blockRes = await blockedIpsPOST(blockReq as any);
+  assert(blockRes.status === 200, "54a. Super Admin successfully blocked the IP address");
+
+  // Verify active block exists in database
+  const blockInDb = await prisma.blockedIpAddress.findFirst({
+    where: { ipAddress: testIpToBlock, status: "ACTIVE" },
+  });
+  assert(blockInDb && blockInDb.status === "ACTIVE", "54b. Active block record persisted in database");
+
+  // Attempt to authenticate from the blocked IP address
+  const blockedAttemptReq = new Request("http://localhost/api/admin/auth", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-real-ip": testIpToBlock,
+      "user-agent": "AutomatedBot/1.0",
+    },
+    body: JSON.stringify({ email: "admin@survey2028.ph", password: "SomePassword123" }),
+  });
+
+  const blockedAttemptRes = await authPOST(blockedAttemptReq as any);
+  assert(
+    blockedAttemptRes.status === 403,
+    "54c. Server-side auth strictly rejects blocked IP with HTTP 403 before credential check"
+  );
+
+  // Verify attempt was logged with status BLOCKED and failureReason IP_BLOCKED
+  const recordedBlockedAttempt = await prisma.adminLoginAttempt.findFirst({
+    where: { ipAddress: testIpToBlock, status: "BLOCKED" },
+    orderBy: { createdAt: "desc" },
+  });
+
+  assert(
+    recordedBlockedAttempt && recordedBlockedAttempt.failureReason === "IP_BLOCKED",
+    "54. Server-Side IP Block Enforcement: Blocked IP immediately restricted with 403 and auditable BLOCKED event logged"
+  );
+
+  // TEST 55: IP Unblock Lifecycle, Expiration, and RBAC Safeguards
+  // 1. Analyst cannot block or unblock
+  const analystBlockReq = new Request("http://localhost/api/admin/security/blocked-ips", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${analystToken}`,
+    },
+    body: JSON.stringify({ ipAddress: "203.0.113.1", reason: "Analyst test", duration: "1h" }),
+  });
+  const analystBlockRes = await blockedIpsPOST(analystBlockReq as any);
+  assert(analystBlockRes.status === 403, "55a. Read-only Analyst role cannot block IP addresses (403 Forbidden)");
+
+  // 2. Unauthenticated request to login attempts API rejected
+  const unauthAttemptsReq = new Request("http://localhost/api/admin/security/login-attempts");
+  const unauthAttemptsRes = await loginAttemptsGET(unauthAttemptsReq as any);
+  assert(unauthAttemptsRes.status === 401, "55b. Unauthenticated access to security logs is rejected (401 Unauthorized)");
+
+  // 3. Super admin unblocks the IP
+  const unblockReq = new Request("http://localhost/api/admin/security/blocked-ips/unblock", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${superAdminToken}`,
+    },
+    body: JSON.stringify({ ipAddress: testIpToBlock, reason: "False positive verified by admin" }),
+  });
+  const unblockRes = await unblockPOST(unblockReq as any);
+  assert(unblockRes.status === 200, "55c. Super Admin successfully unblocked the IP");
+
+  // Verify IP is no longer blocked
+  const checkAfterUnblock = await isIpBlocked(testIpToBlock);
+  assert(!checkAfterUnblock.isBlocked, "55d. Server verification confirms IP is unblocked");
+
+  // 4. Temporary block auto-expiration test
+  const testExpiredIp = "198.51.100.88";
+  await prisma.blockedIpAddress.create({
+    data: {
+      ipAddress: testExpiredIp,
+      reason: "Expired test block",
+      adminId: "admin-1",
+      adminEmail: "super@survey2028.ph",
+      status: "ACTIVE",
+      expiresAt: new Date(Date.now() - 5000), // Expired 5 seconds ago
+    },
+  });
+
+  const checkExpired = await isIpBlocked(testExpiredIp);
+  assert(
+    !checkExpired.isBlocked,
+    "55e. Expired temporary blocks stop being enforced automatically upon evaluation"
+  );
+
+  assert(
+    true,
+    "55. IP Security Lifecycle: Unblock restores access, expired blocks self-reconcile, and RBAC is strictly enforced"
   );
 
   console.log("\n=======================================================");

@@ -351,6 +351,33 @@ exports.Prisma.LegislativeImportJobScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AdminLoginAttemptScalarFieldEnum = {
+  id: 'id',
+  ipAddress: 'ipAddress',
+  attemptedIdentifier: 'attemptedIdentifier',
+  userId: 'userId',
+  status: 'status',
+  failureReason: 'failureReason',
+  userAgent: 'userAgent',
+  requestId: 'requestId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BlockedIpAddressScalarFieldEnum = {
+  id: 'id',
+  ipAddress: 'ipAddress',
+  reason: 'reason',
+  adminId: 'adminId',
+  adminEmail: 'adminEmail',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  unblockedAt: 'unblockedAt',
+  unblockedBy: 'unblockedBy',
+  unblockReason: 'unblockReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -375,7 +402,9 @@ exports.Prisma.ModelName = {
   CandidateSelection: 'CandidateSelection',
   AdminAuditLog: 'AdminAuditLog',
   CandidateLegislativeRecord: 'CandidateLegislativeRecord',
-  LegislativeImportJob: 'LegislativeImportJob'
+  LegislativeImportJob: 'LegislativeImportJob',
+  AdminLoginAttempt: 'AdminLoginAttempt',
+  BlockedIpAddress: 'BlockedIpAddress'
 };
 
 /**

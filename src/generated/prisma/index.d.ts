@@ -78,6 +78,16 @@ export type CandidateLegislativeRecord = $Result.DefaultSelection<Prisma.$Candid
  * 
  */
 export type LegislativeImportJob = $Result.DefaultSelection<Prisma.$LegislativeImportJobPayload>
+/**
+ * Model AdminLoginAttempt
+ * 
+ */
+export type AdminLoginAttempt = $Result.DefaultSelection<Prisma.$AdminLoginAttemptPayload>
+/**
+ * Model BlockedIpAddress
+ * 
+ */
+export type BlockedIpAddress = $Result.DefaultSelection<Prisma.$BlockedIpAddressPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -331,6 +341,26 @@ export class PrismaClient<
     * ```
     */
   get legislativeImportJob(): Prisma.LegislativeImportJobDelegate<ExtArgs>;
+
+  /**
+   * `prisma.adminLoginAttempt`: Exposes CRUD operations for the **AdminLoginAttempt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminLoginAttempts
+    * const adminLoginAttempts = await prisma.adminLoginAttempt.findMany()
+    * ```
+    */
+  get adminLoginAttempt(): Prisma.AdminLoginAttemptDelegate<ExtArgs>;
+
+  /**
+   * `prisma.blockedIpAddress`: Exposes CRUD operations for the **BlockedIpAddress** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BlockedIpAddresses
+    * const blockedIpAddresses = await prisma.blockedIpAddress.findMany()
+    * ```
+    */
+  get blockedIpAddress(): Prisma.BlockedIpAddressDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -784,7 +814,9 @@ export namespace Prisma {
     CandidateSelection: 'CandidateSelection',
     AdminAuditLog: 'AdminAuditLog',
     CandidateLegislativeRecord: 'CandidateLegislativeRecord',
-    LegislativeImportJob: 'LegislativeImportJob'
+    LegislativeImportJob: 'LegislativeImportJob',
+    AdminLoginAttempt: 'AdminLoginAttempt',
+    BlockedIpAddress: 'BlockedIpAddress'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -800,7 +832,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "adminUser" | "candidate" | "candidateEducation" | "candidatePublicService" | "candidatePlatform" | "candidateSource" | "surveyCampaign" | "surveyAdjustment" | "surveySubmission" | "candidateSelection" | "adminAuditLog" | "candidateLegislativeRecord" | "legislativeImportJob"
+      modelProps: "adminUser" | "candidate" | "candidateEducation" | "candidatePublicService" | "candidatePlatform" | "candidateSource" | "surveyCampaign" | "surveyAdjustment" | "surveySubmission" | "candidateSelection" | "adminAuditLog" | "candidateLegislativeRecord" | "legislativeImportJob" | "adminLoginAttempt" | "blockedIpAddress"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1711,6 +1743,146 @@ export namespace Prisma {
           count: {
             args: Prisma.LegislativeImportJobCountArgs<ExtArgs>
             result: $Utils.Optional<LegislativeImportJobCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdminLoginAttempt: {
+        payload: Prisma.$AdminLoginAttemptPayload<ExtArgs>
+        fields: Prisma.AdminLoginAttemptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminLoginAttemptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminLoginAttemptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminLoginAttemptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminLoginAttemptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>
+          }
+          findMany: {
+            args: Prisma.AdminLoginAttemptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>[]
+          }
+          create: {
+            args: Prisma.AdminLoginAttemptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>
+          }
+          createMany: {
+            args: Prisma.AdminLoginAttemptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminLoginAttemptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminLoginAttemptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>
+          }
+          update: {
+            args: Prisma.AdminLoginAttemptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminLoginAttemptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminLoginAttemptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.AdminLoginAttemptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminLoginAttemptPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminLoginAttemptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminLoginAttempt>
+          }
+          groupBy: {
+            args: Prisma.AdminLoginAttemptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminLoginAttemptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminLoginAttemptCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminLoginAttemptCountAggregateOutputType> | number
+          }
+        }
+      }
+      BlockedIpAddress: {
+        payload: Prisma.$BlockedIpAddressPayload<ExtArgs>
+        fields: Prisma.BlockedIpAddressFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BlockedIpAddressFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BlockedIpAddressFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>
+          }
+          findFirst: {
+            args: Prisma.BlockedIpAddressFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BlockedIpAddressFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>
+          }
+          findMany: {
+            args: Prisma.BlockedIpAddressFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>[]
+          }
+          create: {
+            args: Prisma.BlockedIpAddressCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>
+          }
+          createMany: {
+            args: Prisma.BlockedIpAddressCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BlockedIpAddressCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>[]
+          }
+          delete: {
+            args: Prisma.BlockedIpAddressDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>
+          }
+          update: {
+            args: Prisma.BlockedIpAddressUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>
+          }
+          deleteMany: {
+            args: Prisma.BlockedIpAddressDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BlockedIpAddressUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BlockedIpAddressUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BlockedIpAddressPayload>
+          }
+          aggregate: {
+            args: Prisma.BlockedIpAddressAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBlockedIpAddress>
+          }
+          groupBy: {
+            args: Prisma.BlockedIpAddressGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BlockedIpAddressGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BlockedIpAddressCountArgs<ExtArgs>
+            result: $Utils.Optional<BlockedIpAddressCountAggregateOutputType> | number
           }
         }
       }
@@ -16149,6 +16321,1890 @@ export namespace Prisma {
 
 
   /**
+   * Model AdminLoginAttempt
+   */
+
+  export type AggregateAdminLoginAttempt = {
+    _count: AdminLoginAttemptCountAggregateOutputType | null
+    _min: AdminLoginAttemptMinAggregateOutputType | null
+    _max: AdminLoginAttemptMaxAggregateOutputType | null
+  }
+
+  export type AdminLoginAttemptMinAggregateOutputType = {
+    id: string | null
+    ipAddress: string | null
+    attemptedIdentifier: string | null
+    userId: string | null
+    status: string | null
+    failureReason: string | null
+    userAgent: string | null
+    requestId: string | null
+    createdAt: Date | null
+  }
+
+  export type AdminLoginAttemptMaxAggregateOutputType = {
+    id: string | null
+    ipAddress: string | null
+    attemptedIdentifier: string | null
+    userId: string | null
+    status: string | null
+    failureReason: string | null
+    userAgent: string | null
+    requestId: string | null
+    createdAt: Date | null
+  }
+
+  export type AdminLoginAttemptCountAggregateOutputType = {
+    id: number
+    ipAddress: number
+    attemptedIdentifier: number
+    userId: number
+    status: number
+    failureReason: number
+    userAgent: number
+    requestId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AdminLoginAttemptMinAggregateInputType = {
+    id?: true
+    ipAddress?: true
+    attemptedIdentifier?: true
+    userId?: true
+    status?: true
+    failureReason?: true
+    userAgent?: true
+    requestId?: true
+    createdAt?: true
+  }
+
+  export type AdminLoginAttemptMaxAggregateInputType = {
+    id?: true
+    ipAddress?: true
+    attemptedIdentifier?: true
+    userId?: true
+    status?: true
+    failureReason?: true
+    userAgent?: true
+    requestId?: true
+    createdAt?: true
+  }
+
+  export type AdminLoginAttemptCountAggregateInputType = {
+    id?: true
+    ipAddress?: true
+    attemptedIdentifier?: true
+    userId?: true
+    status?: true
+    failureReason?: true
+    userAgent?: true
+    requestId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AdminLoginAttemptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminLoginAttempt to aggregate.
+     */
+    where?: AdminLoginAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminLoginAttempts to fetch.
+     */
+    orderBy?: AdminLoginAttemptOrderByWithRelationInput | AdminLoginAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminLoginAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminLoginAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminLoginAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminLoginAttempts
+    **/
+    _count?: true | AdminLoginAttemptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminLoginAttemptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminLoginAttemptMaxAggregateInputType
+  }
+
+  export type GetAdminLoginAttemptAggregateType<T extends AdminLoginAttemptAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminLoginAttempt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminLoginAttempt[P]>
+      : GetScalarType<T[P], AggregateAdminLoginAttempt[P]>
+  }
+
+
+
+
+  export type AdminLoginAttemptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminLoginAttemptWhereInput
+    orderBy?: AdminLoginAttemptOrderByWithAggregationInput | AdminLoginAttemptOrderByWithAggregationInput[]
+    by: AdminLoginAttemptScalarFieldEnum[] | AdminLoginAttemptScalarFieldEnum
+    having?: AdminLoginAttemptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminLoginAttemptCountAggregateInputType | true
+    _min?: AdminLoginAttemptMinAggregateInputType
+    _max?: AdminLoginAttemptMaxAggregateInputType
+  }
+
+  export type AdminLoginAttemptGroupByOutputType = {
+    id: string
+    ipAddress: string
+    attemptedIdentifier: string
+    userId: string | null
+    status: string
+    failureReason: string | null
+    userAgent: string | null
+    requestId: string | null
+    createdAt: Date
+    _count: AdminLoginAttemptCountAggregateOutputType | null
+    _min: AdminLoginAttemptMinAggregateOutputType | null
+    _max: AdminLoginAttemptMaxAggregateOutputType | null
+  }
+
+  type GetAdminLoginAttemptGroupByPayload<T extends AdminLoginAttemptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminLoginAttemptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminLoginAttemptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminLoginAttemptGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminLoginAttemptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminLoginAttemptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ipAddress?: boolean
+    attemptedIdentifier?: boolean
+    userId?: boolean
+    status?: boolean
+    failureReason?: boolean
+    userAgent?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminLoginAttempt"]>
+
+  export type AdminLoginAttemptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ipAddress?: boolean
+    attemptedIdentifier?: boolean
+    userId?: boolean
+    status?: boolean
+    failureReason?: boolean
+    userAgent?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminLoginAttempt"]>
+
+  export type AdminLoginAttemptSelectScalar = {
+    id?: boolean
+    ipAddress?: boolean
+    attemptedIdentifier?: boolean
+    userId?: boolean
+    status?: boolean
+    failureReason?: boolean
+    userAgent?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+  }
+
+
+  export type $AdminLoginAttemptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminLoginAttempt"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      ipAddress: string
+      attemptedIdentifier: string
+      userId: string | null
+      status: string
+      failureReason: string | null
+      userAgent: string | null
+      requestId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["adminLoginAttempt"]>
+    composites: {}
+  }
+
+  type AdminLoginAttemptGetPayload<S extends boolean | null | undefined | AdminLoginAttemptDefaultArgs> = $Result.GetResult<Prisma.$AdminLoginAttemptPayload, S>
+
+  type AdminLoginAttemptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<AdminLoginAttemptFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: AdminLoginAttemptCountAggregateInputType | true
+    }
+
+  export interface AdminLoginAttemptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminLoginAttempt'], meta: { name: 'AdminLoginAttempt' } }
+    /**
+     * Find zero or one AdminLoginAttempt that matches the filter.
+     * @param {AdminLoginAttemptFindUniqueArgs} args - Arguments to find a AdminLoginAttempt
+     * @example
+     * // Get one AdminLoginAttempt
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminLoginAttemptFindUniqueArgs>(args: SelectSubset<T, AdminLoginAttemptFindUniqueArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one AdminLoginAttempt that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {AdminLoginAttemptFindUniqueOrThrowArgs} args - Arguments to find a AdminLoginAttempt
+     * @example
+     * // Get one AdminLoginAttempt
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminLoginAttemptFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminLoginAttemptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first AdminLoginAttempt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptFindFirstArgs} args - Arguments to find a AdminLoginAttempt
+     * @example
+     * // Get one AdminLoginAttempt
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminLoginAttemptFindFirstArgs>(args?: SelectSubset<T, AdminLoginAttemptFindFirstArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first AdminLoginAttempt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptFindFirstOrThrowArgs} args - Arguments to find a AdminLoginAttempt
+     * @example
+     * // Get one AdminLoginAttempt
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminLoginAttemptFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminLoginAttemptFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more AdminLoginAttempts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminLoginAttempts
+     * const adminLoginAttempts = await prisma.adminLoginAttempt.findMany()
+     * 
+     * // Get first 10 AdminLoginAttempts
+     * const adminLoginAttempts = await prisma.adminLoginAttempt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminLoginAttemptWithIdOnly = await prisma.adminLoginAttempt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminLoginAttemptFindManyArgs>(args?: SelectSubset<T, AdminLoginAttemptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a AdminLoginAttempt.
+     * @param {AdminLoginAttemptCreateArgs} args - Arguments to create a AdminLoginAttempt.
+     * @example
+     * // Create one AdminLoginAttempt
+     * const AdminLoginAttempt = await prisma.adminLoginAttempt.create({
+     *   data: {
+     *     // ... data to create a AdminLoginAttempt
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminLoginAttemptCreateArgs>(args: SelectSubset<T, AdminLoginAttemptCreateArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many AdminLoginAttempts.
+     * @param {AdminLoginAttemptCreateManyArgs} args - Arguments to create many AdminLoginAttempts.
+     * @example
+     * // Create many AdminLoginAttempts
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminLoginAttemptCreateManyArgs>(args?: SelectSubset<T, AdminLoginAttemptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminLoginAttempts and returns the data saved in the database.
+     * @param {AdminLoginAttemptCreateManyAndReturnArgs} args - Arguments to create many AdminLoginAttempts.
+     * @example
+     * // Create many AdminLoginAttempts
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminLoginAttempts and only return the `id`
+     * const adminLoginAttemptWithIdOnly = await prisma.adminLoginAttempt.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminLoginAttemptCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminLoginAttemptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a AdminLoginAttempt.
+     * @param {AdminLoginAttemptDeleteArgs} args - Arguments to delete one AdminLoginAttempt.
+     * @example
+     * // Delete one AdminLoginAttempt
+     * const AdminLoginAttempt = await prisma.adminLoginAttempt.delete({
+     *   where: {
+     *     // ... filter to delete one AdminLoginAttempt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminLoginAttemptDeleteArgs>(args: SelectSubset<T, AdminLoginAttemptDeleteArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one AdminLoginAttempt.
+     * @param {AdminLoginAttemptUpdateArgs} args - Arguments to update one AdminLoginAttempt.
+     * @example
+     * // Update one AdminLoginAttempt
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminLoginAttemptUpdateArgs>(args: SelectSubset<T, AdminLoginAttemptUpdateArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more AdminLoginAttempts.
+     * @param {AdminLoginAttemptDeleteManyArgs} args - Arguments to filter AdminLoginAttempts to delete.
+     * @example
+     * // Delete a few AdminLoginAttempts
+     * const { count } = await prisma.adminLoginAttempt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminLoginAttemptDeleteManyArgs>(args?: SelectSubset<T, AdminLoginAttemptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminLoginAttempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminLoginAttempts
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminLoginAttemptUpdateManyArgs>(args: SelectSubset<T, AdminLoginAttemptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one AdminLoginAttempt.
+     * @param {AdminLoginAttemptUpsertArgs} args - Arguments to update or create a AdminLoginAttempt.
+     * @example
+     * // Update or create a AdminLoginAttempt
+     * const adminLoginAttempt = await prisma.adminLoginAttempt.upsert({
+     *   create: {
+     *     // ... data to create a AdminLoginAttempt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminLoginAttempt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminLoginAttemptUpsertArgs>(args: SelectSubset<T, AdminLoginAttemptUpsertArgs<ExtArgs>>): Prisma__AdminLoginAttemptClient<$Result.GetResult<Prisma.$AdminLoginAttemptPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of AdminLoginAttempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptCountArgs} args - Arguments to filter AdminLoginAttempts to count.
+     * @example
+     * // Count the number of AdminLoginAttempts
+     * const count = await prisma.adminLoginAttempt.count({
+     *   where: {
+     *     // ... the filter for the AdminLoginAttempts we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminLoginAttemptCountArgs>(
+      args?: Subset<T, AdminLoginAttemptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminLoginAttemptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminLoginAttempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminLoginAttemptAggregateArgs>(args: Subset<T, AdminLoginAttemptAggregateArgs>): Prisma.PrismaPromise<GetAdminLoginAttemptAggregateType<T>>
+
+    /**
+     * Group by AdminLoginAttempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminLoginAttemptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminLoginAttemptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminLoginAttemptGroupByArgs['orderBy'] }
+        : { orderBy?: AdminLoginAttemptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminLoginAttemptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminLoginAttemptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminLoginAttempt model
+   */
+  readonly fields: AdminLoginAttemptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminLoginAttempt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminLoginAttemptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminLoginAttempt model
+   */ 
+  interface AdminLoginAttemptFieldRefs {
+    readonly id: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly ipAddress: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly attemptedIdentifier: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly userId: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly status: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly failureReason: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly userAgent: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly requestId: FieldRef<"AdminLoginAttempt", 'String'>
+    readonly createdAt: FieldRef<"AdminLoginAttempt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminLoginAttempt findUnique
+   */
+  export type AdminLoginAttemptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which AdminLoginAttempt to fetch.
+     */
+    where: AdminLoginAttemptWhereUniqueInput
+  }
+
+  /**
+   * AdminLoginAttempt findUniqueOrThrow
+   */
+  export type AdminLoginAttemptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which AdminLoginAttempt to fetch.
+     */
+    where: AdminLoginAttemptWhereUniqueInput
+  }
+
+  /**
+   * AdminLoginAttempt findFirst
+   */
+  export type AdminLoginAttemptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which AdminLoginAttempt to fetch.
+     */
+    where?: AdminLoginAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminLoginAttempts to fetch.
+     */
+    orderBy?: AdminLoginAttemptOrderByWithRelationInput | AdminLoginAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminLoginAttempts.
+     */
+    cursor?: AdminLoginAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminLoginAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminLoginAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminLoginAttempts.
+     */
+    distinct?: AdminLoginAttemptScalarFieldEnum | AdminLoginAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * AdminLoginAttempt findFirstOrThrow
+   */
+  export type AdminLoginAttemptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which AdminLoginAttempt to fetch.
+     */
+    where?: AdminLoginAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminLoginAttempts to fetch.
+     */
+    orderBy?: AdminLoginAttemptOrderByWithRelationInput | AdminLoginAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminLoginAttempts.
+     */
+    cursor?: AdminLoginAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminLoginAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminLoginAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminLoginAttempts.
+     */
+    distinct?: AdminLoginAttemptScalarFieldEnum | AdminLoginAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * AdminLoginAttempt findMany
+   */
+  export type AdminLoginAttemptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * Filter, which AdminLoginAttempts to fetch.
+     */
+    where?: AdminLoginAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminLoginAttempts to fetch.
+     */
+    orderBy?: AdminLoginAttemptOrderByWithRelationInput | AdminLoginAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminLoginAttempts.
+     */
+    cursor?: AdminLoginAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminLoginAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminLoginAttempts.
+     */
+    skip?: number
+    distinct?: AdminLoginAttemptScalarFieldEnum | AdminLoginAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * AdminLoginAttempt create
+   */
+  export type AdminLoginAttemptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * The data needed to create a AdminLoginAttempt.
+     */
+    data: XOR<AdminLoginAttemptCreateInput, AdminLoginAttemptUncheckedCreateInput>
+  }
+
+  /**
+   * AdminLoginAttempt createMany
+   */
+  export type AdminLoginAttemptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminLoginAttempts.
+     */
+    data: AdminLoginAttemptCreateManyInput | AdminLoginAttemptCreateManyInput[]
+  }
+
+  /**
+   * AdminLoginAttempt createManyAndReturn
+   */
+  export type AdminLoginAttemptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many AdminLoginAttempts.
+     */
+    data: AdminLoginAttemptCreateManyInput | AdminLoginAttemptCreateManyInput[]
+  }
+
+  /**
+   * AdminLoginAttempt update
+   */
+  export type AdminLoginAttemptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * The data needed to update a AdminLoginAttempt.
+     */
+    data: XOR<AdminLoginAttemptUpdateInput, AdminLoginAttemptUncheckedUpdateInput>
+    /**
+     * Choose, which AdminLoginAttempt to update.
+     */
+    where: AdminLoginAttemptWhereUniqueInput
+  }
+
+  /**
+   * AdminLoginAttempt updateMany
+   */
+  export type AdminLoginAttemptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminLoginAttempts.
+     */
+    data: XOR<AdminLoginAttemptUpdateManyMutationInput, AdminLoginAttemptUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminLoginAttempts to update
+     */
+    where?: AdminLoginAttemptWhereInput
+  }
+
+  /**
+   * AdminLoginAttempt upsert
+   */
+  export type AdminLoginAttemptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * The filter to search for the AdminLoginAttempt to update in case it exists.
+     */
+    where: AdminLoginAttemptWhereUniqueInput
+    /**
+     * In case the AdminLoginAttempt found by the `where` argument doesn't exist, create a new AdminLoginAttempt with this data.
+     */
+    create: XOR<AdminLoginAttemptCreateInput, AdminLoginAttemptUncheckedCreateInput>
+    /**
+     * In case the AdminLoginAttempt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminLoginAttemptUpdateInput, AdminLoginAttemptUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminLoginAttempt delete
+   */
+  export type AdminLoginAttemptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+    /**
+     * Filter which AdminLoginAttempt to delete.
+     */
+    where: AdminLoginAttemptWhereUniqueInput
+  }
+
+  /**
+   * AdminLoginAttempt deleteMany
+   */
+  export type AdminLoginAttemptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminLoginAttempts to delete
+     */
+    where?: AdminLoginAttemptWhereInput
+  }
+
+  /**
+   * AdminLoginAttempt without action
+   */
+  export type AdminLoginAttemptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminLoginAttempt
+     */
+    select?: AdminLoginAttemptSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BlockedIpAddress
+   */
+
+  export type AggregateBlockedIpAddress = {
+    _count: BlockedIpAddressCountAggregateOutputType | null
+    _min: BlockedIpAddressMinAggregateOutputType | null
+    _max: BlockedIpAddressMaxAggregateOutputType | null
+  }
+
+  export type BlockedIpAddressMinAggregateOutputType = {
+    id: string | null
+    ipAddress: string | null
+    reason: string | null
+    adminId: string | null
+    adminEmail: string | null
+    status: string | null
+    expiresAt: Date | null
+    unblockedAt: Date | null
+    unblockedBy: string | null
+    unblockReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BlockedIpAddressMaxAggregateOutputType = {
+    id: string | null
+    ipAddress: string | null
+    reason: string | null
+    adminId: string | null
+    adminEmail: string | null
+    status: string | null
+    expiresAt: Date | null
+    unblockedAt: Date | null
+    unblockedBy: string | null
+    unblockReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BlockedIpAddressCountAggregateOutputType = {
+    id: number
+    ipAddress: number
+    reason: number
+    adminId: number
+    adminEmail: number
+    status: number
+    expiresAt: number
+    unblockedAt: number
+    unblockedBy: number
+    unblockReason: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BlockedIpAddressMinAggregateInputType = {
+    id?: true
+    ipAddress?: true
+    reason?: true
+    adminId?: true
+    adminEmail?: true
+    status?: true
+    expiresAt?: true
+    unblockedAt?: true
+    unblockedBy?: true
+    unblockReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BlockedIpAddressMaxAggregateInputType = {
+    id?: true
+    ipAddress?: true
+    reason?: true
+    adminId?: true
+    adminEmail?: true
+    status?: true
+    expiresAt?: true
+    unblockedAt?: true
+    unblockedBy?: true
+    unblockReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BlockedIpAddressCountAggregateInputType = {
+    id?: true
+    ipAddress?: true
+    reason?: true
+    adminId?: true
+    adminEmail?: true
+    status?: true
+    expiresAt?: true
+    unblockedAt?: true
+    unblockedBy?: true
+    unblockReason?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BlockedIpAddressAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BlockedIpAddress to aggregate.
+     */
+    where?: BlockedIpAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BlockedIpAddresses to fetch.
+     */
+    orderBy?: BlockedIpAddressOrderByWithRelationInput | BlockedIpAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BlockedIpAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BlockedIpAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BlockedIpAddresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BlockedIpAddresses
+    **/
+    _count?: true | BlockedIpAddressCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BlockedIpAddressMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BlockedIpAddressMaxAggregateInputType
+  }
+
+  export type GetBlockedIpAddressAggregateType<T extends BlockedIpAddressAggregateArgs> = {
+        [P in keyof T & keyof AggregateBlockedIpAddress]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBlockedIpAddress[P]>
+      : GetScalarType<T[P], AggregateBlockedIpAddress[P]>
+  }
+
+
+
+
+  export type BlockedIpAddressGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BlockedIpAddressWhereInput
+    orderBy?: BlockedIpAddressOrderByWithAggregationInput | BlockedIpAddressOrderByWithAggregationInput[]
+    by: BlockedIpAddressScalarFieldEnum[] | BlockedIpAddressScalarFieldEnum
+    having?: BlockedIpAddressScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BlockedIpAddressCountAggregateInputType | true
+    _min?: BlockedIpAddressMinAggregateInputType
+    _max?: BlockedIpAddressMaxAggregateInputType
+  }
+
+  export type BlockedIpAddressGroupByOutputType = {
+    id: string
+    ipAddress: string
+    reason: string
+    adminId: string
+    adminEmail: string
+    status: string
+    expiresAt: Date | null
+    unblockedAt: Date | null
+    unblockedBy: string | null
+    unblockReason: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BlockedIpAddressCountAggregateOutputType | null
+    _min: BlockedIpAddressMinAggregateOutputType | null
+    _max: BlockedIpAddressMaxAggregateOutputType | null
+  }
+
+  type GetBlockedIpAddressGroupByPayload<T extends BlockedIpAddressGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BlockedIpAddressGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BlockedIpAddressGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BlockedIpAddressGroupByOutputType[P]>
+            : GetScalarType<T[P], BlockedIpAddressGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BlockedIpAddressSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ipAddress?: boolean
+    reason?: boolean
+    adminId?: boolean
+    adminEmail?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    unblockedAt?: boolean
+    unblockedBy?: boolean
+    unblockReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["blockedIpAddress"]>
+
+  export type BlockedIpAddressSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ipAddress?: boolean
+    reason?: boolean
+    adminId?: boolean
+    adminEmail?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    unblockedAt?: boolean
+    unblockedBy?: boolean
+    unblockReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["blockedIpAddress"]>
+
+  export type BlockedIpAddressSelectScalar = {
+    id?: boolean
+    ipAddress?: boolean
+    reason?: boolean
+    adminId?: boolean
+    adminEmail?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    unblockedAt?: boolean
+    unblockedBy?: boolean
+    unblockReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $BlockedIpAddressPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BlockedIpAddress"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      ipAddress: string
+      reason: string
+      adminId: string
+      adminEmail: string
+      status: string
+      expiresAt: Date | null
+      unblockedAt: Date | null
+      unblockedBy: string | null
+      unblockReason: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["blockedIpAddress"]>
+    composites: {}
+  }
+
+  type BlockedIpAddressGetPayload<S extends boolean | null | undefined | BlockedIpAddressDefaultArgs> = $Result.GetResult<Prisma.$BlockedIpAddressPayload, S>
+
+  type BlockedIpAddressCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BlockedIpAddressFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BlockedIpAddressCountAggregateInputType | true
+    }
+
+  export interface BlockedIpAddressDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BlockedIpAddress'], meta: { name: 'BlockedIpAddress' } }
+    /**
+     * Find zero or one BlockedIpAddress that matches the filter.
+     * @param {BlockedIpAddressFindUniqueArgs} args - Arguments to find a BlockedIpAddress
+     * @example
+     * // Get one BlockedIpAddress
+     * const blockedIpAddress = await prisma.blockedIpAddress.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BlockedIpAddressFindUniqueArgs>(args: SelectSubset<T, BlockedIpAddressFindUniqueArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one BlockedIpAddress that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BlockedIpAddressFindUniqueOrThrowArgs} args - Arguments to find a BlockedIpAddress
+     * @example
+     * // Get one BlockedIpAddress
+     * const blockedIpAddress = await prisma.blockedIpAddress.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BlockedIpAddressFindUniqueOrThrowArgs>(args: SelectSubset<T, BlockedIpAddressFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first BlockedIpAddress that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressFindFirstArgs} args - Arguments to find a BlockedIpAddress
+     * @example
+     * // Get one BlockedIpAddress
+     * const blockedIpAddress = await prisma.blockedIpAddress.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BlockedIpAddressFindFirstArgs>(args?: SelectSubset<T, BlockedIpAddressFindFirstArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first BlockedIpAddress that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressFindFirstOrThrowArgs} args - Arguments to find a BlockedIpAddress
+     * @example
+     * // Get one BlockedIpAddress
+     * const blockedIpAddress = await prisma.blockedIpAddress.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BlockedIpAddressFindFirstOrThrowArgs>(args?: SelectSubset<T, BlockedIpAddressFindFirstOrThrowArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more BlockedIpAddresses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BlockedIpAddresses
+     * const blockedIpAddresses = await prisma.blockedIpAddress.findMany()
+     * 
+     * // Get first 10 BlockedIpAddresses
+     * const blockedIpAddresses = await prisma.blockedIpAddress.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const blockedIpAddressWithIdOnly = await prisma.blockedIpAddress.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BlockedIpAddressFindManyArgs>(args?: SelectSubset<T, BlockedIpAddressFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a BlockedIpAddress.
+     * @param {BlockedIpAddressCreateArgs} args - Arguments to create a BlockedIpAddress.
+     * @example
+     * // Create one BlockedIpAddress
+     * const BlockedIpAddress = await prisma.blockedIpAddress.create({
+     *   data: {
+     *     // ... data to create a BlockedIpAddress
+     *   }
+     * })
+     * 
+     */
+    create<T extends BlockedIpAddressCreateArgs>(args: SelectSubset<T, BlockedIpAddressCreateArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many BlockedIpAddresses.
+     * @param {BlockedIpAddressCreateManyArgs} args - Arguments to create many BlockedIpAddresses.
+     * @example
+     * // Create many BlockedIpAddresses
+     * const blockedIpAddress = await prisma.blockedIpAddress.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BlockedIpAddressCreateManyArgs>(args?: SelectSubset<T, BlockedIpAddressCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BlockedIpAddresses and returns the data saved in the database.
+     * @param {BlockedIpAddressCreateManyAndReturnArgs} args - Arguments to create many BlockedIpAddresses.
+     * @example
+     * // Create many BlockedIpAddresses
+     * const blockedIpAddress = await prisma.blockedIpAddress.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BlockedIpAddresses and only return the `id`
+     * const blockedIpAddressWithIdOnly = await prisma.blockedIpAddress.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BlockedIpAddressCreateManyAndReturnArgs>(args?: SelectSubset<T, BlockedIpAddressCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a BlockedIpAddress.
+     * @param {BlockedIpAddressDeleteArgs} args - Arguments to delete one BlockedIpAddress.
+     * @example
+     * // Delete one BlockedIpAddress
+     * const BlockedIpAddress = await prisma.blockedIpAddress.delete({
+     *   where: {
+     *     // ... filter to delete one BlockedIpAddress
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BlockedIpAddressDeleteArgs>(args: SelectSubset<T, BlockedIpAddressDeleteArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one BlockedIpAddress.
+     * @param {BlockedIpAddressUpdateArgs} args - Arguments to update one BlockedIpAddress.
+     * @example
+     * // Update one BlockedIpAddress
+     * const blockedIpAddress = await prisma.blockedIpAddress.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BlockedIpAddressUpdateArgs>(args: SelectSubset<T, BlockedIpAddressUpdateArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more BlockedIpAddresses.
+     * @param {BlockedIpAddressDeleteManyArgs} args - Arguments to filter BlockedIpAddresses to delete.
+     * @example
+     * // Delete a few BlockedIpAddresses
+     * const { count } = await prisma.blockedIpAddress.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BlockedIpAddressDeleteManyArgs>(args?: SelectSubset<T, BlockedIpAddressDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BlockedIpAddresses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BlockedIpAddresses
+     * const blockedIpAddress = await prisma.blockedIpAddress.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BlockedIpAddressUpdateManyArgs>(args: SelectSubset<T, BlockedIpAddressUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BlockedIpAddress.
+     * @param {BlockedIpAddressUpsertArgs} args - Arguments to update or create a BlockedIpAddress.
+     * @example
+     * // Update or create a BlockedIpAddress
+     * const blockedIpAddress = await prisma.blockedIpAddress.upsert({
+     *   create: {
+     *     // ... data to create a BlockedIpAddress
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BlockedIpAddress we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BlockedIpAddressUpsertArgs>(args: SelectSubset<T, BlockedIpAddressUpsertArgs<ExtArgs>>): Prisma__BlockedIpAddressClient<$Result.GetResult<Prisma.$BlockedIpAddressPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of BlockedIpAddresses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressCountArgs} args - Arguments to filter BlockedIpAddresses to count.
+     * @example
+     * // Count the number of BlockedIpAddresses
+     * const count = await prisma.blockedIpAddress.count({
+     *   where: {
+     *     // ... the filter for the BlockedIpAddresses we want to count
+     *   }
+     * })
+    **/
+    count<T extends BlockedIpAddressCountArgs>(
+      args?: Subset<T, BlockedIpAddressCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BlockedIpAddressCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BlockedIpAddress.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BlockedIpAddressAggregateArgs>(args: Subset<T, BlockedIpAddressAggregateArgs>): Prisma.PrismaPromise<GetBlockedIpAddressAggregateType<T>>
+
+    /**
+     * Group by BlockedIpAddress.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BlockedIpAddressGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BlockedIpAddressGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BlockedIpAddressGroupByArgs['orderBy'] }
+        : { orderBy?: BlockedIpAddressGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BlockedIpAddressGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBlockedIpAddressGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BlockedIpAddress model
+   */
+  readonly fields: BlockedIpAddressFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BlockedIpAddress.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BlockedIpAddressClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BlockedIpAddress model
+   */ 
+  interface BlockedIpAddressFieldRefs {
+    readonly id: FieldRef<"BlockedIpAddress", 'String'>
+    readonly ipAddress: FieldRef<"BlockedIpAddress", 'String'>
+    readonly reason: FieldRef<"BlockedIpAddress", 'String'>
+    readonly adminId: FieldRef<"BlockedIpAddress", 'String'>
+    readonly adminEmail: FieldRef<"BlockedIpAddress", 'String'>
+    readonly status: FieldRef<"BlockedIpAddress", 'String'>
+    readonly expiresAt: FieldRef<"BlockedIpAddress", 'DateTime'>
+    readonly unblockedAt: FieldRef<"BlockedIpAddress", 'DateTime'>
+    readonly unblockedBy: FieldRef<"BlockedIpAddress", 'String'>
+    readonly unblockReason: FieldRef<"BlockedIpAddress", 'String'>
+    readonly createdAt: FieldRef<"BlockedIpAddress", 'DateTime'>
+    readonly updatedAt: FieldRef<"BlockedIpAddress", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BlockedIpAddress findUnique
+   */
+  export type BlockedIpAddressFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * Filter, which BlockedIpAddress to fetch.
+     */
+    where: BlockedIpAddressWhereUniqueInput
+  }
+
+  /**
+   * BlockedIpAddress findUniqueOrThrow
+   */
+  export type BlockedIpAddressFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * Filter, which BlockedIpAddress to fetch.
+     */
+    where: BlockedIpAddressWhereUniqueInput
+  }
+
+  /**
+   * BlockedIpAddress findFirst
+   */
+  export type BlockedIpAddressFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * Filter, which BlockedIpAddress to fetch.
+     */
+    where?: BlockedIpAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BlockedIpAddresses to fetch.
+     */
+    orderBy?: BlockedIpAddressOrderByWithRelationInput | BlockedIpAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BlockedIpAddresses.
+     */
+    cursor?: BlockedIpAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BlockedIpAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BlockedIpAddresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BlockedIpAddresses.
+     */
+    distinct?: BlockedIpAddressScalarFieldEnum | BlockedIpAddressScalarFieldEnum[]
+  }
+
+  /**
+   * BlockedIpAddress findFirstOrThrow
+   */
+  export type BlockedIpAddressFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * Filter, which BlockedIpAddress to fetch.
+     */
+    where?: BlockedIpAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BlockedIpAddresses to fetch.
+     */
+    orderBy?: BlockedIpAddressOrderByWithRelationInput | BlockedIpAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BlockedIpAddresses.
+     */
+    cursor?: BlockedIpAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BlockedIpAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BlockedIpAddresses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BlockedIpAddresses.
+     */
+    distinct?: BlockedIpAddressScalarFieldEnum | BlockedIpAddressScalarFieldEnum[]
+  }
+
+  /**
+   * BlockedIpAddress findMany
+   */
+  export type BlockedIpAddressFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * Filter, which BlockedIpAddresses to fetch.
+     */
+    where?: BlockedIpAddressWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BlockedIpAddresses to fetch.
+     */
+    orderBy?: BlockedIpAddressOrderByWithRelationInput | BlockedIpAddressOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BlockedIpAddresses.
+     */
+    cursor?: BlockedIpAddressWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BlockedIpAddresses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BlockedIpAddresses.
+     */
+    skip?: number
+    distinct?: BlockedIpAddressScalarFieldEnum | BlockedIpAddressScalarFieldEnum[]
+  }
+
+  /**
+   * BlockedIpAddress create
+   */
+  export type BlockedIpAddressCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * The data needed to create a BlockedIpAddress.
+     */
+    data: XOR<BlockedIpAddressCreateInput, BlockedIpAddressUncheckedCreateInput>
+  }
+
+  /**
+   * BlockedIpAddress createMany
+   */
+  export type BlockedIpAddressCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BlockedIpAddresses.
+     */
+    data: BlockedIpAddressCreateManyInput | BlockedIpAddressCreateManyInput[]
+  }
+
+  /**
+   * BlockedIpAddress createManyAndReturn
+   */
+  export type BlockedIpAddressCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many BlockedIpAddresses.
+     */
+    data: BlockedIpAddressCreateManyInput | BlockedIpAddressCreateManyInput[]
+  }
+
+  /**
+   * BlockedIpAddress update
+   */
+  export type BlockedIpAddressUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * The data needed to update a BlockedIpAddress.
+     */
+    data: XOR<BlockedIpAddressUpdateInput, BlockedIpAddressUncheckedUpdateInput>
+    /**
+     * Choose, which BlockedIpAddress to update.
+     */
+    where: BlockedIpAddressWhereUniqueInput
+  }
+
+  /**
+   * BlockedIpAddress updateMany
+   */
+  export type BlockedIpAddressUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BlockedIpAddresses.
+     */
+    data: XOR<BlockedIpAddressUpdateManyMutationInput, BlockedIpAddressUncheckedUpdateManyInput>
+    /**
+     * Filter which BlockedIpAddresses to update
+     */
+    where?: BlockedIpAddressWhereInput
+  }
+
+  /**
+   * BlockedIpAddress upsert
+   */
+  export type BlockedIpAddressUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * The filter to search for the BlockedIpAddress to update in case it exists.
+     */
+    where: BlockedIpAddressWhereUniqueInput
+    /**
+     * In case the BlockedIpAddress found by the `where` argument doesn't exist, create a new BlockedIpAddress with this data.
+     */
+    create: XOR<BlockedIpAddressCreateInput, BlockedIpAddressUncheckedCreateInput>
+    /**
+     * In case the BlockedIpAddress was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BlockedIpAddressUpdateInput, BlockedIpAddressUncheckedUpdateInput>
+  }
+
+  /**
+   * BlockedIpAddress delete
+   */
+  export type BlockedIpAddressDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+    /**
+     * Filter which BlockedIpAddress to delete.
+     */
+    where: BlockedIpAddressWhereUniqueInput
+  }
+
+  /**
+   * BlockedIpAddress deleteMany
+   */
+  export type BlockedIpAddressDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BlockedIpAddresses to delete
+     */
+    where?: BlockedIpAddressWhereInput
+  }
+
+  /**
+   * BlockedIpAddress without action
+   */
+  export type BlockedIpAddressDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BlockedIpAddress
+     */
+    select?: BlockedIpAddressSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -16428,6 +18484,39 @@ export namespace Prisma {
   };
 
   export type LegislativeImportJobScalarFieldEnum = (typeof LegislativeImportJobScalarFieldEnum)[keyof typeof LegislativeImportJobScalarFieldEnum]
+
+
+  export const AdminLoginAttemptScalarFieldEnum: {
+    id: 'id',
+    ipAddress: 'ipAddress',
+    attemptedIdentifier: 'attemptedIdentifier',
+    userId: 'userId',
+    status: 'status',
+    failureReason: 'failureReason',
+    userAgent: 'userAgent',
+    requestId: 'requestId',
+    createdAt: 'createdAt'
+  };
+
+  export type AdminLoginAttemptScalarFieldEnum = (typeof AdminLoginAttemptScalarFieldEnum)[keyof typeof AdminLoginAttemptScalarFieldEnum]
+
+
+  export const BlockedIpAddressScalarFieldEnum: {
+    id: 'id',
+    ipAddress: 'ipAddress',
+    reason: 'reason',
+    adminId: 'adminId',
+    adminEmail: 'adminEmail',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    unblockedAt: 'unblockedAt',
+    unblockedBy: 'unblockedBy',
+    unblockReason: 'unblockReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BlockedIpAddressScalarFieldEnum = (typeof BlockedIpAddressScalarFieldEnum)[keyof typeof BlockedIpAddressScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -17887,6 +19976,165 @@ export namespace Prisma {
     sourcesChecked?: StringNullableWithAggregatesFilter<"LegislativeImportJob"> | string | null
     coverageNotes?: StringNullableWithAggregatesFilter<"LegislativeImportJob"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"LegislativeImportJob"> | Date | string
+  }
+
+  export type AdminLoginAttemptWhereInput = {
+    AND?: AdminLoginAttemptWhereInput | AdminLoginAttemptWhereInput[]
+    OR?: AdminLoginAttemptWhereInput[]
+    NOT?: AdminLoginAttemptWhereInput | AdminLoginAttemptWhereInput[]
+    id?: StringFilter<"AdminLoginAttempt"> | string
+    ipAddress?: StringFilter<"AdminLoginAttempt"> | string
+    attemptedIdentifier?: StringFilter<"AdminLoginAttempt"> | string
+    userId?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    status?: StringFilter<"AdminLoginAttempt"> | string
+    failureReason?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    userAgent?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    requestId?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    createdAt?: DateTimeFilter<"AdminLoginAttempt"> | Date | string
+  }
+
+  export type AdminLoginAttemptOrderByWithRelationInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    attemptedIdentifier?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    failureReason?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    requestId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminLoginAttemptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AdminLoginAttemptWhereInput | AdminLoginAttemptWhereInput[]
+    OR?: AdminLoginAttemptWhereInput[]
+    NOT?: AdminLoginAttemptWhereInput | AdminLoginAttemptWhereInput[]
+    ipAddress?: StringFilter<"AdminLoginAttempt"> | string
+    attemptedIdentifier?: StringFilter<"AdminLoginAttempt"> | string
+    userId?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    status?: StringFilter<"AdminLoginAttempt"> | string
+    failureReason?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    userAgent?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    requestId?: StringNullableFilter<"AdminLoginAttempt"> | string | null
+    createdAt?: DateTimeFilter<"AdminLoginAttempt"> | Date | string
+  }, "id">
+
+  export type AdminLoginAttemptOrderByWithAggregationInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    attemptedIdentifier?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    failureReason?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    requestId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AdminLoginAttemptCountOrderByAggregateInput
+    _max?: AdminLoginAttemptMaxOrderByAggregateInput
+    _min?: AdminLoginAttemptMinOrderByAggregateInput
+  }
+
+  export type AdminLoginAttemptScalarWhereWithAggregatesInput = {
+    AND?: AdminLoginAttemptScalarWhereWithAggregatesInput | AdminLoginAttemptScalarWhereWithAggregatesInput[]
+    OR?: AdminLoginAttemptScalarWhereWithAggregatesInput[]
+    NOT?: AdminLoginAttemptScalarWhereWithAggregatesInput | AdminLoginAttemptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminLoginAttempt"> | string
+    ipAddress?: StringWithAggregatesFilter<"AdminLoginAttempt"> | string
+    attemptedIdentifier?: StringWithAggregatesFilter<"AdminLoginAttempt"> | string
+    userId?: StringNullableWithAggregatesFilter<"AdminLoginAttempt"> | string | null
+    status?: StringWithAggregatesFilter<"AdminLoginAttempt"> | string
+    failureReason?: StringNullableWithAggregatesFilter<"AdminLoginAttempt"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"AdminLoginAttempt"> | string | null
+    requestId?: StringNullableWithAggregatesFilter<"AdminLoginAttempt"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AdminLoginAttempt"> | Date | string
+  }
+
+  export type BlockedIpAddressWhereInput = {
+    AND?: BlockedIpAddressWhereInput | BlockedIpAddressWhereInput[]
+    OR?: BlockedIpAddressWhereInput[]
+    NOT?: BlockedIpAddressWhereInput | BlockedIpAddressWhereInput[]
+    id?: StringFilter<"BlockedIpAddress"> | string
+    ipAddress?: StringFilter<"BlockedIpAddress"> | string
+    reason?: StringFilter<"BlockedIpAddress"> | string
+    adminId?: StringFilter<"BlockedIpAddress"> | string
+    adminEmail?: StringFilter<"BlockedIpAddress"> | string
+    status?: StringFilter<"BlockedIpAddress"> | string
+    expiresAt?: DateTimeNullableFilter<"BlockedIpAddress"> | Date | string | null
+    unblockedAt?: DateTimeNullableFilter<"BlockedIpAddress"> | Date | string | null
+    unblockedBy?: StringNullableFilter<"BlockedIpAddress"> | string | null
+    unblockReason?: StringNullableFilter<"BlockedIpAddress"> | string | null
+    createdAt?: DateTimeFilter<"BlockedIpAddress"> | Date | string
+    updatedAt?: DateTimeFilter<"BlockedIpAddress"> | Date | string
+  }
+
+  export type BlockedIpAddressOrderByWithRelationInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    reason?: SortOrder
+    adminId?: SortOrder
+    adminEmail?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    unblockedAt?: SortOrderInput | SortOrder
+    unblockedBy?: SortOrderInput | SortOrder
+    unblockReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BlockedIpAddressWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BlockedIpAddressWhereInput | BlockedIpAddressWhereInput[]
+    OR?: BlockedIpAddressWhereInput[]
+    NOT?: BlockedIpAddressWhereInput | BlockedIpAddressWhereInput[]
+    ipAddress?: StringFilter<"BlockedIpAddress"> | string
+    reason?: StringFilter<"BlockedIpAddress"> | string
+    adminId?: StringFilter<"BlockedIpAddress"> | string
+    adminEmail?: StringFilter<"BlockedIpAddress"> | string
+    status?: StringFilter<"BlockedIpAddress"> | string
+    expiresAt?: DateTimeNullableFilter<"BlockedIpAddress"> | Date | string | null
+    unblockedAt?: DateTimeNullableFilter<"BlockedIpAddress"> | Date | string | null
+    unblockedBy?: StringNullableFilter<"BlockedIpAddress"> | string | null
+    unblockReason?: StringNullableFilter<"BlockedIpAddress"> | string | null
+    createdAt?: DateTimeFilter<"BlockedIpAddress"> | Date | string
+    updatedAt?: DateTimeFilter<"BlockedIpAddress"> | Date | string
+  }, "id">
+
+  export type BlockedIpAddressOrderByWithAggregationInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    reason?: SortOrder
+    adminId?: SortOrder
+    adminEmail?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    unblockedAt?: SortOrderInput | SortOrder
+    unblockedBy?: SortOrderInput | SortOrder
+    unblockReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BlockedIpAddressCountOrderByAggregateInput
+    _max?: BlockedIpAddressMaxOrderByAggregateInput
+    _min?: BlockedIpAddressMinOrderByAggregateInput
+  }
+
+  export type BlockedIpAddressScalarWhereWithAggregatesInput = {
+    AND?: BlockedIpAddressScalarWhereWithAggregatesInput | BlockedIpAddressScalarWhereWithAggregatesInput[]
+    OR?: BlockedIpAddressScalarWhereWithAggregatesInput[]
+    NOT?: BlockedIpAddressScalarWhereWithAggregatesInput | BlockedIpAddressScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BlockedIpAddress"> | string
+    ipAddress?: StringWithAggregatesFilter<"BlockedIpAddress"> | string
+    reason?: StringWithAggregatesFilter<"BlockedIpAddress"> | string
+    adminId?: StringWithAggregatesFilter<"BlockedIpAddress"> | string
+    adminEmail?: StringWithAggregatesFilter<"BlockedIpAddress"> | string
+    status?: StringWithAggregatesFilter<"BlockedIpAddress"> | string
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"BlockedIpAddress"> | Date | string | null
+    unblockedAt?: DateTimeNullableWithAggregatesFilter<"BlockedIpAddress"> | Date | string | null
+    unblockedBy?: StringNullableWithAggregatesFilter<"BlockedIpAddress"> | string | null
+    unblockReason?: StringNullableWithAggregatesFilter<"BlockedIpAddress"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BlockedIpAddress"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BlockedIpAddress"> | Date | string
   }
 
   export type AdminUserCreateInput = {
@@ -19546,6 +21794,195 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AdminLoginAttemptCreateInput = {
+    id?: string
+    ipAddress: string
+    attemptedIdentifier: string
+    userId?: string | null
+    status: string
+    failureReason?: string | null
+    userAgent?: string | null
+    requestId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AdminLoginAttemptUncheckedCreateInput = {
+    id?: string
+    ipAddress: string
+    attemptedIdentifier: string
+    userId?: string | null
+    status: string
+    failureReason?: string | null
+    userAgent?: string | null
+    requestId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AdminLoginAttemptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    attemptedIdentifier?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminLoginAttemptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    attemptedIdentifier?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminLoginAttemptCreateManyInput = {
+    id?: string
+    ipAddress: string
+    attemptedIdentifier: string
+    userId?: string | null
+    status: string
+    failureReason?: string | null
+    userAgent?: string | null
+    requestId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AdminLoginAttemptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    attemptedIdentifier?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminLoginAttemptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    attemptedIdentifier?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockedIpAddressCreateInput = {
+    id?: string
+    ipAddress: string
+    reason: string
+    adminId: string
+    adminEmail: string
+    status?: string
+    expiresAt?: Date | string | null
+    unblockedAt?: Date | string | null
+    unblockedBy?: string | null
+    unblockReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BlockedIpAddressUncheckedCreateInput = {
+    id?: string
+    ipAddress: string
+    reason: string
+    adminId: string
+    adminEmail: string
+    status?: string
+    expiresAt?: Date | string | null
+    unblockedAt?: Date | string | null
+    unblockedBy?: string | null
+    unblockReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BlockedIpAddressUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    adminEmail?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    unblockReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockedIpAddressUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    adminEmail?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    unblockReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockedIpAddressCreateManyInput = {
+    id?: string
+    ipAddress: string
+    reason: string
+    adminId: string
+    adminEmail: string
+    status?: string
+    expiresAt?: Date | string | null
+    unblockedAt?: Date | string | null
+    unblockedBy?: string | null
+    unblockReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BlockedIpAddressUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    adminEmail?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    unblockReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BlockedIpAddressUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    adminEmail?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unblockedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    unblockReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -20670,6 +23107,87 @@ export namespace Prisma {
     updatedCount?: SortOrder
     skippedCount?: SortOrder
     needsReviewCount?: SortOrder
+  }
+
+  export type AdminLoginAttemptCountOrderByAggregateInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    attemptedIdentifier?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    failureReason?: SortOrder
+    userAgent?: SortOrder
+    requestId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminLoginAttemptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    attemptedIdentifier?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    failureReason?: SortOrder
+    userAgent?: SortOrder
+    requestId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminLoginAttemptMinOrderByAggregateInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    attemptedIdentifier?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    failureReason?: SortOrder
+    userAgent?: SortOrder
+    requestId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BlockedIpAddressCountOrderByAggregateInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    reason?: SortOrder
+    adminId?: SortOrder
+    adminEmail?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    unblockedAt?: SortOrder
+    unblockedBy?: SortOrder
+    unblockReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BlockedIpAddressMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    reason?: SortOrder
+    adminId?: SortOrder
+    adminEmail?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    unblockedAt?: SortOrder
+    unblockedBy?: SortOrder
+    unblockReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BlockedIpAddressMinOrderByAggregateInput = {
+    id?: SortOrder
+    ipAddress?: SortOrder
+    reason?: SortOrder
+    adminId?: SortOrder
+    adminEmail?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    unblockedAt?: SortOrder
+    unblockedBy?: SortOrder
+    unblockReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -24567,6 +27085,14 @@ export namespace Prisma {
      * @deprecated Use LegislativeImportJobDefaultArgs instead
      */
     export type LegislativeImportJobArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LegislativeImportJobDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use AdminLoginAttemptDefaultArgs instead
+     */
+    export type AdminLoginAttemptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AdminLoginAttemptDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BlockedIpAddressDefaultArgs instead
+     */
+    export type BlockedIpAddressArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BlockedIpAddressDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

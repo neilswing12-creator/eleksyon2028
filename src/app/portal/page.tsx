@@ -5,6 +5,8 @@ import Link from "next/link";
 import { groupCandidatesByPosition, sortCandidatesByPositionAndName } from "@/lib/candidate-sorting";
 import {
   ShieldAlert,
+  Ban,
+  Filter,
   Users,
   Settings,
   BookOpen,
@@ -65,9 +67,9 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
 
-  // Active Tab: SURVEY_MGMT | STATISTICS | ADJUSTMENTS | CANDIDATES | LEGISLATIVE | PLATFORMS | SETTINGS | LOGS
+  // Active Tab: SURVEY_MGMT | STATISTICS | ADJUSTMENTS | CANDIDATES | LEGISLATIVE | PLATFORMS | SETTINGS | LOGS | SECURITY
   const [activeTab, setActiveTab] = useState<
-    "SURVEY_MGMT" | "STATISTICS" | "ADJUSTMENTS" | "CANDIDATES" | "LEGISLATIVE" | "PLATFORMS" | "SETTINGS" | "LOGS"
+    "SURVEY_MGMT" | "STATISTICS" | "ADJUSTMENTS" | "CANDIDATES" | "LEGISLATIVE" | "PLATFORMS" | "SETTINGS" | "LOGS" | "SECURITY"
   >("SURVEY_MGMT");
 
   // Admin Data State
@@ -232,6 +234,33 @@ export default function AdminPage() {
   });
   const [submittingManualBill, setSubmittingManualBill] = useState(false);
 
+  // Login Security & IP Monitoring State
+  const [securitySubTab, setSecuritySubTab] = useState<"ATTEMPTS" | "BLOCKED_IPS">("ATTEMPTS");
+  const [loginAttempts, setLoginAttempts] = useState<any[]>([]);
+  const [loadingAttempts, setLoadingAttempts] = useState(false);
+  const [attemptsPagination, setAttemptsPagination] = useState({ page: 1, limit: 25, totalCount: 0, totalPages: 1 });
+  const [attemptsStats, setAttemptsStats] = useState({ total: 0, success: 0, failed: 0, blocked: 0, rateLimited: 0 });
+  const [filterIp, setFilterIp] = useState("");
+  const [filterIdentifier, setFilterIdentifier] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ALL");
+  const [filterStartDate, setFilterStartDate] = useState("");
+  const [filterEndDate, setFilterEndDate] = useState("");
+
+  const [blockedIps, setBlockedIps] = useState<any[]>([]);
+  const [loadingBlockedIps, setLoadingBlockedIps] = useState(false);
+  const [blockedIpsActiveCount, setBlockedIpsActiveCount] = useState(0);
+  const [blockedIpSearch, setBlockedIpSearch] = useState("");
+  const [blockedIpStatusFilter, setBlockedIpStatusFilter] = useState("ALL");
+
+  const [blockModalTarget, setBlockModalTarget] = useState<{ ipAddress: string; defaultReason?: string } | null>(null);
+  const [blockReason, setBlockReason] = useState("");
+  const [blockDuration, setBlockDuration] = useState<string>("24h");
+  const [submittingBlock, setSubmittingBlock] = useState(false);
+
+  const [unblockModalTarget, setUnblockModalTarget] = useState<any | null>(null);
+  const [unblockReason, setUnblockReason] = useState("");
+  const [submittingUnblock, setSubmittingUnblock] = useState(false);
+
   const isAnalyst = adminUser?.role === "ANALYST";
 
   // Verify Admin Session on mount
@@ -292,6 +321,123 @@ export default function AdminPage() {
   const showNotify = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 5000);
+  };
+
+  const loadLoginAttempts = async (page = 1) => {
+    setLoadingAttempts(true);
+    try {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: "25",
+        ip: filterIp,
+        identifier: filterIdentifier,
+        status: filterStatus,
+        startDate: filterStartDate,
+        endDate: filterEndDate,
+      });
+      const res = await fetch(`/api/admin/security/login-attempts?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setLoginAttempts(data.attempts || []);
+        setAttemptsPagination(data.pagination || { page: 1, limit: 25, totalCount: 0, totalPages: 1 });
+        setAttemptsStats(data.stats || { total: 0, success: 0, failed: 0, blocked: 0, rateLimited: 0 });
+      }
+    } catch (e) {
+      console.error("Error loading login attempts:", e);
+    } finally {
+      setLoadingAttempts(false);
+    }
+  };
+
+  const loadBlockedIps = async () => {
+    setLoadingBlockedIps(true);
+    try {
+      const params = new URLSearchParams({
+        search: blockedIpSearch,
+        status: blockedIpStatusFilter,
+        limit: "50",
+      });
+      const res = await fetch(`/api/admin/security/blocked-ips?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setBlockedIps(data.blockedIps || []);
+        setBlockedIpsActiveCount(data.activeCount || 0);
+      }
+    } catch (e) {
+      console.error("Error loading blocked IPs:", e);
+    } finally {
+      setLoadingBlockedIps(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "SECURITY" && adminUser) {
+      loadLoginAttempts(1);
+      loadBlockedIps();
+    }
+  }, [activeTab, adminUser]);
+
+  const handleExecuteBlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!blockModalTarget?.ipAddress || !blockReason.trim()) return;
+    setSubmittingBlock(true);
+    try {
+      const res = await fetch("/api/admin/security/blocked-ips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ipAddress: blockModalTarget.ipAddress,
+          reason: blockReason.trim(),
+          duration: blockDuration,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showNotify("error", data.error || "Failed to block IP.");
+      } else {
+        showNotify("success", `IP ${blockModalTarget.ipAddress} has been blocked.`);
+        setBlockModalTarget(null);
+        setBlockReason("");
+        setBlockDuration("24h");
+        await loadBlockedIps();
+        await loadLoginAttempts(attemptsPagination.page);
+      }
+    } catch {
+      showNotify("error", "Network error executing IP block.");
+    } finally {
+      setSubmittingBlock(false);
+    }
+  };
+
+  const handleExecuteUnblock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!unblockModalTarget) return;
+    setSubmittingUnblock(true);
+    try {
+      const res = await fetch("/api/admin/security/blocked-ips/unblock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: unblockModalTarget.id,
+          ipAddress: unblockModalTarget.ipAddress,
+          reason: unblockReason.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showNotify("error", data.error || "Failed to unblock IP.");
+      } else {
+        showNotify("success", `IP ${unblockModalTarget.ipAddress} has been unblocked.`);
+        setUnblockModalTarget(null);
+        setUnblockReason("");
+        await loadBlockedIps();
+        await loadLoginAttempts(attemptsPagination.page);
+      }
+    } catch {
+      showNotify("error", "Network error executing unblock.");
+    } finally {
+      setSubmittingUnblock(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -1138,6 +1284,7 @@ export default function AdminPage() {
             { id: "PLATFORMS", label: "Platforms & Agendas", icon: BookOpen },
             { id: "SETTINGS", label: "Survey Campaign Settings", icon: Settings },
             { id: "LOGS", label: "Audit Logs", icon: FileText },
+            { id: "SECURITY", label: "Login Security & IP Monitoring", icon: ShieldAlert },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -4217,6 +4364,531 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* ========================================================= */}
+        {/* TAB 7: LOGIN SECURITY & IP MONITORING                     */}
+        {/* ========================================================= */}
+        {activeTab === "SECURITY" && (
+          <div className="space-y-6">
+            {/* Header */}
+            <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+                    <ShieldAlert className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-brand-navy">Login Security &amp; IP Monitoring</h2>
+                    <p className="text-xs text-brand-slate">
+                      Server-enforced administrative login audit trail, origin IP verification, and active blocking.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      if (securitySubTab === "ATTEMPTS") loadLoginAttempts(attemptsPagination.page);
+                      else loadBlockedIps();
+                    }}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${loadingAttempts || loadingBlockedIps ? "animate-spin" : ""}`} />
+                    <span>Refresh</span>
+                  </button>
+                  <button
+                    disabled={isAnalyst}
+                    onClick={() => {
+                      setBlockModalTarget({ ipAddress: "", defaultReason: "" });
+                      setBlockReason("");
+                      setBlockDuration("24h");
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors disabled:opacity-40 shadow-xs"
+                  >
+                    <Ban className="w-3.5 h-3.5" />
+                    <span>+ Block IP Manually</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Summary Metric Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-4">
+                <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">Total Attempts</span>
+                  <span className="text-xl font-black text-brand-navy">{attemptsStats.total}</span>
+                </div>
+                <div className="bg-emerald-50/60 rounded-xl p-3 border border-emerald-200/80">
+                  <span className="text-[10px] uppercase font-bold text-emerald-700 tracking-wider block">Successful</span>
+                  <span className="text-xl font-black text-emerald-700">{attemptsStats.success}</span>
+                </div>
+                <div className="bg-amber-50/60 rounded-xl p-3 border border-amber-200/80">
+                  <span className="text-[10px] uppercase font-bold text-amber-700 tracking-wider block">Failed Credentials</span>
+                  <span className="text-xl font-black text-amber-700">{attemptsStats.failed}</span>
+                </div>
+                <div className="bg-rose-50/60 rounded-xl p-3 border border-rose-200/80">
+                  <span className="text-[10px] uppercase font-bold text-rose-700 tracking-wider block">Blocked Attempts</span>
+                  <span className="text-xl font-black text-rose-700">{attemptsStats.blocked}</span>
+                </div>
+                <div className="bg-purple-50/60 rounded-xl p-3 border border-purple-200/80 col-span-2 sm:col-span-1">
+                  <span className="text-[10px] uppercase font-bold text-purple-700 tracking-wider block">Active Enforced Blocks</span>
+                  <span className="text-xl font-black text-purple-700">{blockedIpsActiveCount}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sub-navigation Toggle */}
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+              <button
+                onClick={() => setSecuritySubTab("ATTEMPTS")}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                  securitySubTab === "ATTEMPTS"
+                    ? "bg-brand-blue text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                <span>Login Attempts Log Stream</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white font-mono">
+                  {attemptsPagination.totalCount}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setSecuritySubTab("BLOCKED_IPS");
+                  loadBlockedIps();
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                  securitySubTab === "BLOCKED_IPS"
+                    ? "bg-rose-600 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                <Ban className="w-4 h-4" />
+                <span>Blocked IP Addresses</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+                    blockedIpsActiveCount > 0 ? "bg-white text-rose-700 font-bold" : "bg-slate-200 text-slate-700"
+                  }`}
+                >
+                  {blockedIpsActiveCount} active
+                </span>
+              </button>
+            </div>
+
+            {/* ========================================================= */}
+            {/* SUBTAB 1: LOGIN ATTEMPTS STREAM                           */}
+            {/* ========================================================= */}
+            {securitySubTab === "ATTEMPTS" && (
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4">
+                {/* Filter Controls Bar */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Filter by IP</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 112.198.120.45"
+                      value={filterIp}
+                      onChange={(e) => setFilterIp(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Attempted Email</label>
+                    <input
+                      type="text"
+                      placeholder="admin@survey2028.ph"
+                      value={filterIdentifier}
+                      onChange={(e) => setFilterIdentifier(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs focus:ring-1 focus:ring-sky-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                    <select
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs focus:ring-1 focus:ring-sky-500 outline-none"
+                    >
+                      <option value="ALL">All Outcomes</option>
+                      <option value="SUCCESS">Success Only</option>
+                      <option value="FAILED">Failed Credentials</option>
+                      <option value="BLOCKED">Blocked by Server</option>
+                      <option value="RATE_LIMITED">Rate Limited</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Date Range</label>
+                    <div className="grid grid-cols-2 gap-1">
+                      <input
+                        type="date"
+                        value={filterStartDate}
+                        onChange={(e) => setFilterStartDate(e.target.value)}
+                        className="w-full px-1.5 py-1.5 rounded-lg border border-slate-300 bg-white text-[11px] outline-none"
+                      />
+                      <input
+                        type="date"
+                        value={filterEndDate}
+                        onChange={(e) => setFilterEndDate(e.target.value)}
+                        className="w-full px-1.5 py-1.5 rounded-lg border border-slate-300 bg-white text-[11px] outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-end gap-1.5">
+                    <button
+                      onClick={() => loadLoginAttempts(1)}
+                      className="flex-1 py-1.5 px-2.5 rounded-lg bg-brand-navy hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1 transition-colors"
+                    >
+                      <Filter className="w-3.5 h-3.5" />
+                      <span>Filter</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setFilterIp("");
+                        setFilterIdentifier("");
+                        setFilterStatus("ALL");
+                        setFilterStartDate("");
+                        setFilterEndDate("");
+                        setTimeout(() => loadLoginAttempts(1), 50);
+                      }}
+                      className="py-1.5 px-2 rounded-lg border border-slate-300 hover:bg-slate-200 text-slate-600 text-xs font-semibold"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+
+                {/* Login Attempts Stream Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs min-w-[750px]">
+                    <thead>
+                      <tr className="border-b border-brand-border text-brand-slate uppercase text-[10px] tracking-wider">
+                        <th className="py-2.5 px-3">Timestamp (Local)</th>
+                        <th className="py-2.5 px-3">Origin IP Address</th>
+                        <th className="py-2.5 px-3">Attempted Identifier</th>
+                        <th className="py-2.5 px-3">Authentication Status</th>
+                        <th className="py-2.5 px-3">Failure Category</th>
+                        <th className="py-2.5 px-3">Client / Browser</th>
+                        <th className="py-2.5 px-3 text-right">Security Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-sans">
+                      {loginAttempts.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="py-8 text-center text-slate-400">
+                            No login attempt logs found matching current filter criteria.
+                          </td>
+                        </tr>
+                      ) : (
+                        loginAttempts.map((attempt) => {
+                          const isBlockedIp = blockedIps.some(
+                            (b) => b.ipAddress === attempt.ipAddress && b.status === "ACTIVE"
+                          );
+                          return (
+                            <tr key={attempt.id} className="hover:bg-slate-50/50">
+                              <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap font-mono text-[11px]">
+                                {new Date(attempt.createdAt).toLocaleString(undefined, {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  second: "2-digit",
+                                })}
+                              </td>
+
+                              <td className="py-2.5 px-3">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-mono font-bold text-slate-800 text-xs">
+                                    {attempt.ipAddress}
+                                  </span>
+                                  {isBlockedIp && (
+                                    <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-100 text-rose-700">
+                                      BLOCKED
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+
+                              <td className="py-2.5 px-3">
+                                <span className="font-semibold text-brand-navy">
+                                  {attempt.attemptedIdentifier}
+                                </span>
+                                {attempt.userId && (
+                                  <span className="block text-[10px] text-slate-400 font-mono">
+                                    ID: {attempt.userId}
+                                  </span>
+                                )}
+                              </td>
+
+                              <td className="py-2.5 px-3">
+                                {attempt.status === "SUCCESS" && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    <CheckCircle className="w-3 h-3" />
+                                    SUCCESS
+                                  </span>
+                                )}
+                                {attempt.status === "FAILED" && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                    <AlertTriangle className="w-3 h-3" />
+                                    FAILED
+                                  </span>
+                                )}
+                                {attempt.status === "BLOCKED" && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                    <Ban className="w-3 h-3" />
+                                    BLOCKED
+                                  </span>
+                                )}
+                                {attempt.status === "RATE_LIMITED" && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                                    <Clock className="w-3 h-3" />
+                                    RATE_LIMITED
+                                  </span>
+                                )}
+                              </td>
+
+                              <td className="py-2.5 px-3 font-mono text-[11px] text-slate-600">
+                                {attempt.failureReason || "—"}
+                              </td>
+
+                              <td className="py-2.5 px-3 text-[11px] text-slate-500 max-w-[200px] truncate" title={attempt.userAgent || ""}>
+                                {attempt.userAgent ? attempt.userAgent.slice(0, 45) + (attempt.userAgent.length > 45 ? "..." : "") : "Unknown"}
+                              </td>
+
+                              <td className="py-2.5 px-3 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => {
+                                      setFilterIp(attempt.ipAddress);
+                                      loadLoginAttempts(1);
+                                    }}
+                                    className="p-1 rounded text-slate-400 hover:text-brand-blue hover:bg-slate-100 text-[10px] font-semibold"
+                                    title="Filter attempts from this IP"
+                                  >
+                                    Filter IP
+                                  </button>
+
+                                  <button
+                                    disabled={isAnalyst || isBlockedIp}
+                                    onClick={() => {
+                                      setBlockModalTarget({
+                                        ipAddress: attempt.ipAddress,
+                                        defaultReason: `Flagged for suspicious authentication activity (${attempt.status})`,
+                                      });
+                                      setBlockReason(`Suspicious login activity: ${attempt.attemptedIdentifier}`);
+                                      setBlockDuration("24h");
+                                    }}
+                                    className={`px-2 py-1 rounded text-[10px] font-bold flex items-center gap-1 transition-colors ${
+                                      isBlockedIp
+                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                        : "bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200"
+                                    }`}
+                                  >
+                                    <Ban className="w-3 h-3" />
+                                    <span>{isBlockedIp ? "Already Blocked" : "Block IP"}</span>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>
+                    Showing {loginAttempts.length} of {attemptsPagination.totalCount} records (Page{" "}
+                    {attemptsPagination.page} of {attemptsPagination.totalPages})
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      disabled={attemptsPagination.page <= 1}
+                      onClick={() => loadLoginAttempts(attemptsPagination.page - 1)}
+                      className="px-3 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 font-semibold"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      disabled={attemptsPagination.page >= attemptsPagination.totalPages}
+                      onClick={() => loadLoginAttempts(attemptsPagination.page + 1)}
+                      className="px-3 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 font-semibold"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================= */}
+            {/* SUBTAB 2: BLOCKED IP ADDRESSES MANAGEMENT                 */}
+            {/* ========================================================= */}
+            {securitySubTab === "BLOCKED_IPS" && (
+              <div className="bg-white rounded-2xl border border-brand-border p-6 shadow-subtle space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">
+                  <div className="flex items-center gap-2 flex-1">
+                    <Search className="w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search blocked IP, reason, or admin email..."
+                      value={blockedIpSearch}
+                      onChange={(e) => setBlockedIpSearch(e.target.value)}
+                      className="w-full sm:max-w-md px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={blockedIpStatusFilter}
+                      onChange={(e) => setBlockedIpStatusFilter(e.target.value)}
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs outline-none"
+                    >
+                      <option value="ALL">All Statuses</option>
+                      <option value="ACTIVE">Active Blocks Only</option>
+                      <option value="EXPIRED">Expired Blocks</option>
+                      <option value="UNBLOCKED">Manually Unblocked</option>
+                    </select>
+
+                    <button
+                      onClick={loadBlockedIps}
+                      className="px-3 py-1.5 rounded-lg bg-brand-navy hover:bg-slate-800 text-white font-bold"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+
+                {/* Blocked IPs Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs min-w-[700px]">
+                    <thead>
+                      <tr className="border-b border-brand-border text-brand-slate uppercase text-[10px] tracking-wider">
+                        <th className="py-2.5 px-3">IP Address</th>
+                        <th className="py-2.5 px-3">Reason</th>
+                        <th className="py-2.5 px-3">Blocked By</th>
+                        <th className="py-2.5 px-3">Date Blocked</th>
+                        <th className="py-2.5 px-3">Expiration / Duration</th>
+                        <th className="py-2.5 px-3">Enforcement Status</th>
+                        <th className="py-2.5 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-sans">
+                      {blockedIps.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="py-8 text-center text-slate-400">
+                            No blocked IP records found.
+                          </td>
+                        </tr>
+                      ) : (
+                        blockedIps.map((block) => (
+                          <tr key={block.id} className="hover:bg-slate-50/50">
+                            <td className="py-2.5 px-3 font-mono font-bold text-slate-800 text-xs">
+                              {block.ipAddress}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-slate-700 max-w-[200px]">
+                              {block.reason}
+                              {block.unblockReason && (
+                                <span className="block text-[10px] text-slate-400 italic">
+                                  Unblock: {block.unblockReason}
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-brand-navy font-semibold">
+                              {block.adminEmail}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap font-mono text-[11px]">
+                              {new Date(block.createdAt).toLocaleString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-[11px]">
+                              {!block.expiresAt ? (
+                                <span className="font-bold text-rose-700">Permanent</span>
+                              ) : new Date(block.expiresAt) <= new Date() ? (
+                                <span className="text-slate-400 line-through">
+                                  Expired {new Date(block.expiresAt).toLocaleDateString()}
+                                </span>
+                              ) : (
+                                <span className="font-semibold text-amber-700">
+                                  Until {new Date(block.expiresAt).toLocaleString()}
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-2.5 px-3">
+                              {block.status === "ACTIVE" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                  <Ban className="w-3 h-3" />
+                                  ACTIVE ENFORCEMENT
+                                </span>
+                              )}
+                              {block.status === "EXPIRED" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                  <Clock className="w-3 h-3" />
+                                  EXPIRED
+                                </span>
+                              )}
+                              {block.status === "UNBLOCKED" && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                                  <CheckCircle className="w-3 h-3" />
+                                  UNBLOCKED
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  onClick={() => {
+                                    setFilterIp(block.ipAddress);
+                                    setSecuritySubTab("ATTEMPTS");
+                                    loadLoginAttempts(1);
+                                  }}
+                                  className="px-2 py-1 rounded text-[10px] font-semibold text-brand-blue hover:bg-blue-50 border border-blue-200"
+                                >
+                                  View Attempts
+                                </button>
+
+                                {block.status === "ACTIVE" && (
+                                  <button
+                                    disabled={isAnalyst}
+                                    onClick={() => {
+                                      setUnblockModalTarget(block);
+                                      setUnblockReason("");
+                                    }}
+                                    className="px-2 py-1 rounded text-[10px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 disabled:opacity-40"
+                                  >
+                                    Unblock
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ========================================================= */}
@@ -5792,6 +6464,157 @@ export default function AdminPage() {
                   className="px-5 py-2 rounded-xl bg-[#004B93] hover:bg-sky-700 text-white font-bold transition-colors disabled:opacity-40"
                 >
                   {submittingManualBill ? "Saving..." : "Save Record"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: BLOCK IP ADDRESS                                   */}
+      {/* ========================================================= */}
+      {blockModalTarget && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2 text-rose-600 font-bold">
+                <Ban className="w-5 h-5" />
+                <h3 className="text-base text-brand-navy">Enforce IP Access Block</h3>
+              </div>
+              <button
+                onClick={() => setBlockModalTarget(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleExecuteBlock} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Target IP Address (IPv4 / IPv6)</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. 112.198.120.45 or 2001:db8::1"
+                  value={blockModalTarget.ipAddress}
+                  onChange={(e) =>
+                    setBlockModalTarget({ ...blockModalTarget, ipAddress: e.target.value.trim() })
+                  }
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 font-mono text-xs outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Reason for Administrative Block <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  required
+                  rows={2}
+                  placeholder="e.g. Repeated unauthorized login attempts with invalid credentials"
+                  value={blockReason}
+                  onChange={(e) => setBlockReason(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Block Enforcement Duration</label>
+                <select
+                  value={blockDuration}
+                  onChange={(e) => setBlockDuration(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                >
+                  <option value="1h">Temporary: 1 Hour</option>
+                  <option value="24h">Temporary: 24 Hours (1 Day)</option>
+                  <option value="7d">Temporary: 7 Days (1 Week)</option>
+                  <option value="permanent">Permanent (Until manually unblocked)</option>
+                </select>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Expired blocks stop being enforced automatically while preserving historical audit logs.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <span>
+                  This block is enforced on the server before accepting administrative credentials. The blocked IP
+                  will immediately receive an HTTP 403 Access Denied on all future login requests.
+                </span>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setBlockModalTarget(null)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingBlock || !blockModalTarget.ipAddress || !blockReason.trim()}
+                  className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-colors disabled:opacity-40"
+                >
+                  {submittingBlock ? "Enforcing..." : "Enforce Block Now"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: UNBLOCK IP ADDRESS                                 */}
+      {/* ========================================================= */}
+      {unblockModalTarget && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2 text-emerald-600 font-bold">
+                <CheckCircle className="w-5 h-5" />
+                <h3 className="text-base text-brand-navy">Confirm IP Unblock</h3>
+              </div>
+              <button
+                onClick={() => setUnblockModalTarget(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleExecuteUnblock} className="space-y-4 text-xs">
+              <p className="text-slate-600">
+                Are you sure you want to restore administrative access for IP address{" "}
+                <span className="font-mono font-bold text-brand-navy">{unblockModalTarget.ipAddress}</span>?
+              </p>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Unblock Reason / Reference (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Verified legitimate administrator device"
+                  value={unblockReason}
+                  onChange={(e) => setUnblockReason(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setUnblockModalTarget(null)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingUnblock}
+                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-colors disabled:opacity-40"
+                >
+                  {submittingUnblock ? "Unblocking..." : "Confirm & Restore Access"}
                 </button>
               </div>
             </form>

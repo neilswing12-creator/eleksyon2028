@@ -57,7 +57,7 @@ export async function GET(
         confirmed: records.filter((r) => r.reviewStatus === "CONFIRMED").length,
         needsReview: records.filter((r) => r.reviewStatus === "NEEDS_REVIEW").length,
         enacted: records.filter(
-          (r) => r.status === "ENACTED_INTO_LAW" || r.status === "REPUBLIC_ACT"
+          (r) => r.status === "ENACTED_INTO_LAW" || r.status === "REPUBLIC_ACT" || !!r.republicActNo
         ).length,
       },
     });

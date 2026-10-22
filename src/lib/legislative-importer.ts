@@ -556,28 +556,59 @@ export async function importCandidateLegislativeRecords(
         needsReviewCount++;
       }
 
-      // Check for existing record to avoid duplication
-      const existing = await prisma.candidateLegislativeRecord.findFirst({
-        where: {
+      // Smart deduplication: check candidateId + billNo + congress, or candidateId + republicActNo
+      const orConditions: any[] = [
+        {
           candidateId: candidate.id,
           billNo: rec.billNo,
           congress: rec.congress,
-          role: rec.role,
-          sourceInstitution: rec.sourceInstitution,
+        },
+      ];
+      if (rec.republicActNo) {
+        orConditions.push({
+          candidateId: candidate.id,
+          republicActNo: rec.republicActNo,
+        });
+      }
+
+      const existing = await prisma.candidateLegislativeRecord.findFirst({
+        where: {
+          OR: orConditions,
         },
       });
 
       if (existing) {
+        // If an update of role would clash with another record due to @@unique constraint, delete the duplicate first
+        const potentialClash = await prisma.candidateLegislativeRecord.findFirst({
+          where: {
+            candidateId: candidate.id,
+            billNo: rec.billNo,
+            congress: rec.congress,
+            role: rec.role,
+            sourceInstitution: rec.sourceInstitution,
+            id: { not: existing.id },
+          },
+        });
+        if (potentialClash) {
+          await prisma.candidateLegislativeRecord.delete({
+            where: { id: potentialClash.id },
+          });
+        }
+
         await prisma.candidateLegislativeRecord.update({
           where: { id: existing.id },
           data: {
+            billNo: rec.billNo,
             title: rec.title,
             longTitle: rec.longTitle,
+            role: rec.role,
             status: rec.status,
             republicActNo: rec.republicActNo,
             filedDate: filedDateObj,
+            sourceInstitution: rec.sourceInstitution,
             sourceUrl: rec.sourceUrl,
             pdfUrl: rec.pdfUrl,
+            reviewStatus,
             matchConfidence: rec.matchConfidence,
             matchNotes: rec.matchNotes,
             displayOrder: i + 1,
@@ -740,22 +771,288 @@ export async function importCandidateLegislativeRecords(
 }
 
 /**
+ * Standard RFC 4180 compliant CSV parser that correctly preserves
+ * commas inside quoted fields, multiline text, escaped quotes (""),
+ * and unquoted fields with spaces.
+ */
+export function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentField = "";
+  let inQuotes = false;
+  let i = 0;
+
+  while (i < text.length) {
+    const char = text[i];
+    if (inQuotes) {
+      if (char === '"') {
+        if (i + 1 < text.length && text[i + 1] === '"') {
+          currentField += '"';
+          i += 2;
+          continue;
+        } else {
+          inQuotes = false;
+          i++;
+          continue;
+        }
+      } else {
+        currentField += char;
+        i++;
+        continue;
+      }
+    } else {
+      if (char === '"') {
+        inQuotes = true;
+        i++;
+        continue;
+      } else if (char === ',') {
+        currentRow.push(currentField.trim());
+        currentField = "";
+        i++;
+        continue;
+      } else if (char === '\r') {
+        if (i + 1 < text.length && text[i + 1] === '\n') {
+          i++;
+        }
+        currentRow.push(currentField.trim());
+        currentField = "";
+        if (currentRow.some((f) => f.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        i++;
+        continue;
+      } else if (char === '\n') {
+        currentRow.push(currentField.trim());
+        currentField = "";
+        if (currentRow.some((f) => f.length > 0)) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        i++;
+        continue;
+      } else {
+        currentField += char;
+        i++;
+        continue;
+      }
+    }
+  }
+
+  if (currentField.length > 0 || currentRow.length > 0) {
+    currentRow.push(currentField.trim());
+    if (currentRow.some((f) => f.length > 0)) {
+      rows.push(currentRow);
+    }
+  }
+
+  return rows;
+}
+
+/**
+ * Normalizes legislative roles preserving co-authorship, sponsorship,
+ * and compound designations without flattening everything to PRINCIPAL_AUTHOR.
+ */
+export function normalizeLegislativeRole(roleRaw: string): {
+  role: string;
+  isCompound: boolean;
+  notes?: string;
+} {
+  const raw = (roleRaw || "").trim();
+  const upper = raw.toUpperCase();
+
+  const hasAuthor = upper.includes("AUTHOR") && !upper.includes("CO-AUTHOR") && !upper.includes("CO_AUTHOR") && !upper.includes("COAUTHOR");
+  const hasCoAuthor = upper.includes("CO-AUTHOR") || upper.includes("CO_AUTHOR") || upper.includes("COAUTHOR");
+  const hasSponsor = upper.includes("SPONSOR") && !upper.includes("CO-SPONSOR") && !upper.includes("CO_SPONSOR") && !upper.includes("COSPONSOR");
+  const hasCoSponsor = upper.includes("CO-SPONSOR") || upper.includes("CO_SPONSOR") || upper.includes("COSPONSOR");
+  const hasChampion = upper.includes("CHAMPION");
+  const hasChair = upper.includes("COMMITTEE CHAIR") || upper.includes("CHAIR");
+
+  if (hasCoAuthor && (hasSponsor || hasChair)) {
+    return { role: "CO_AUTHOR; SPONSOR", isCompound: true, notes: raw };
+  }
+  if (hasAuthor && (hasSponsor || hasChair)) {
+    return { role: "AUTHOR; SPONSOR", isCompound: true, notes: raw };
+  }
+  if (hasCoAuthor) {
+    return { role: "CO_AUTHOR", isCompound: false, notes: raw };
+  }
+  if (hasAuthor) {
+    return { role: "PRINCIPAL_AUTHOR", isCompound: false, notes: raw };
+  }
+  if (hasCoSponsor) {
+    return { role: "CO_SPONSOR", isCompound: false, notes: raw };
+  }
+  if (hasSponsor) {
+    return { role: "SPONSOR", isCompound: false, notes: raw };
+  }
+  if (hasChampion) {
+    return { role: "SPONSOR", isCompound: false, notes: `Legislative champion: ${raw}` };
+  }
+  if (hasChair) {
+    return { role: "SPONSOR", isCompound: false, notes: `Committee chair: ${raw}` };
+  }
+
+  return { role: raw.replace(/[\r\n]+/g, " ").trim(), isCompound: false, notes: raw };
+}
+
+/**
+ * Detects Republic Acts vs ordinary pending bills and extracts republicActNo
+ */
+export function detectEnactedLaw(
+  billNoRaw: string,
+  republicActNoRaw?: string,
+  titleRaw?: string,
+  statusRaw?: string
+): {
+  isEnactedLaw: boolean;
+  republicActNo?: string;
+  cleanBillNo: string;
+  status: string;
+} {
+  const bRaw = (billNoRaw || "").trim();
+  const raRaw = (republicActNoRaw || "").trim();
+  const tRaw = (titleRaw || "").trim();
+  const sRaw = (statusRaw || "").trim().toUpperCase();
+
+  let isEnactedLaw = false;
+  let republicActNo: string | undefined = undefined;
+  let cleanBillNo = bRaw;
+
+  // Check if billNo or republicActNo matches RA pattern
+  const raMatch =
+    bRaw.match(/^R\.?A\.?\s*No\.?\s*(\d+)/i) ||
+    raRaw.match(/^R\.?A\.?\s*No\.?\s*(\d+)/i) ||
+    bRaw.match(/^RA\s*(\d+)/i) ||
+    raRaw.match(/^RA\s*(\d+)/i);
+
+  if (raMatch) {
+    isEnactedLaw = true;
+    republicActNo = `RA ${raMatch[1]}`;
+    cleanBillNo = `RA ${raMatch[1]}`;
+  } else if (raRaw) {
+    isEnactedLaw = true;
+    republicActNo = raRaw;
+  }
+
+  // Check title for Republic Act mention
+  if (!republicActNo) {
+    const titleRaMatch = tRaw.match(/REPUBLIC\s+ACT\s+NO\.?\s*(\d+)/i);
+    if (titleRaMatch) {
+      isEnactedLaw = true;
+      republicActNo = `RA ${titleRaMatch[1]}`;
+    }
+  }
+
+  // Determine status
+  let status = sRaw;
+  if (!status || status === "PENDING") {
+    if (isEnactedLaw) {
+      status = "REPUBLIC_ACT";
+    } else {
+      status = "PENDING";
+    }
+  } else if (isEnactedLaw && !status.includes("ENACTED") && !status.includes("REPUBLIC_ACT")) {
+    status = "REPUBLIC_ACT";
+  }
+
+  return { isEnactedLaw, republicActNo, cleanBillNo, status };
+}
+
+/**
+ * Validates source URLs and metadata against official Senate/House standards
+ */
+export function validateLegislativeSource(
+  chamber: string,
+  congress: number,
+  billNo: string,
+  title: string,
+  role: string,
+  sourceUrl: string,
+  isEnactedLaw: boolean
+): {
+  matchConfidence: number;
+  reviewStatus: "CONFIRMED" | "NEEDS_REVIEW" | "REJECTED";
+  issues: string[];
+} {
+  const issues: string[] = [];
+  let score = 1.0;
+
+  const urlLower = (sourceUrl || "").toLowerCase();
+  const isOfficialGov =
+    urlLower.includes("senate.gov.ph") ||
+    urlLower.includes("congress.gov.ph") ||
+    urlLower.includes("officialgazette.gov.ph");
+
+  if (!sourceUrl || (!urlLower.startsWith("http://") && !urlLower.startsWith("https://"))) {
+    issues.push("Invalid or missing source URL");
+    score -= 0.40;
+  } else if (!isOfficialGov) {
+    issues.push("Third-party / unofficial source URL (not a verified .gov.ph portal)");
+    score -= 0.25;
+  }
+
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= 1) {
+    issues.push(`Suspiciously truncated title: only 1 word ("${title}")`);
+    score -= 0.40;
+  } else if (title.toLowerCase().includes("(title requires verification)")) {
+    issues.push("Title marked as requiring verification");
+    score -= 0.30;
+  } else if (title.length < 10) {
+    issues.push("Title is very short (< 10 chars)");
+    score -= 0.20;
+  }
+
+  const isWellFormedBill =
+    /^SBN?[- ]?\d+/i.test(billNo) ||
+    /^HB[- ]?\d+/i.test(billNo) ||
+    /^(PSR|SCR|HR|CR)[- ]?\d+/i.test(billNo) ||
+    /^RA[- ]?\d+/i.test(billNo);
+
+  if (!isWellFormedBill) {
+    issues.push(`Non-standard bill or resolution identifier format: "${billNo}"`);
+    score -= 0.20;
+  }
+
+  if (congress < 8 || congress > 20) {
+    issues.push(`Unusual Congress number (${congress})`);
+    score -= 0.15;
+  }
+
+  const confidence = Math.max(0.1, Math.min(1.0, Math.round(score * 100) / 100));
+  const reviewStatus = confidence >= 0.85 && issues.length === 0 ? "CONFIRMED" : "NEEDS_REVIEW";
+
+  return { matchConfidence: confidence, reviewStatus, issues };
+}
+
+export interface LegislativeValidationResult {
+  validRecords: OfficialLegislativeRecord[];
+  invalidRows: { row: number; errors: string[]; raw: any }[];
+  warnings: { row: number; warning: string; billNo: string; title: string }[];
+  summary: {
+    totalRows: number;
+    validCount: number;
+    invalidCount: number;
+    billsCount: number;
+    enactedLawsCount: number;
+    needsReviewCount: number;
+    confirmedCount: number;
+    rolesCount: Record<string, number>;
+  };
+}
+
+/**
  * Validates and parses raw CSV or JSON content for Administrator-Assisted Import
  */
 export function parseAndValidateLegislativeData(
   rawContent: string,
   fileFormat: "csv" | "json"
-): {
-  validRecords: OfficialLegislativeRecord[];
-  invalidRows: { row: number; errors: string[]; raw: any }[];
-  summary: {
-    totalRows: number;
-    validCount: number;
-    invalidCount: number;
-  };
-} {
+): LegislativeValidationResult {
   const validRecords: OfficialLegislativeRecord[] = [];
   const invalidRows: { row: number; errors: string[]; raw: any }[] = [];
+  const warnings: { row: number; warning: string; billNo: string; title: string }[] = [];
+  const rolesCount: Record<string, number> = {};
 
   let rawList: any[] = [];
 
@@ -767,29 +1064,46 @@ export function parseAndValidateLegislativeData(
       return {
         validRecords: [],
         invalidRows: [{ row: 1, errors: [`JSON Parse Error: ${e.message}`], raw: rawContent.slice(0, 100) }],
-        summary: { totalRows: 0, validCount: 0, invalidCount: 1 },
+        warnings: [],
+        summary: {
+          totalRows: 0,
+          validCount: 0,
+          invalidCount: 1,
+          billsCount: 0,
+          enactedLawsCount: 0,
+          needsReviewCount: 0,
+          confirmedCount: 0,
+          rolesCount: {},
+        },
       };
     }
   } else {
-    // Basic CSV parser
-    const lines = rawContent.split(/\r?\n/).filter((l) => l.trim().length > 0);
-    if (lines.length < 2) {
+    // RFC 4180 compliant CSV parser
+    const table = parseCsv(rawContent);
+    if (table.length < 2) {
       return {
         validRecords: [],
         invalidRows: [{ row: 1, errors: ["CSV file must contain a header row and at least one data row."], raw: rawContent }],
-        summary: { totalRows: 0, validCount: 0, invalidCount: 1 },
+        warnings: [],
+        summary: {
+          totalRows: 0,
+          validCount: 0,
+          invalidCount: 1,
+          billsCount: 0,
+          enactedLawsCount: 0,
+          needsReviewCount: 0,
+          confirmedCount: 0,
+          rolesCount: {},
+        },
       };
     }
 
-    const headers = lines[0].split(",").map((h) => h.trim().replace(/^["']|["']$/g, ""));
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
-      // Regex CSV splitter handling quotes
-      const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(",");
+    const rawHeaders = table[0].map((h) => h.trim().toLowerCase().replace(/^["']|["']$/g, ""));
+    for (let r = 1; r < table.length; r++) {
+      const rowValues = table[r];
       const rowObj: Record<string, string> = {};
-      headers.forEach((h, idx) => {
-        const val = values[idx] ? values[idx].trim().replace(/^["']|["']$/g, "") : "";
-        rowObj[h] = val;
+      rawHeaders.forEach((h, idx) => {
+        rowObj[h] = rowValues[idx] !== undefined ? rowValues[idx].trim() : "";
       });
       rawList.push(rowObj);
     }
@@ -800,63 +1114,126 @@ export function parseAndValidateLegislativeData(
     const rowNum = idx + 1;
     const errors: string[] = [];
 
-    const billNo = String(item.billNo || item.bill_number || item.billNumber || "").trim();
-    const title = String(item.title || item.billTitle || item.name || "").trim();
-    const chamberRaw = String(item.chamber || "").trim().toUpperCase();
-    const chamber = chamberRaw === "SENATE" || chamberRaw === "HOUSE" ? chamberRaw : null;
-    
-    let congress = parseInt(item.congress || item.congress_number || "19", 10);
+    // Map flexible column names
+    const billNoRaw = String(
+      item.billno || item.bill_no || item.billnumber || item.bill_number || item.measure || item.recordno || ""
+    ).trim();
+    const titleRaw = String(
+      item.title || item.billtitle || item.bill_title || item.name || ""
+    ).trim();
+    const chamberRaw = String(item.chamber || item.house || "").trim().toUpperCase();
+    const chamber = chamberRaw === "SENATE" || chamberRaw === "HOUSE" || chamberRaw === "HOR" ? (chamberRaw === "HOR" ? "HOUSE" : chamberRaw) : null;
+
+    let congress = parseInt(item.congress || item.congress_number || item.session || "19", 10);
     if (isNaN(congress)) {
       const match = String(item.congress || "").match(/\d+/);
       congress = match ? parseInt(match[0], 10) : 19;
     }
 
-    const roleRaw = String(item.role || item.authorship || "PRINCIPAL_AUTHOR").trim().toUpperCase();
-    const validRoles = ["PRINCIPAL_AUTHOR", "CO_AUTHOR", "SPONSOR", "CO_SPONSOR"];
-    const role = validRoles.includes(roleRaw) ? roleRaw : "PRINCIPAL_AUTHOR";
+    const roleInput = String(item.role || item.authorship || item.role_type || "PRINCIPAL_AUTHOR").trim();
+    const { role, isCompound, notes: roleNotes } = normalizeLegislativeRole(roleInput);
+    rolesCount[role] = (rolesCount[role] || 0) + 1;
 
-    const sourceUrl = String(item.sourceUrl || item.source_url || item.url || "").trim();
+    const sourceUrl = String(item.sourceurl || item.source_url || item.url || item.link || "").trim();
+    const republicActNoInput = String(item.republicactno || item.republic_act_no || item.ra_no || "").trim();
 
-    if (!billNo) errors.push("Missing required field 'billNo' (e.g. 'SB-100', 'HB-200')");
-    if (!title || title.length < 3) errors.push("Missing or too short 'title' (minimum 3 characters)");
+    if (!billNoRaw) errors.push("Missing required field 'billNo' (e.g. 'SBN-139', 'RA 11210')");
+    if (!titleRaw || titleRaw.length < 3) errors.push("Missing or too short 'title' (minimum 3 characters)");
     if (!chamber) errors.push("Invalid 'chamber': must be 'SENATE' or 'HOUSE'");
     if (isNaN(congress) || congress < 8 || congress > 25) errors.push("Invalid 'congress' (must be between 8 and 25)");
     if (!sourceUrl || (!sourceUrl.startsWith("http://") && !sourceUrl.startsWith("https://"))) {
       errors.push("Invalid 'sourceUrl': must be an absolute HTTP or HTTPS URL");
     }
 
+    // Single-word truncated title detection warning
+    const words = titleRaw.split(/\s+/).filter(Boolean);
+    if (words.length <= 1 && titleRaw.length > 0) {
+      warnings.push({
+        row: rowNum,
+        warning: `Title appears truncated or incomplete (only 1 word: "${titleRaw}"). Please ensure full title is preserved.`,
+        billNo: billNoRaw,
+        title: titleRaw,
+      });
+    }
+
     if (errors.length > 0) {
       invalidRows.push({ row: rowNum, errors, raw: item });
     } else {
+      const { isEnactedLaw, republicActNo, cleanBillNo, status } = detectEnactedLaw(
+        billNoRaw,
+        republicActNoInput,
+        titleRaw,
+        item.status
+      );
+
+      const { matchConfidence, reviewStatus, issues } = validateLegislativeSource(
+        chamber as "SENATE" | "HOUSE",
+        congress,
+        cleanBillNo,
+        titleRaw,
+        role,
+        sourceUrl,
+        isEnactedLaw
+      );
+
+      if (issues.length > 0) {
+        issues.forEach((iss) => {
+          warnings.push({
+            row: rowNum,
+            warning: iss,
+            billNo: cleanBillNo,
+            title: titleRaw,
+          });
+        });
+      }
+
+      let matchNotes = "Official Philippine legislative record";
+      if (isEnactedLaw) {
+        matchNotes = `Enacted into law as Republic Act (${republicActNo}). Role: ${roleInput}. Verified from official Senate/House profile.`;
+      } else if (roleInput !== role) {
+        matchNotes = `Official legislative measure (${chamber} ${congress}th Congress). Preserved role: ${roleInput}.`;
+      }
+
       const sourceInstitution = chamber === "SENATE" ? "SENATE_PH" : "HOUSE_PH";
       const rec: OfficialLegislativeRecord = {
         chamber: chamber as "SENATE" | "HOUSE",
         congress,
-        billNo,
-        title,
-        longTitle: item.longTitle || item.long_title || title,
-        role: role as any,
-        status: item.status || "PENDING",
-        republicActNo: item.republicActNo || item.republic_act_no || undefined,
-        filedDate: item.filedDate || item.filed_date || undefined,
+        billNo: cleanBillNo,
+        title: titleRaw,
+        longTitle: item.longtitle || item.long_title || item.description || titleRaw,
+        role,
+        status: status as any,
+        republicActNo: republicActNo || undefined,
+        filedDate: item.fileddate || item.filed_date || undefined,
         sourceInstitution,
         sourceUrl,
-        pdfUrl: item.pdfUrl || item.pdf_url || undefined,
-        matchConfidence: 1.0,
-        matchNotes: "Administrator-verified manual file upload",
-        reviewStatus: "CONFIRMED",
+        pdfUrl: item.pdfurl || item.pdf_url || undefined,
+        matchConfidence,
+        matchNotes,
+        reviewStatus,
       };
       validRecords.push(rec);
     }
   }
 
+  const enactedLawsCount = validRecords.filter((r) => Boolean(r.republicActNo) || r.status.includes("ENACTED") || r.status.includes("REPUBLIC_ACT")).length;
+  const billsCount = validRecords.length - enactedLawsCount;
+  const needsReviewCount = validRecords.filter((r) => r.reviewStatus === "NEEDS_REVIEW").length;
+  const confirmedCount = validRecords.filter((r) => r.reviewStatus === "CONFIRMED").length;
+
   return {
     validRecords,
     invalidRows,
+    warnings,
     summary: {
       totalRows: rawList.length,
       validCount: validRecords.length,
       invalidCount: invalidRows.length,
+      billsCount,
+      enactedLawsCount,
+      needsReviewCount,
+      confirmedCount,
+      rolesCount,
     },
   };
 }

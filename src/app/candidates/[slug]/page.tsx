@@ -780,8 +780,15 @@ export default function CandidateDetailPage() {
                   No Congressional Legislative Records on File
                 </h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  {candidate.name} has not served as an elected member of the Senate of the Philippines or the House of Representatives.
-                  Their public career focuses on executive administration, local governance, or private sector leadership, detailed in the verified Public Service and Platforms sections below.
+                  Legislative records for {candidate.name} may still be pending,
+                  loading, or awaiting verification. The absence of records displayed
+                  here does not necessarily mean that no legislative history exists.
+                  Data availability may depend on source accessibility, ongoing imports,
+                  and verification status.
+
+                  Please check back later as additional legislative records are
+                  retrieved and verified. Refer to the Public Service and Platforms
+                  sections below for available verified information.
                 </p>
               </div>
             </div>

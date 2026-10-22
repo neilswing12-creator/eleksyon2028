@@ -931,7 +931,7 @@ async function runTests() {
   const invalidOverseasRes = await submitPOST(invalidOverseasReq as any);
 
   // 2. Valid overseas submission (Saudi Arabia - Middle East, city Riyadh)
-  const validOfwIp = `152.160.20.${Date.now() % 200 + 10}`;
+  const validOfwIp = `152.${Math.floor(Math.random() * 250 + 1)}.${Math.floor(Math.random() * 250 + 1)}.${Math.floor(Math.random() * 250 + 1)}`;
   const validOverseasReq = new Request("http://localhost/api/survey/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-forwarded-for": validOfwIp },

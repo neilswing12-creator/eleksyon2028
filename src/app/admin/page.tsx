@@ -3745,17 +3745,25 @@ export default function AdminPage() {
                       .map((rec) => (
                         <tr key={rec.id} className="hover:bg-slate-50/50">
                           <td className="py-3 px-3">
-                            <span className="font-mono font-bold text-[#0B1E36] block">
-                              {rec.billNo}
-                            </span>
-                            {rec.republicActNo && (
-                              <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                                {rec.republicActNo}
-                              </span>
-                            )}
+                            <div className="space-y-1">
+                              {rec.republicActNo && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 font-mono border border-emerald-200">
+                                  {rec.republicActNo}
+                                </span>
+                              )}
+                              {rec.billNo && rec.billNo !== rec.republicActNo ? (
+                                <span className="font-mono font-semibold text-slate-600 block text-[11px]">
+                                  {rec.billNo}
+                                </span>
+                              ) : !rec.republicActNo ? (
+                                <span className="font-mono font-bold text-[#0B1E36] block text-xs">
+                                  {rec.billNo}
+                                </span>
+                              ) : null}
+                            </div>
                           </td>
-                          <td className="py-3 px-3 max-w-xs">
-                            <div className="font-semibold text-[#0B1E36] line-clamp-2 leading-snug">
+                          <td className="py-3 px-3 max-w-sm" title={rec.title}>
+                            <div className="font-semibold text-[#0B1E36] line-clamp-3 leading-snug">
                               {rec.title}
                             </div>
                             {rec.sourceUrl && (
@@ -3773,20 +3781,32 @@ export default function AdminPage() {
                           <td className="py-3 px-3 font-semibold text-slate-700">
                             {rec.chamber === "SENATE" ? "Senate" : "House"} ({rec.congress}th)
                           </td>
-                          <td className="py-3 px-3 font-semibold text-slate-700">
-                            {rec.role.replace(/_/g, " ")}
+                          <td className="py-3 px-3">
+                            <span
+                              className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold ${
+                                rec.role.includes("CO_AUTHOR")
+                                  ? "bg-purple-50 text-purple-700 border border-purple-200"
+                                  : rec.role.includes("SPONSOR")
+                                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                                  : "bg-sky-50 text-sky-800 border border-sky-200"
+                              }`}
+                            >
+                              {rec.role.replace(/_/g, " ")}
+                            </span>
                           </td>
                           <td className="py-3 px-3">
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                rec.status.includes("ENACTED") || rec.republicActNo
-                                  ? "bg-emerald-100 text-emerald-800"
+                              className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                                rec.status.includes("ENACTED") || rec.status.includes("REPUBLIC_ACT") || rec.republicActNo
+                                  ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                   : rec.status.includes("PASSED")
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-amber-100 text-amber-800"
+                                  ? "bg-blue-100 text-blue-800 border border-blue-200"
+                                  : "bg-amber-100 text-amber-800 border border-amber-200"
                               }`}
                             >
-                              {rec.status.replace(/_/g, " ")}
+                              {rec.status.includes("REPUBLIC_ACT") || (rec.republicActNo && !rec.status.includes("PASSED"))
+                                ? "REPUBLIC ACT (ENACTED)"
+                                : rec.status.replace(/_/g, " ")}
                             </span>
                           </td>
                           <td className="py-3 px-3">
@@ -5403,16 +5423,33 @@ export default function AdminPage() {
                 )}
 
                 {fileImportPreview && (
-                  <div className="space-y-2 pt-1 border-t border-slate-200/80">
-                    <div className="flex items-center justify-between text-xs">
+                  <div className="space-y-3 pt-1 border-t border-slate-200/80">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                       <span className="font-semibold text-slate-700">Preview: {fileImportPreview.filename}</span>
-                      <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        {fileImportPreview.validation.validRecords.length} Valid Records
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          {fileImportPreview.validation.validRecords.length} Valid Records
+                        </span>
+                        {fileImportPreview.validation.summary?.enactedLawsCount > 0 && (
+                          <span className="text-[11px] text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
+                            {fileImportPreview.validation.summary.enactedLawsCount} Enacted Law(s)
+                          </span>
+                        )}
+                        {fileImportPreview.validation.summary?.billsCount > 0 && (
+                          <span className="text-[11px] text-sky-800 font-bold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+                            {fileImportPreview.validation.summary.billsCount} Pending Bill(s)
+                          </span>
+                        )}
+                        {fileImportPreview.validation.summary?.needsReviewCount > 0 && (
+                          <span className="text-[11px] text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                            {fileImportPreview.validation.summary.needsReviewCount} Needs Review
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     {fileImportPreview.validation.invalidRows.length > 0 && (
-                      <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] space-y-1">
+                      <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-900 text-[11px] space-y-1">
                         <span className="font-bold">{fileImportPreview.validation.invalidRows.length} Row Validation Warning(s):</span>
                         {fileImportPreview.validation.invalidRows.slice(0, 3).map((inv: any, i: number) => (
                           <div key={i}>Row {inv.row}: {inv.errors.join(", ")}</div>
@@ -5420,30 +5457,78 @@ export default function AdminPage() {
                       </div>
                     )}
 
-                    <div className="max-h-36 overflow-y-auto border border-slate-200 rounded-lg bg-white">
+                    {fileImportPreview.validation.warnings && fileImportPreview.validation.warnings.length > 0 && (
+                      <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] space-y-1">
+                        <span className="font-bold">{fileImportPreview.validation.warnings.length} Quality Warning(s) Flagged for Review:</span>
+                        {fileImportPreview.validation.warnings.slice(0, 3).map((w: any, i: number) => (
+                          <div key={i}>Row {w.row} ({w.billNo}): {w.warning}</div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="max-h-60 overflow-y-auto border border-slate-200 rounded-lg bg-white">
                       <table className="w-full text-left text-[11px]">
-                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
+                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 sticky top-0 z-10">
                           <tr>
-                            <th className="p-1.5">Bill No</th>
-                            <th className="p-1.5">Title</th>
+                            <th className="p-1.5">Bill / RA No</th>
+                            <th className="p-1.5">Full Title</th>
                             <th className="p-1.5">Chamber</th>
                             <th className="p-1.5">Congress</th>
+                            <th className="p-1.5">Role</th>
+                            <th className="p-1.5">Type / Law</th>
+                            <th className="p-1.5">Review</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                          {fileImportPreview.validation.validRecords.slice(0, 5).map((r: any, idx: number) => (
-                            <tr key={idx}>
-                              <td className="p-1.5 font-bold font-mono text-[#0B1E36]">{r.billNo}</td>
-                              <td className="p-1.5 truncate max-w-xs">{r.title}</td>
-                              <td className="p-1.5">{r.chamber}</td>
-                              <td className="p-1.5">{r.congress}th</td>
+                          {fileImportPreview.validation.validRecords.map((r: any, idx: number) => (
+                            <tr key={idx} className="hover:bg-slate-50/50">
+                              <td className="p-1.5 font-bold font-mono text-[#0B1E36] whitespace-nowrap">
+                                {r.republicActNo ? (
+                                  <span className="inline-block px-1.5 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    {r.republicActNo}
+                                  </span>
+                                ) : (
+                                  <span>{r.billNo}</span>
+                                )}
+                              </td>
+                              <td className="p-1.5 max-w-xs font-medium text-slate-800 leading-snug" title={r.title}>
+                                <div className="line-clamp-2">{r.title}</div>
+                              </td>
+                              <td className="p-1.5 whitespace-nowrap">{r.chamber}</td>
+                              <td className="p-1.5 whitespace-nowrap">{r.congress}th</td>
+                              <td className="p-1.5 whitespace-nowrap">
+                                <span className="inline-block px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-700 font-semibold">
+                                  {r.role.replace(/_/g, " ")}
+                                </span>
+                              </td>
+                              <td className="p-1.5 whitespace-nowrap">
+                                <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                  r.republicActNo || r.status.includes("ENACTED") || r.status.includes("REPUBLIC_ACT")
+                                    ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                    : "bg-amber-100 text-amber-800 border border-amber-200"
+                                }`}>
+                                  {r.republicActNo ? "REPUBLIC ACT" : r.status.replace(/_/g, " ")}
+                                </span>
+                              </td>
+                              <td className="p-1.5 whitespace-nowrap">
+                                <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                  r.reviewStatus === "CONFIRMED"
+                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                    : "bg-amber-50 text-amber-800 border border-amber-200"
+                                }`}>
+                                  {r.reviewStatus === "CONFIRMED" ? "Confirmed" : "Needs Review"}
+                                </span>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
 
-                    <div className="flex justify-end pt-2">
+                    <div className="flex items-center justify-between pt-2">
+                      <div className="text-[11px] text-slate-500">
+                        Safe import mode: existing matching records will be updated with full official titles and roles without creating duplicates.
+                      </div>
                       <button
                         type="button"
                         disabled={processingFileImport || fileImportPreview.validation.validRecords.length === 0}

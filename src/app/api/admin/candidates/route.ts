@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyAdminSession, getClientIP } from "@/lib/security";
+import { sortCandidatesByPositionAndName } from "@/lib/candidate-sorting";
 import fs from "fs";
 import path from "path";
 
@@ -58,7 +59,9 @@ export async function GET(req: NextRequest) {
       orderBy: [{ position: "asc" }, { displayOrder: "asc" }],
     });
 
-    return NextResponse.json({ candidates });
+    const sortedCandidates = sortCandidatesByPositionAndName(candidates);
+
+    return NextResponse.json({ candidates: sortedCandidates });
   } catch (error) {
     console.error("Admin candidate list error:", error);
     return NextResponse.json({ error: "Server error." }, { status: 500 });

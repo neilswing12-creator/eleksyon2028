@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyAdminSession, getClientIP } from "@/lib/security";
+import { sortCandidatesByPositionAndName } from "@/lib/candidate-sorting";
 import { PHILIPPINE_PROVINCES } from "@/lib/philippines-geo";
 
 export const dynamic = "force-dynamic";
@@ -55,6 +56,8 @@ export async function GET(req: NextRequest) {
       orderBy: [{ position: "asc" }, { displayOrder: "asc" }],
     });
 
+    const sortedCandidates = sortCandidatesByPositionAndName(candidates);
+
     // Get active participant selections per candidate
     const rawSelections = await prisma.candidateSelection.groupBy({
       by: ["candidateId"],
@@ -85,7 +88,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Build candidate breakdown
-    const candidateSummaries = candidates.map((c) => {
+    const candidateSummaries = sortedCandidates.map((c) => {
       const rawVotes = rawVotesMap.get(c.id) || 0;
       const adjustmentAmount = adjustmentMap.get(c.id) || 0;
       const displayedTotal = Math.max(0, rawVotes + adjustmentAmount);

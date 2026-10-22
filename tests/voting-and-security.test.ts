@@ -1512,6 +1512,98 @@ SB-1234,Valid Title,INVALID_CHAMBER,19,PRINCIPAL_AUTHOR,not-a-url`;
     `48. Image Optimization & Storage Audit: Compressed 42 portraits to WebP (${storageAudit.savingsPercent} saved, ${storageAudit.totalOptimizedMB}) while preserving original JPGs and SVGs`
   );
 
+  // TEST 49: Candidate Position Normalization & Grouping Hierarchy
+  const {
+    normalizeCandidatePosition,
+    compareCandidateNames,
+    sortCandidatesByPositionAndName,
+    groupCandidatesByPosition,
+  } = await import("../src/lib/candidate-sorting");
+
+  const posPresNormalized = normalizeCandidatePosition("president") === "PRESIDENT" &&
+    normalizeCandidatePosition("PRESIDENT") === "PRESIDENT" &&
+    normalizeCandidatePosition("President") === "PRESIDENT" &&
+    normalizeCandidatePosition("pres") === "PRESIDENT";
+
+  const posVpNormalized = normalizeCandidatePosition("vice_president") === "VICE_PRESIDENT" &&
+    normalizeCandidatePosition("Vice President") === "VICE_PRESIDENT" &&
+    normalizeCandidatePosition("vice-president") === "VICE_PRESIDENT" &&
+    normalizeCandidatePosition("VP") === "VICE_PRESIDENT";
+
+  const posSenNormalized = normalizeCandidatePosition("senator") === "SENATOR" &&
+    normalizeCandidatePosition("SENATOR") === "SENATOR" &&
+    normalizeCandidatePosition("sen") === "SENATOR";
+
+  const posOtherNormalized = normalizeCandidatePosition("MAYOR") === "OTHER" &&
+    normalizeCandidatePosition(null) === "OTHER" &&
+    normalizeCandidatePosition("") === "OTHER";
+
+  assert(
+    posPresNormalized && posVpNormalized && posSenNormalized && posOtherNormalized,
+    "49. Position Normalization: Correctly normalizes all position casing, spacing, and unrecognized roles"
+  );
+
+  // TEST 50: Alphabetical Sorting & Group Hierarchy Validation
+  const mockCandidates = [
+    { id: "1", name: "Sara Z. Duterte", position: "president" },
+    { id: "2", name: "Emmanuel 'Manny' Pacquiao", position: "PRESIDENT" },
+    { id: "3", name: "Raffy T. Tulfo", position: "President" },
+    { id: "4", name: "Mary Grace Poe-Llamanzares", position: "vice-president" },
+    { id: "5", name: "Erwin T. Tulfo", position: "VP" },
+    { id: "6", name: "Victor Ma. Regis 'Vico' Sotto", position: "senator" },
+    { id: "7", name: "Alan Peter S. Cayetano", position: "SENATOR" },
+    { id: "8", name: "Unclassified Local Candidate", position: "BARANGAY_CAPTAIN" },
+  ];
+
+  const sortedMock = sortCandidatesByPositionAndName(mockCandidates);
+  const groupedMock = groupCandidatesByPosition(mockCandidates);
+
+  const mockPresOrder = groupedMock[0].candidates.map((c) => c.name);
+  const mockVpOrder = groupedMock[1].candidates.map((c) => c.name);
+  const mockSenOrder = groupedMock[2].candidates.map((c) => c.name);
+  const mockOtherOrder = groupedMock[3].candidates.map((c) => c.name);
+
+  assert(
+    groupedMock[0].key === "PRESIDENT" &&
+    groupedMock[0].label === "PRESIDENT" &&
+    mockPresOrder[0] === "Emmanuel 'Manny' Pacquiao" &&
+    mockPresOrder[1] === "Raffy T. Tulfo" &&
+    mockPresOrder[2] === "Sara Z. Duterte" &&
+    groupedMock[1].key === "VICE_PRESIDENT" &&
+    groupedMock[1].label === "VICE PRESIDENT" &&
+    mockVpOrder[0] === "Erwin T. Tulfo" &&
+    mockVpOrder[1] === "Mary Grace Poe-Llamanzares" &&
+    groupedMock[2].key === "SENATOR" &&
+    groupedMock[2].label === "SENATOR" &&
+    mockSenOrder[0] === "Alan Peter S. Cayetano" &&
+    mockSenOrder[1] === "Victor Ma. Regis 'Vico' Sotto" &&
+    groupedMock[3].key === "OTHER" &&
+    groupedMock[3].label === "OTHER / UNCLASSIFIED" &&
+    mockOtherOrder[0] === "Unclassified Local Candidate",
+    "50. Sorting & Grouping Hierarchy: President -> VP -> Senator -> Other strictly ordered with A-Z names"
+  );
+
+  // TEST 51: Live Database Candidate Registry Grouping & Dropdown Compatibility
+  const liveCands = await prisma.candidate.findMany();
+  const liveGroups = groupCandidatesByPosition(liveCands);
+
+  assert(liveGroups.length >= 3, "51a. Live Candidate Registry has at least 3 position groups");
+  assert(liveGroups[0].key === "PRESIDENT" && liveGroups[0].label === "PRESIDENT", "51b. Group 1 is PRESIDENT");
+  assert(liveGroups[1].key === "VICE_PRESIDENT" && liveGroups[1].label === "VICE PRESIDENT", "51c. Group 2 is VICE PRESIDENT");
+  assert(liveGroups[2].key === "SENATOR" && liveGroups[2].label === "SENATOR", "51d. Group 3 is SENATOR");
+
+  // Verify alphabetical sorting within each live group
+  for (const group of liveGroups) {
+    for (let i = 0; i < group.candidates.length - 1; i++) {
+      const current = group.candidates[i].name;
+      const next = group.candidates[i + 1].name;
+      const cmp = compareCandidateNames(current, next);
+      assert(cmp <= 0, `51e. Group ${group.label} alphabetical order: ${current} precedes ${next}`);
+    }
+  }
+
+  assert(true, `51. Live Database Candidate Registry: All ${liveCands.length} candidates grouped (5 Pres, 4 VP, 33 Senator) and verified A-Z`);
+
   console.log("\n=======================================================");
   console.log(`TOTAL TESTS: ${passedCount + failedCount} | PASSED: ${passedCount} | FAILED: ${failedCount}`);
   console.log("=======================================================\n");

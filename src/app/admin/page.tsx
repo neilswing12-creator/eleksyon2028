@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
+import { groupCandidatesByPosition, sortCandidatesByPositionAndName } from "@/lib/candidate-sorting";
 import {
   ShieldAlert,
   Users,
@@ -71,6 +72,11 @@ export default function AdminPage() {
 
   // Admin Data State
   const [candidates, setCandidates] = useState<any[]>([]);
+
+  // Grouped and sorted candidates (Presidents A-Z, Vice Presidents A-Z, Senators A-Z, Other A-Z)
+  const groupedCandidates = useMemo(() => {
+    return groupCandidatesByPosition(candidates);
+  }, [candidates]);
   const [platforms, setPlatforms] = useState<any[]>([]);
   const [campaign, setCampaign] = useState<any>(null);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
@@ -259,7 +265,10 @@ export default function AdminPage() {
         fetch("/api/admin/statistics"),
       ]);
 
-      if (candRes.ok) setCandidates((await candRes.json()).candidates || []);
+      if (candRes.ok) {
+        const rawCands = (await candRes.json()).candidates || [];
+        setCandidates(sortCandidatesByPositionAndName(rawCands));
+      }
       if (platRes.ok) setPlatforms((await platRes.json()).platforms || []);
       if (campRes.ok) setCampaign((await campRes.json()).campaign);
       if (logsRes.ok) setAuditLogs((await logsRes.json()).logs || []);
@@ -2995,10 +3004,14 @@ export default function AdminPage() {
                       className="w-full px-3 py-2 text-xs rounded-xl border border-brand-border outline-none focus:ring-2 focus:ring-brand-blue/30 bg-white"
                     >
                       <option value="">-- Choose Candidate --</option>
-                      {candidates.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name} ({c.position}) &bull; {c.party || "Ind"}
-                        </option>
+                      {groupedCandidates.map((group) => (
+                        <optgroup key={group.key} label={group.label} className="font-bold text-brand-navy">
+                          {group.candidates.map((c) => (
+                            <option key={c.id} value={c.id} className="font-normal text-slate-800">
+                              {c.name} ({c.position}) &bull; {c.party || "Ind"}
+                            </option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
                   </div>
@@ -3631,10 +3644,14 @@ export default function AdminPage() {
                 }}
                 className="w-full sm:max-w-md px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-brand-navy focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
-                {candidates.map((cand) => (
-                  <option key={cand.id} value={cand.id}>
-                    {cand.name} ({cand.position.replace("_", " ")}) — {cand.party || "Ind."} [{cand.legislativeRecords?.length ?? cand._count?.legislativeRecords ?? 0} bills]
-                  </option>
+                {groupedCandidates.map((group) => (
+                  <optgroup key={group.key} label={group.label} className="font-bold text-brand-navy">
+                    {group.candidates.map((cand) => (
+                      <option key={cand.id} value={cand.id} className="font-normal text-slate-800">
+                        {cand.name} ({cand.position.replace("_", " ")}) — {cand.party || "Ind."} [{cand.legislativeRecords?.length ?? cand._count?.legislativeRecords ?? 0} bills]
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </div>
@@ -5053,10 +5070,15 @@ export default function AdminPage() {
                   onChange={(e) => setPlatformForm({ ...platformForm, candidateId: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-brand-border outline-none bg-white"
                 >
-                  {candidates.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name} ({c.position.replace("_", " ")})
-                    </option>
+                  <option value="">-- Choose Candidate --</option>
+                  {groupedCandidates.map((group) => (
+                    <optgroup key={group.key} label={group.label} className="font-bold text-brand-navy">
+                      {group.candidates.map((c) => (
+                        <option key={c.id} value={c.id} className="font-normal text-slate-800">
+                          {c.name} ({c.position.replace("_", " ")})
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>

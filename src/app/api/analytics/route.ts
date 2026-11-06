@@ -179,12 +179,9 @@ export async function GET(req: NextRequest) {
           if (!provincialAdjustmentMap[pId]) provincialAdjustmentMap[pId] = {};
           provincialAdjustmentMap[pId][adj.candidateId] =
             (provincialAdjustmentMap[pId][adj.candidateId] || 0) + adj.amount;
-        } else if (provsInRegion.length > 1) {
-          const pId = provsInRegion[0].id;
-          if (!provincialAdjustmentMap[pId]) provincialAdjustmentMap[pId] = {};
-          provincialAdjustmentMap[pId][adj.candidateId] =
-            (provincialAdjustmentMap[pId][adj.candidateId] || 0) + adj.amount;
         }
+        // Multi-province regions: a region-wide adjustment cannot be attributed to any
+        // single province, so it counts only toward the regional and national tallies.
       }
     });
 

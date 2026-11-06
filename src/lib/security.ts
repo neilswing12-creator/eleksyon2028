@@ -1,8 +1,22 @@
 import crypto from "crypto";
 import { getTrustedClientIp, normalizeIp } from "@/lib/ip-security";
 
-const HMAC_SECRET = process.env.SURVEY_HMAC_SECRET || "ph-2028-survey-hmac-keyed-secret-default";
-const JWT_SECRET = process.env.ADMIN_JWT_SECRET || "ph-2028-admin-jwt-secret-default";
+/**
+ * Reads a required secret. In production a missing secret is a hard error, because the
+ * old hard-coded fallbacks are public in the repository and would let anyone forge
+ * admin sessions. Development keeps a local-only fallback so `npm run dev` still works.
+ */
+function requireSecret(name: string, devFallback: string): string {
+  const value = process.env[name];
+  if (value && value.length >= 32) return value;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(`${name} must be set to a random value of at least 32 characters in production.`);
+  }
+  return value || devFallback;
+}
+
+const getHmacSecret = () => requireSecret("SURVEY_HMAC_SECRET", "dev-only-survey-hmac-secret-not-for-production");
+const getJwtSecret = () => requireSecret("ADMIN_JWT_SECRET", "dev-only-admin-jwt-secret-not-for-production");
 
 /**
  * Derives a privacy-preserving keyed identifier for an IP address using HMAC-SHA256.
@@ -10,7 +24,7 @@ const JWT_SECRET = process.env.ADMIN_JWT_SECRET || "ph-2028-admin-jwt-secret-def
  */
 export function hashIP(ip: string): string {
   const normalized = normalizeIp(ip);
-  return crypto.createHmac("sha256", HMAC_SECRET).update(normalized).digest("hex");
+  return crypto.createHmac("sha256", getHmacSecret()).update(normalized).digest("hex");
 }
 
 /**
@@ -66,7 +80,7 @@ export function signAdminSession(admin: { id: string; email: string; name: strin
   };
   const payload = Buffer.from(JSON.stringify(payloadData)).toString("base64url");
   const signature = crypto
-    .createHmac("sha256", JWT_SECRET)
+    .createHmac("sha256", getJwtSecret())
     .update(`${header}.${payload}`)
     .digest("base64url");
   return `${header}.${payload}.${signature}`;
@@ -79,10 +93,12 @@ export function verifyAdminSession(token: string): AdminPayload | null {
     if (parts.length !== 3) return null;
     const [header, payload, signature] = parts;
     const expectedSignature = crypto
-      .createHmac("sha256", JWT_SECRET)
+      .createHmac("sha256", getJwtSecret())
       .update(`${header}.${payload}`)
       .digest("base64url");
-    if (signature !== expectedSignature) return null;
+    const sigBuf = Buffer.from(signature);
+    const expBuf = Buffer.from(expectedSignature);
+    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) return null;
 
     const data: AdminPayload = JSON.parse(Buffer.from(payload, "base64url").toString("utf-8"));
     if (data.exp && data.exp < Math.floor(Date.now() / 1000)) {

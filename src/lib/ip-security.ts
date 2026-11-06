@@ -52,39 +52,86 @@ export function normalizeIp(raw?: string | null): string {
 }
 
 /**
- * Resolves the genuine client IP address from request headers.
- * Uses trusted reverse proxy hierarchy (Cloudflare, X-Real-IP, Leftmost X-Forwarded-For).
+ * Resolves the client IP address from request headers.
+ *
+ * Request headers are supplied by the visitor, so a header is only trustworthy when
+ * our own reverse proxy sets or overwrites it. TRUSTED_PROXY says which one that is:
+ *
+ *   cloudflare  - read only CF-Connecting-IP (origin must only accept Cloudflare traffic)
+ *   x-real-ip   - read only X-Real-IP (proxy must overwrite it, e.g. Nginx
+ *                 `proxy_set_header X-Real-IP $remote_addr;`)
+ *   xff         - read X-Forwarded-For counting from the RIGHT. Each proxy appends the
+ *                 address it saw, so the entry TRUSTED_PROXY_HOPS from the right
+ *                 (default 1) is the one added by our outermost trusted proxy. The
+ *                 leftmost entries are whatever the client sent and can be forged.
+ *   none        - ignore forwarding headers (local development without a proxy)
+ *
+ * Unset keeps the old permissive behaviour (spoofable) so local dev and tests work,
+ * and logs a warning in production.
  */
+let warnedUnsetProxy = false;
+
+function ipFromHeader(headers: Headers, name: string): string {
+  const raw = headers.get(name);
+  if (!raw) return "UNKNOWN";
+  return normalizeIp(raw.split(",")[0].trim());
+}
+
+function ipFromForwardedFor(headers: Headers, hops: number): string {
+  const raw = headers.get("x-forwarded-for");
+  if (!raw) return "UNKNOWN";
+  const parts = raw.split(",").map((p) => p.trim()).filter(Boolean);
+  const index = parts.length - Math.max(1, hops);
+  if (index < 0) return "UNKNOWN";
+  return normalizeIp(parts[index]);
+}
+
 export function getTrustedClientIp(headers: Headers): string {
-  // 1. Cloudflare connecting IP (trusted when behind Cloudflare proxy)
-  const cfIp = headers.get("cf-connecting-ip");
-  if (cfIp) {
-    const norm = normalizeIp(cfIp);
-    if (norm !== "UNKNOWN") return norm;
+  const mode = (process.env.TRUSTED_PROXY || "").trim().toLowerCase();
+  const hops = parseInt(process.env.TRUSTED_PROXY_HOPS || "1", 10) || 1;
+
+  if (mode === "cloudflare") {
+    const ip = ipFromHeader(headers, "cf-connecting-ip");
+    return ip !== "UNKNOWN" ? ip : "127.0.0.1";
+  }
+  if (mode === "x-real-ip") {
+    const ip = ipFromHeader(headers, "x-real-ip");
+    return ip !== "UNKNOWN" ? ip : "127.0.0.1";
+  }
+  if (mode === "xff") {
+    const ip = ipFromForwardedFor(headers, hops);
+    return ip !== "UNKNOWN" ? ip : "127.0.0.1";
+  }
+  if (mode === "none") {
+    return "127.0.0.1";
   }
 
-  // 2. Nginx / reverse proxy explicit single client IP
-  const realIp = headers.get("x-real-ip");
-  if (realIp) {
-    const norm = normalizeIp(realIp);
-    if (norm !== "UNKNOWN") return norm;
+  if (process.env.NODE_ENV === "production" && !warnedUnsetProxy) {
+    warnedUnsetProxy = true;
+    console.warn(
+      "[ip-security] TRUSTED_PROXY is not set: client IPs are read from spoofable headers, " +
+        "so the one-vote-per-IP rule and admin rate limits can be bypassed. Set TRUSTED_PROXY."
+    );
   }
+  return legacyClientIp(headers);
+}
 
-  // 3. X-Forwarded-For: take the leftmost client address
+/** Previous behaviour: trusts the first usable header. Spoofable; kept for dev/tests only. */
+function legacyClientIp(headers: Headers): string {
+  for (const name of ["cf-connecting-ip", "x-real-ip"]) {
+    const ip = ipFromHeader(headers, name);
+    if (ip !== "UNKNOWN") return ip;
+  }
   const forwarded = headers.get("x-forwarded-for");
   if (forwarded) {
     const parts = forwarded.split(",");
     for (const part of parts) {
       const norm = normalizeIp(part.trim());
-      if (norm !== "UNKNOWN" && norm !== "127.0.0.1" && norm !== "::1") {
-        return norm;
-      }
+      if (norm !== "UNKNOWN" && norm !== "127.0.0.1" && norm !== "::1") return norm;
     }
-    // If all were loopback, return first valid
     const first = normalizeIp(parts[0].trim());
     if (first !== "UNKNOWN") return first;
   }
-
   return "127.0.0.1";
 }
 

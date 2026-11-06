@@ -70,6 +70,10 @@ const decode = (t) =>
         .replace(/[АВЕКМНОРСТХ]/g, (c) => "ABEKMHOPCTX"["АВЕКМНОРСТХ".indexOf(c)])
         .trim();
 
+// Older records used "SB-123"; the Senate's own format is "SBN-123".
+const normBill = (no) => String(no).trim().toUpperCase().replace(/^S\.?\s*B\.?\s*N?\.?\s*(NO\.?)?\s*-?\s*(\d+)$/, "SBN-$2");
+const isSenateBill = (no) => /^SBN-\d+$/.test(normBill(no));
+
 const sourceUrl = (no, congress) =>
   `https://senate.gov.ph/legislative-documents/bills?q=${encodeURIComponent(no)}&congress=${encodeURIComponent(congress + "th Congress")}`;
 
@@ -129,7 +133,16 @@ const sourceUrl = (no, congress) =>
   const existing = await prisma.candidateLegislativeRecord.findMany({
     where: { chamber: "SENATE", candidateId: { in: [...coverage.keys()] } },
   });
-  const existingByKey = new Map(existing.map((e) => [`${e.candidateId}|${e.billNo}|${e.congress}|${e.role}`, e]));
+  const existingByKey = new Map();
+  const duplicates = []; // two old rows that are the same bill once "SB-" is read as "SBN-"
+  for (const e of existing) {
+    const k = `${e.candidateId}|${normBill(e.billNo)}|${e.congress}|${e.role}`;
+    const prev = existingByKey.get(k);
+    if (!prev) { existingByKey.set(k, e); continue; }
+    const keep = prev.billNo === normBill(prev.billNo) ? prev : e; // prefer the row already in SBN- form
+    duplicates.push(keep === prev ? e : prev);
+    existingByKey.set(k, keep);
+  }
   const officialBills = new Set([...wanted.values()].map((w) => `${w.candidateId}|${w.billNo}|${w.congress}`));
 
   let create = 0, update = 0, unchanged = 0;
@@ -137,17 +150,26 @@ const sourceUrl = (no, congress) =>
   for (const [key, w] of wanted) {
     const e = existingByKey.get(key);
     if (!e) { create++; ops.push(prisma.candidateLegislativeRecord.create({ data: w })); continue; }
-    const changed = ["title", "longTitle", "status", "sourceUrl", "reviewStatus"].some((f) => (e[f] || null) !== (w[f] || null));
+    const changed = ["billNo", "title", "longTitle", "status", "sourceUrl", "reviewStatus"].some((f) => (e[f] || null) !== (w[f] || null));
     if (changed) { update++; ops.push(prisma.candidateLegislativeRecord.update({ where: { id: e.id }, data: { ...w, candidateId: undefined } })); }
     else unchanged++;
   }
 
+  for (const d of duplicates) {
+    ops.unshift(prisma.candidateLegislativeRecord.update({
+      where: { id: d.id },
+      data: { reviewStatus: "NEEDS_REVIEW", matchNotes: `Duplicate of ${normBill(d.billNo)} (${d.congress}th Congress) after bill-number normalisation. Previous note: ${d.matchNotes || "none"}` },
+    }));
+  }
+
   // Flag (never delete) old Senate records the official data does not contain
   const flagged = [];
+  const dupIds = new Set(duplicates.map((d) => d.id));
   for (const e of existing) {
     const cov = coverage.get(e.candidateId);
-    if (!cov || !cov.complete) continue;
-    if (officialBills.has(`${e.candidateId}|${e.billNo}|${e.congress}`)) continue;
+    if (!cov || !cov.complete || dupIds.has(e.id)) continue;
+    if (!isSenateBill(e.billNo)) continue; // laws (RA ...) and resolutions are not in this data set
+    if (officialBills.has(`${e.candidateId}|${normBill(e.billNo)}|${e.congress}`)) continue;
     if (e.reviewStatus === "NEEDS_REVIEW" && (e.matchNotes || "").startsWith("Not found in Senate LIS")) continue;
     flagged.push(e);
     ops.push(prisma.candidateLegislativeRecord.update({
@@ -162,8 +184,8 @@ const sourceUrl = (no, congress) =>
     perCandidate[slug] = (perCandidate[slug] || 0) + 1;
   }
   console.log(JSON.stringify({
-    officialRecords: wanted.size, create, update, unchanged, flaggedNotFound: flagged.length,
-    flaggedSample: flagged.slice(0, 8).map((f) => `${f.billNo} (${f.congress}th) ${f.title.slice(0, 60)}`),
+    officialRecords: wanted.size, create, update, unchanged, duplicatesHidden: duplicates.length, flaggedNotFound: flagged.length,
+    flagged: flagged.map((f) => `${f.billNo} (${f.congress}th) ${f.title.slice(0, 70)}`),
     candidatesNotFullyCovered: [...coverage].filter(([, c]) => !c.complete).map(([id]) => candidates.find((c) => c.id === id).slug),
     slugsMissingInDb: [...missingSlugs],
     perCandidate,

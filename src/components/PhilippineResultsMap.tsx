@@ -44,6 +44,7 @@ interface CityShape {
   d: string;
   cx: number;
   cy: number;
+  a: number; // projected area, used to decide which labels fit
 }
 
 interface CityResult {
@@ -230,14 +231,21 @@ export default function PhilippineResultsMap({
     };
   }, [position, presidentialRankings, vicePresidentialRankings, senatorialRankings]);
 
+  // Only candidates on the public ballot (present in the rankings) can lead an area.
+  const known = useCallback(
+    (votes: Record<string, number>) =>
+      Object.fromEntries(Object.entries(votes).filter(([id]) => candidateLookup.has(id))),
+    [candidateLookup]
+  );
+
   const provinceRank = useCallback(
     (id: string) => {
       const p = provinceData.get(id);
       if (!p || p.hasSufficientData === false) return null;
-      const r = rank(votesOf(p, position));
+      const r = rank(known(votesOf(p, position)));
       return r.rows.length ? r : null;
     },
-    [provinceData, position]
+    [provinceData, position, known]
   );
 
   const leaderColor = useCallback(
@@ -264,10 +272,10 @@ export default function PhilippineResultsMap({
     (psgc: string) => {
       const c = cityResultMap.get(psgc);
       if (!c || !c.votes) return null;
-      const r = rank(c.votes[position] || {});
+      const r = rank(known(c.votes[position] || {}));
       return r.rows.length ? r : null;
     },
-    [cityResultMap, position]
+    [cityResultMap, position, known]
   );
 
   /* ------------------------------------------------------ view box/zoom */
@@ -356,7 +364,7 @@ export default function PhilippineResultsMap({
     }
     if (regionId) {
       const r = regionData.get(regionId);
-      const ranking = rank(votesOf(r, position));
+      const ranking = rank(known(votesOf(r, position)));
       return {
         level: "Rehiyon",
         title: regionMeta.get(regionId)?.name || "",
@@ -374,7 +382,7 @@ export default function PhilippineResultsMap({
       ranking: nationalRows.rows.length ? nationalRows : null,
       insufficient: false,
     };
-  }, [provinceId, cityPsgc, regionId, position, cityResultMap, cityRank, provinceData, provinceRank, regionData, provinceMeta, regionMeta, nationalRows]);
+  }, [provinceId, cityPsgc, regionId, position, cityResultMap, cityRank, provinceData, provinceRank, regionData, provinceMeta, regionMeta, nationalRows, known]);
 
   const legend = useMemo(() => {
     const counts = new Map<string, number>();
@@ -594,6 +602,24 @@ export default function PhilippineResultsMap({
                   );
                 })}
 
+              {showCities &&
+                (cityShapes[provinceId] || [])
+                  .filter((c) => c.psgc === cityPsgc || c.a / (box[2] * box[3]) > 0.004)
+                  .map((c) => (
+                    <text
+                      key={`t-${c.psgc}`}
+                      x={c.cx}
+                      y={c.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize={19 * strokeScale}
+                      className="pointer-events-none select-none fill-slate-800"
+                      style={{ paintOrder: "stroke", stroke: "rgba(255,255,255,0.85)", strokeWidth: 4 * strokeScale, fontWeight: c.psgc === cityPsgc ? 700 : 500 }}
+                    >
+                      {c.name}
+                    </text>
+                  ))}
+
               {view === "MAP" && !provinceId &&
                 geo.provinces
                   .filter((p) => (regionId ? p.regionId === regionId : false))
@@ -694,8 +720,8 @@ export default function PhilippineResultsMap({
             <h3 className="mt-0.5 text-xl font-semibold text-slate-900">{scope.title}</h3>
             <p className="text-xs text-slate-500">{scope.subtitle}</p>
             <p className="mt-2 text-xs text-slate-500">
-              <span className="font-semibold tabular-nums text-slate-800">{fmt(scope.responses)}</span> responses ·{" "}
-              {positionMeta.fil}
+              <span className="font-semibold tabular-nums text-slate-800">{fmt(scope.ranking ? scope.ranking.total : scope.responses)}</span>{" "}
+              {scope.ranking ? "boto · votes" : "tugon · responses"} para sa {positionMeta.fil}
             </p>
           </div>
 

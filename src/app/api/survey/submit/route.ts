@@ -95,7 +95,8 @@ export async function POST(req: NextRequest) {
       const requestedCity = (cityId || cityName || "").toString().trim();
       if (requestedCity) {
         const cities = province ? getCitiesForProvince(province.id) : [];
-        const city = cities.find((c) => c.psgc === requestedCity || c.name.toLowerCase() === requestedCity.toLowerCase());
+        const key = (n: string) => n.toLowerCase().replace(/^city of /, "").replace(/ city$/, "").trim();
+        const city = cities.find((c) => c.psgc === requestedCity || key(c.name) === key(requestedCity));
         if (!city) {
           return NextResponse.json({ error: "Please select a valid city or municipality for your province." }, { status: 400 });
         }

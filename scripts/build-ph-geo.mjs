@@ -3,7 +3,7 @@
  *
  * Source: faeldon/philippines-json-maps (MIT), "latest/geojson" lowres files.
  *   git clone --depth 1 --filter=blob:none --sparse https://github.com/faeldon/philippines-json-maps.git
- *   git sparse-checkout set --no-cone 'latest/geojson/regions/lowres/*' 'latest/geojson/provdists/lowres/*'
+ *   git sparse-checkout set --no-cone 'latest/geojson/regions/lowres/*' 'latest/geojson/provdists/medres/*'
  *
  * Usage (needs mapshaper + d3-geo installed somewhere on NODE_PATH):
  *   node scripts/build-ph-geo.mjs /path/to/philippines-json-maps/latest/geojson
@@ -28,7 +28,7 @@ if (!SRC) throw new Error("Pass the path to philippines-json-maps/latest/geojson
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const TMP = fs.mkdtempSync("/tmp/phgeo-");
 const MAPSHAPER = process.env.MAPSHAPER || "mapshaper";
-const PROV_RES = fs.existsSync(path.join(SRC, "regions/medres")) ? "regions/medres" : "regions/lowres";
+const PROV_RES = "regions/lowres"; // used only for the PSGC province -> app id mapping
 const HEX_SIZE = process.env.HEX_SIZE || "40";
 
 // PSGC region code -> app region id
@@ -92,7 +92,6 @@ const appProvinces = [...geoTs.matchAll(/id: "([^"]+)",\s*name: "([^"]+)",\s*reg
 const appIds = new Set(appProvinces.map((p) => p.id));
 
 // ---------------------------------------------------------------- provinces
-const provFeatures = [];
 const psgcToProvinceId = {};
 for (const f of fs.readdirSync(path.join(SRC, PROV_RES))) {
   for (const ft of readJson(path.join(SRC, PROV_RES, f)).features) {
@@ -104,20 +103,51 @@ for (const f of fs.readdirSync(path.join(SRC, PROV_RES))) {
     // the 2024 Supreme Court BARMM ruling) are reported so they can be reviewed.
     if (regionId !== expected) console.warn(`note: ${id} is ${regionId || ft.properties.adm1_psgc} in PSGC, ${expected} in app`);
     psgcToProvinceId[ft.properties.adm2_psgc] = id;
-    provFeatures.push({ type: "Feature", properties: { pid: id }, geometry: ft.geometry });
   }
 }
-const missing = [...appIds].filter((id) => !Object.values(psgcToProvinceId).includes(id));
-if (missing.length) throw new Error(`App provinces without geometry: ${missing.join(", ")}`);
 
-writeJson(`${TMP}/prov-raw.json`, { type: "FeatureCollection", features: provFeatures });
+const missingIds = [...appIds].filter((id) => !Object.values(psgcToProvinceId).includes(id));
+if (missingIds.length) throw new Error(`App provinces without data: ${missingIds.join(", ")}`);
+
+// ------------------------------------------------------------ cities/munis
+// Every town and city goes into ONE layer that is snapped and simplified together, so
+// neighbouring towns keep identical shared borders (no slivers or gaps). Province shapes
+// are then made by dissolving their towns, so they line up with the towns exactly.
+const CITY_RES = fs.existsSync(path.join(SRC, "provdists/medres")) ? "provdists/medres" : "provdists/lowres";
+const locations = {}; // provinceId -> [{ psgc, name, type }]
+const allTowns = [];
+for (const f of fs.readdirSync(path.join(SRC, CITY_RES))) {
+  for (const ft of readJson(path.join(SRC, CITY_RES, f)).features) {
+    const id = psgcToProvinceId[ft.properties.adm2_psgc];
+    if (!id) throw new Error(`City ${ft.properties.adm3_en} has unknown province ${ft.properties.adm2_psgc}`);
+    const name = friendlyCityName(ft.properties.adm3_en);
+    const psgc = String(ft.properties.adm3_psgc);
+    const isCity = /^City of /i.test(ft.properties.adm3_en) || / City$/.test(ft.properties.adm3_en);
+    (locations[id] ||= []).push({ psgc, name, type: isCity ? "City" : "Municipality" });
+    allTowns.push({ type: "Feature", properties: { pid: id, psgc, name }, geometry: ft.geometry });
+  }
+}
+let cityCount = 0;
+for (const id of Object.keys(locations)) {
+  locations[id].sort((a, b) => a.name.localeCompare(b.name));
+  cityCount += locations[id].length;
+}
+writeJson(path.join(ROOT, "src/lib/ph-locations.json"), locations);
+
+writeJson(`${TMP}/towns-raw.json`, { type: "FeatureCollection", features: allTowns });
 execFileSync(MAPSHAPER, [
-  "-i", `${TMP}/prov-raw.json`, "snap", "-dissolve", "pid", "-simplify", "visvalingam", "1.2%", "keep-shapes",
-  "-filter-islands", "min-area=4km2", "remove-empty", "-o", `${TMP}/prov.json`, "format=geojson", "precision=0.0001",
+  "-i", `${TMP}/towns-raw.json`, "snap",
+  "-simplify", "visvalingam", process.env.TOWN_SIMPLIFY || "8%", "keep-shapes",
+  "-filter-islands", "min-area=0.5km2", "remove-empty",
+  "-o", `${TMP}/towns.json`, "format=geojson", "precision=0.0001",
+  "-dissolve", "pid", "-filter-islands", "min-area=4km2", "remove-empty",
+  "-o", `${TMP}/prov.json`, "format=geojson", "precision=0.0001",
 ], { stdio: "inherit" });
-const provinces = rewindForD3(readJson(`${TMP}/prov.json`));
 
-// One projection for everything so province and city layers line up.
+const provinces = rewindForD3(readJson(`${TMP}/prov.json`));
+const towns = rewindForD3(readJson(`${TMP}/towns.json`));
+
+// One projection for everything so province and town layers line up.
 const WIDTH = 1000;
 const HEIGHT = 1400;
 const projection = d3.geoMercator().fitExtent([[20, 20], [WIDTH - 20, HEIGHT - 20]], provinces);
@@ -137,39 +167,18 @@ const provinceOut = provinces.features.map((ft) => {
   };
 });
 
-// ------------------------------------------------------------ cities/munis
-const locations = {}; // provinceId -> [{ psgc, name }]
-const cityFeaturesByProvince = {};
-for (const f of fs.readdirSync(path.join(SRC, "provdists/lowres"))) {
-  for (const ft of readJson(path.join(SRC, "provdists/lowres", f)).features) {
-    const id = psgcToProvinceId[ft.properties.adm2_psgc];
-    if (!id) throw new Error(`City ${ft.properties.adm3_en} has unknown province ${ft.properties.adm2_psgc}`);
-    const name = friendlyCityName(ft.properties.adm3_en);
-    const isCity = /^City of /i.test(ft.properties.adm3_en) || / City$/.test(ft.properties.adm3_en);
-    (locations[id] ||= []).push({ psgc: String(ft.properties.adm3_psgc), name, type: isCity ? "City" : "Municipality" });
-    (cityFeaturesByProvince[id] ||= []).push({
-      type: "Feature", properties: { psgc: String(ft.properties.adm3_psgc), name }, geometry: ft.geometry,
-    });
-  }
+const townsByProvince = {};
+for (const ft of towns.features) {
+  if (!ft.geometry) continue;
+  const [cx, cy] = pathGen.centroid(ft);
+  (townsByProvince[ft.properties.pid] ||= []).push({
+    psgc: ft.properties.psgc, name: ft.properties.name, d: pathGen(ft),
+    cx: Math.round(cx * 10) / 10, cy: Math.round(cy * 10) / 10, a: Math.round(pathGen.area(ft) * 10) / 10,
+  });
 }
-let cityCount = 0;
-for (const id of Object.keys(locations)) {
-  locations[id].sort((a, b) => a.name.localeCompare(b.name));
-  cityCount += locations[id].length;
-}
-writeJson(path.join(ROOT, "src/lib/ph-locations.json"), locations);
-
-for (const [id, feats] of Object.entries(cityFeaturesByProvince)) {
-  writeJson(`${TMP}/c-${id}.json`, { type: "FeatureCollection", features: feats });
-  execFileSync(MAPSHAPER, [
-    `${TMP}/c-${id}.json`, "-simplify", "visvalingam", "12%", "keep-shapes",
-    "-o", `${TMP}/c-${id}-s.json`, "format=geojson", "precision=0.0001",
-  ], { stdio: "ignore" });
-  const simplified = rewindForD3(readJson(`${TMP}/c-${id}-s.json`));
-  writeJson(path.join(ROOT, "public/geo/cities", `${id}.json`), simplified.features.filter((ft) => ft.geometry).map((ft) => {
-    const [cx, cy] = pathGen.centroid(ft);
-    return { psgc: ft.properties.psgc, name: ft.properties.name, d: pathGen(ft), cx: Math.round(cx), cy: Math.round(cy) };
-  }));
+fs.rmSync(path.join(ROOT, "public/geo/cities"), { recursive: true, force: true });
+for (const [id, list] of Object.entries(townsByProvince)) {
+  writeJson(path.join(ROOT, "public/geo/cities", `${id}.json`), list);
 }
 
 // -------------------------------------------------------------- hex layout

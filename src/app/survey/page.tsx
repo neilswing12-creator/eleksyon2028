@@ -19,6 +19,7 @@ import {
   Building2,
   MapPin,
 } from "lucide-react";
+import SurveyBallot, { BallotReceipt } from "@/components/SurveyBallot";
 import ShareVoteCardModal, {
   ShareCandidateData,
   CompetitorData,
@@ -213,10 +214,7 @@ export default function SurveyPage() {
     if (senatorialChoices.includes(id)) {
       setSenatorialChoices(senatorialChoices.filter((s) => s !== id));
     } else {
-      if (senatorialChoices.length >= 12) {
-        alert("You may select up to a maximum of 12 senatorial candidates.");
-        return;
-      }
+      if (senatorialChoices.length >= 12) return;
       setSenatorialChoices([...senatorialChoices, id]);
     }
   };
@@ -305,27 +303,27 @@ export default function SurveyPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+      <div className={`mx-auto ${step === 2 ? "max-w-5xl" : "max-w-3xl"}`}>
         {/* Step Progress Tracker */}
         {step <= 5 && (
-          <div className="mb-8 font-sans">
-            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-              <span className="text-blue-600 font-black">STEP {step} OF 5</span>
-              <span>
-                {step === 1 && "VOTER INFO & LOCATION"}
-                {step === 2 && "PRESIDENTIAL BALLOT"}
-                {step === 3 && "VICE PRESIDENTIAL BALLOT"}
-                {step === 4 && "SENATORIAL BALLOT (UP TO 12)"}
-                {step === 5 && "REVIEW & CAST VOTE"}
-              </span>
-            </div>
-            <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-              <div
-                className="bg-blue-600 h-full transition-all duration-300"
-                style={{ width: `${(step / 5) * 100}%` }}
-              ></div>
-            </div>
-          </div>
+          <ol className="mb-8 grid grid-cols-3 gap-2 text-xs" aria-label="Mga hakbang">
+            {[
+              { n: 1, s: 1, fil: "Impormasyon", en: "Your details" },
+              { n: 2, s: 2, fil: "Balota", en: "Ballot" },
+              { n: 3, s: 5, fil: "Resibo", en: "Review & submit" },
+            ].map((it) => {
+              const done = step > it.s;
+              const active = step === it.s;
+              return (
+                <li key={it.n} className={`border-t-4 pt-2 ${active ? "border-[#0038A8]" : done ? "border-[#0038A8]/40" : "border-slate-200"}`}>
+                  <span className={`font-semibold ${active ? "text-[#0038A8]" : "text-slate-500"}`}>
+                    {it.n}. {it.fil}
+                  </span>
+                  <span className="block text-[11px] text-slate-400">{it.en}</span>
+                </li>
+              );
+            })}
+          </ol>
         )}
 
         {/* STEP 1: Basic Info & Location */}
@@ -670,509 +668,111 @@ export default function SurveyPage() {
           </div>
         )}
 
-        {/* STEP 2: Presidential Ballot */}
+        {/* STEP 2: Ballot (all positions on one sheet, like the printed ballot) */}
         {step === 2 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-6 md:p-8 shadow-card space-y-6">
-            <div>
-              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                CATEGORY A &bull; EXACTLY 1 SELECTION
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
-                President of the Philippines
-              </h2>
-              <p className="text-xs text-slate-500 font-sans mt-1">
-                Select exactly one (1) presidential candidate of your choice.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3">
-              {presCandidates.map((c) => {
-                const isSelected = presidentialChoice === c.id;
-                return (
-                  <div
-                    key={c.id}
-                    onClick={() => setPresidentialChoice(c.id)}
-                    className={`cursor-pointer rounded-xl border-2 p-3 sm:p-4 transition-all flex items-center justify-between gap-2.5 sm:gap-4 ${
-                      isSelected
-                        ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
-                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
-                      {/* Color Bar */}
-                      <span
-                        className="w-2 sm:w-2.5 h-11 sm:h-12 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: c.color }}
-                      ></span>
-
-                      {/* Photo */}
-                      {c.photoUrl ? (
-                        <img
-                          src={c.photoUrl}
-                          alt={c.name}
-                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
-                          style={{ borderColor: c.color }}
-                        />
-                      ) : (
-                        <div
-                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
-                          style={{ backgroundColor: c.color }}
-                        >
-                          {c.name.slice(0, 2)}
-                        </div>
-                      )}
-
-                      <div className="min-w-0 flex-1 pr-1">
-                        <h4 className="text-xs sm:text-sm md:text-base font-bold text-[#0B1E36] uppercase tracking-wide leading-tight break-words">
-                          {c.name}
-                        </h4>
-                        <p className="text-[11px] sm:text-xs font-sans font-semibold text-slate-500 break-words mt-0.5 leading-snug">
-                          {c.party || "INDEPENDENT"}
-                        </p>
-                        {c.bio && (
-                          <p className="text-[10px] sm:text-[11px] font-sans text-slate-600 line-clamp-2 mt-0.5 leading-snug">
-                            {c.bio}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 bg-white"
-                      }`}
-                    >
-                      {isSelected && <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white"></div>}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
+          <div className="space-y-6">
+            <SurveyBallot
+              candidates={candidates}
+              president={presidentialChoice}
+              vicePresident={vicePresidentialChoice}
+              senators={senatorialChoices}
+              maxSenators={12}
+              onPresident={setPresidentialChoice}
+              onVicePresident={setVicePresidentialChoice}
+              onToggleSenator={toggleSenator}
+            />
+            <div className="flex items-center justify-between">
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
+                className="flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
+                <ArrowLeft className="h-4 w-4" /> Bumalik
               </button>
               <button
-                disabled={!presidentialChoice}
-                onClick={() => setStep(3)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                onClick={() => {
+                  setErrorMessage("");
+                  setStep(5);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                disabled={!presidentialChoice && !vicePresidentialChoice && senatorialChoices.length === 0}
+                className="flex items-center gap-2 rounded-md bg-[#0038A8] px-6 py-3 text-sm font-semibold text-white hover:bg-[#002c86] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span>Continue to Vice President</span>
-                <ArrowRight className="w-4 h-4" />
+                Suriin ang balota <ArrowRight className="h-4 w-4" />
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 3: Vice Presidential Ballot */}
-        {step === 3 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-6 md:p-8 shadow-card space-y-6">
-            <div>
-              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                CATEGORY B &bull; EXACTLY 1 SELECTION
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
-                Vice President of the Philippines
-              </h2>
-              <p className="text-xs text-slate-500 font-sans mt-1">
-                Select exactly one (1) vice-presidential candidate.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3">
-              {vpCandidates.map((c) => {
-                const isSelected = vicePresidentialChoice === c.id;
-                return (
-                  <div
-                    key={c.id}
-                    onClick={() => setVicePresidentialChoice(c.id)}
-                    className={`cursor-pointer rounded-xl border-2 p-3 sm:p-4 transition-all flex items-center justify-between gap-2.5 sm:gap-4 ${
-                      isSelected
-                        ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
-                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
-                      <span
-                        className="w-2 sm:w-2.5 h-11 sm:h-12 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: c.color }}
-                      ></span>
-
-                      {c.photoUrl ? (
-                        <img
-                          src={c.photoUrl}
-                          alt={c.name}
-                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
-                          style={{ borderColor: c.color }}
-                        />
-                      ) : (
-                        <div
-                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
-                          style={{ backgroundColor: c.color }}
-                        >
-                          {c.name.slice(0, 2)}
-                        </div>
-                      )}
-
-                      <div className="min-w-0 flex-1 pr-1">
-                        <h4 className="text-xs sm:text-sm md:text-base font-bold text-[#0B1E36] uppercase tracking-wide leading-tight break-words">
-                          {c.name}
-                        </h4>
-                        <p className="text-[11px] sm:text-xs font-sans font-semibold text-slate-500 break-words mt-0.5 leading-snug">
-                          {c.party || "INDEPENDENT"}
-                        </p>
-                        {c.bio && (
-                          <p className="text-[10px] sm:text-[11px] font-sans text-slate-600 line-clamp-2 mt-0.5 leading-snug">
-                            {c.bio}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                        isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 bg-white"
-                      }`}
-                    >
-                      {isSelected && <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white"></div>}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
-              <button
-                onClick={() => setStep(2)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
-              </button>
-              <button
-                disabled={!vicePresidentialChoice}
-                onClick={() => setStep(4)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                <span>Continue to Senators</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 4: Senatorial Ballot */}
-        {step === 4 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-3.5 sm:p-6 md:p-8 shadow-card space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-              <div>
-                <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                  CATEGORY C &bull; SELECT UP TO 12 CANDIDATES
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
-                  Senatorial Slate Ballot
-                </h2>
-                <p className="text-xs text-slate-500 font-sans mt-0.5">
-                  Select up to 12 distinct senatorial candidates for the Philippine Senate.
-                </p>
-              </div>
-
-              {/* Live Counter Badge (Sticky on mobile for ease of 12-selection) */}
-              <div
-                className={`sticky top-16 z-30 sm:relative sm:top-0 px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center justify-between sm:justify-start gap-2 shadow-sm border-2 ${
-                  senatorialChoices.length === 12
-                    ? "bg-emerald-50 text-emerald-800 border-emerald-400"
-                    : "bg-blue-50 text-blue-600 border-blue-300"
-                }`}
-              >
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-4 h-4 flex-shrink-0" />
-                  <span>{senatorialChoices.length} of 12 Selected</span>
-                </div>
-                {senatorialChoices.length === 12 && (
-                  <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-sans font-bold">
-                    FULL SLATE
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {senCandidates.map((c) => {
-                const isSelected = senatorialChoices.includes(c.id);
-                return (
-                  <div
-                    key={c.id}
-                    onClick={() => toggleSenator(c.id)}
-                    className={`cursor-pointer rounded-xl border-2 p-3 transition-all flex items-center justify-between gap-2.5 ${
-                      isSelected
-                        ? "border-blue-600 bg-blue-50/40 shadow-xs ring-1 ring-blue-500"
-                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <span
-                        className="w-2 h-9 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: c.color }}
-                      ></span>
-
-                      {c.photoUrl ? (
-                        <img
-                          src={c.photoUrl}
-                          alt={c.name}
-                          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 shadow-sm flex-shrink-0"
-                          style={{ borderColor: c.color }}
-                        />
-                      ) : (
-                        <div
-                          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-xs text-white shadow-sm flex-shrink-0"
-                          style={{ backgroundColor: c.color }}
-                        >
-                          {c.name.slice(0, 2)}
-                        </div>
-                      )}
-
-                      <div className="min-w-0 flex-1 pr-1">
-                        <h4 className="text-xs sm:text-sm font-bold text-[#0B1E36] uppercase leading-tight break-words">
-                          {c.name}
-                        </h4>
-                        <p className="text-[10px] sm:text-[11px] font-sans font-semibold text-slate-500 break-words mt-0.5">
-                          {c.party || "INDEPENDENT"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                        isSelected
-                          ? "border-blue-600 bg-blue-600 text-white"
-                          : "border-slate-300 bg-white"
-                      }`}
-                    >
-                      {isSelected && <CheckCircle2 className="w-4 h-4 text-white" />}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
-              <button
-                onClick={() => setStep(3)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
-              </button>
-              <button
-                onClick={() => setStep(5)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow transition-all"
-              >
-                <span>Review Ballot</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 5: Review & Cast Vote */}
+        {/* STEP 5: Review (voter's receipt) & submit */}
         {step === 5 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
-            <div>
-              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
-                FINAL VERIFICATION &bull; STEP 5 OF 5
-              </span>
-              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide mt-0.5">
-                Review Your Survey Ballot
-              </h2>
-              <p className="text-xs text-slate-500 font-sans mt-1">
-                Please verify your selections. After submitting, your vote is recorded atomically and you receive
-                a private recovery link to modify or retract your vote.
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-[#0B1E36]">Suriin ang iyong balota</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Check your choices. After you submit you get a private link to change or withdraw your vote anytime.
               </p>
             </div>
+
+            <BallotReceipt
+              candidates={candidates}
+              president={presidentialChoice}
+              vicePresident={vicePresidentialChoice}
+              senators={senatorialChoices}
+              voterLine={participantName || "—"}
+              locationLine={
+                residenceType === "OVERSEAS"
+                  ? `${getCountryByCode(selectedCountryCode)?.name || "Overseas"}${overseasCity ? `, ${overseasCity}` : ""}`
+                  : [selectedCity, PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name]
+                      .filter(Boolean)
+                      .join(", ") || "Pilipinas"
+              }
+            />
 
             {errorMessage && (
-              <div className="p-4 rounded-xl bg-red-50 border-2 border-red-300 text-red-900 text-xs flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <div className="space-y-2 flex-1 min-w-0">
-                  <p className="font-semibold text-sm uppercase text-red-950">SUBMISSION NOT ACCEPTED</p>
-                  <p className="text-red-700 font-sans leading-relaxed">{errorMessage}</p>
-                  {!duplicateIPError && (
-                    <div className="pt-1">
-                      <button
-                        type="button"
-                        onClick={handleSubmit}
-                        disabled={submitting}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
-                      >
-                        {submitting ? (
-                          <>
-                            <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            <span>Retrying...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>Retry Submission &rarr;</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                  {duplicateIPError && (
-                    <div className="mt-2 p-3 bg-white/80 rounded-lg border border-red-200 text-[11px] text-slate-700 space-y-1">
-                      <p className="font-bold text-[#0B1E36]">Network IP Restriction Policy:</p>
-                      <p>
-                        To ensure election integrity, only 1 active vote per public network (Wi-Fi or public IP)
-                        is permitted across the duration of this survey. If someone in your home, office, or Wi-Fi network
-                        has already cast a ballot, this public IP is marked as recorded.
-                      </p>
-                      <p>
-                        If you already voted, you can modify or retract your selections anytime using your{" "}
-                        <span className="font-semibold text-blue-700">Private Vote Management Link</span>.
-                      </p>
-                    </div>
+              <div role="alert" className="flex items-start gap-3 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                <div className="min-w-0 flex-1 space-y-2">
+                  <p className="font-semibold">Hindi naisumite · Not submitted</p>
+                  <p className="text-red-700">{errorMessage}</p>
+                  {duplicateIPError ? (
+                    <p className="text-xs text-slate-700">
+                      One vote is allowed per internet connection for the whole survey. If you already voted, use your
+                      private vote link to change or withdraw it.
+                    </p>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={submitting}
+                      className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                    >
+                      {submitting ? "Sinusubukan muli…" : "Subukan muli · Retry"}
+                    </button>
                   )}
                 </div>
               </div>
             )}
 
-            <div className="space-y-4 font-sans">
-              <div className="p-4 rounded-xl bg-slate-50 border-2 border-slate-200 text-xs">
-                <div className="font-semibold text-base text-[#0B1E36] uppercase">
-                  {participantName}
-                </div>
-                <div className="text-slate-500 font-semibold mt-0.5">
-                  {residenceType === "OVERSEAS" ? (
-                    (() => {
-                      const c = getCountryByCode(selectedCountryCode);
-                      return `${c?.flag || "🌐"} ${c?.name || "Overseas"} (${c?.region || "Abroad"})${
-                        overseasCity ? ` • ${overseasCity}` : ""
-                      } • OFW / Overseas Filipino`;
-                    })()
-                  ) : selectedProvinceId ? (
-                    `${PHILIPPINE_PROVINCES.find((p) => p.id === selectedProvinceId)?.name}, ${
-                      PHILIPPINE_REGIONS.find((r) => r.id === selectedRegionId)?.name
-                    }`
-                  ) : (
-                    "No geographical location specified (Within the Philippines)"
-                  )}
-                </div>
-              </div>
-
-              {/* President */}
-              <div className="p-4 rounded-xl border-2 border-slate-200">
-                <div className="text-xs font-semibold tracking-normal text-slate-500 mb-2">
-                  Presidential Preference
-                </div>
-                {presidentialChoice ? (
-                  (() => {
-                    const cand = candidates.find((c) => c.id === presidentialChoice);
-                    return (
-                      <div className="flex items-center gap-3">
-                        <span
-                          className="w-3.5 h-8 rounded-full"
-                          style={{ backgroundColor: cand?.color }}
-                        ></span>
-                        <div>
-                          <div className="font-semibold text-base text-[#0B1E36] uppercase">
-                            {cand?.name}
-                          </div>
-                          <div className="text-xs text-slate-500 font-semibold">{cand?.party}</div>
-                        </div>
-                      </div>
-                    );
-                  })()
-                ) : (
-                  <p className="text-xs text-slate-400 italic">No candidate selected.</p>
-                )}
-              </div>
-
-              {/* VP */}
-              <div className="p-4 rounded-xl border-2 border-slate-200">
-                <div className="text-xs font-semibold tracking-normal text-slate-500 mb-2">
-                  Vice Presidential Preference
-                </div>
-                {vicePresidentialChoice ? (
-                  (() => {
-                    const cand = candidates.find((c) => c.id === vicePresidentialChoice);
-                    return (
-                      <div className="flex items-center gap-3">
-                        <span
-                          className="w-3.5 h-8 rounded-full"
-                          style={{ backgroundColor: cand?.color }}
-                        ></span>
-                        <div>
-                          <div className="font-semibold text-base text-[#0B1E36] uppercase">
-                            {cand?.name}
-                          </div>
-                          <div className="text-xs text-slate-500 font-semibold">{cand?.party}</div>
-                        </div>
-                      </div>
-                    );
-                  })()
-                ) : (
-                  <p className="text-xs text-slate-400 italic">No candidate selected.</p>
-                )}
-              </div>
-
-              {/* Senators */}
-              <div className="p-4 rounded-xl border-2 border-slate-200">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-semibold tracking-normal text-slate-500">
-                    Senatorial Slate ({senatorialChoices.length} of 12)
-                  </div>
-                </div>
-                {senatorialChoices.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {senatorialChoices.map((sId) => {
-                      const cand = candidates.find((c) => c.id === sId);
-                      return (
-                        <span
-                          key={sId}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-[#0B1E36]"
-                        >
-                          <span
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: cand?.color }}
-                          ></span>
-                          <span>{cand?.name}</span>
-                        </span>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-400 italic">No senatorial selections.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 font-sans">
+            <div className="flex items-center justify-between">
               <button
-                onClick={() => setStep(4)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0B1E36] uppercase tracking-wider"
+                onClick={() => setStep(2)}
+                className="flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
+                <ArrowLeft className="h-4 w-4" /> Baguhin ang balota
               </button>
               <button
                 disabled={submitting}
                 onClick={handleSubmit}
-                className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm tracking-wider uppercase shadow-lg disabled:opacity-50 transition-all"
+                className="flex items-center gap-2 rounded-md bg-[#CE1126] px-7 py-3 text-sm font-semibold text-white hover:bg-[#b00e20] disabled:opacity-50"
               >
                 {submitting ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Recording Vote...</span>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Isinusumite…
                   </>
                 ) : (
                   <>
-                    <Vote className="w-4 h-4 text-amber-300" />
-                    <span>Cast Survey Vote</span>
+                    <Vote className="h-4 w-4" /> Isumite ang boto
                   </>
                 )}
               </button>

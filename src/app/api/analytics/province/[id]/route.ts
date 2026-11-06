@@ -42,7 +42,9 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   const cities = getCitiesForProvince(province.id);
   const byPsgc = new Map(cities.map((c) => [c.psgc, c]));
-  const byName = new Map(cities.map((c) => [c.name.toLowerCase(), c]));
+  // Older responses saved short names ("Makati", "Caloocan"); compare without "City".
+  const key = (n: string) => n.toLowerCase().replace(/^city of /, "").replace(/ city$/, "").trim();
+  const byName = new Map(cities.map((c) => [key(c.name), c]));
 
   type Tally = { responses: number; votes: Record<Position, Record<string, number>> };
   const empty = (): Tally => ({ responses: 0, votes: { PRESIDENT: {}, VICE_PRESIDENT: {}, SENATOR: {} } });
@@ -53,8 +55,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     // Older responses stored the city name in both fields; newer ones store the PSGC code.
     const city =
       (s.cityId && byPsgc.get(s.cityId)) ||
-      (s.cityName && byName.get(s.cityName.toLowerCase())) ||
-      (s.cityId && byName.get(s.cityId.toLowerCase()));
+      (s.cityName && byName.get(key(s.cityName))) ||
+      (s.cityId && byName.get(key(s.cityId)));
     if (!city) {
       unspecified++;
       continue;

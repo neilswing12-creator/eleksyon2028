@@ -34,8 +34,11 @@ export const PHILIPPINE_REGIONS: RegionInfo[] = [
   { id: "R04A", code: "Region IV-A", name: "CALABARZON", islandGroup: "Luzon", centerLat: 14.1008, centerLng: 121.0794, registeredVoters: 9192203 },
   { id: "MIMAROPA", code: "MIMAROPA", name: "MIMAROPA Region", islandGroup: "Luzon", centerLat: 12.8797, centerLng: 121.774, registeredVoters: 1991599 },
   { id: "R05", code: "Region V", name: "Bicol Region", islandGroup: "Luzon", centerLat: 13.421, centerLng: 123.4137, registeredVoters: 3910261 },
-  { id: "R06", code: "Region VI", name: "Western Visayas", islandGroup: "Visayas", centerLat: 11.005, centerLng: 122.5373, registeredVoters: 5026482 },
-  { id: "R07", code: "Region VII", name: "Central Visayas", islandGroup: "Visayas", centerLat: 9.85, centerLng: 123.85, registeredVoters: 5249096 },
+  // Negros Island Region (RA 12000, 2024): Negros Occidental, Negros Oriental and Siquijor moved out of VI and VII.
+  // Region VI figure = previous total less Negros Occidental (1,954,679); VII = Comelec-7 count for Cebu + Bohol.
+  { id: "R06", code: "Region VI", name: "Western Visayas", islandGroup: "Visayas", centerLat: 10.95, centerLng: 122.4, registeredVoters: 3071803 },
+  { id: "NIR", code: "NIR", name: "Negros Island Region", islandGroup: "Visayas", centerLat: 10.0, centerLng: 123.0, registeredVoters: 2992818 },
+  { id: "R07", code: "Region VII", name: "Central Visayas", islandGroup: "Visayas", centerLat: 10.1, centerLng: 124.0, registeredVoters: 4753563 },
   { id: "R08", code: "Region VIII", name: "Eastern Visayas", islandGroup: "Visayas", centerLat: 11.2444, centerLng: 125.0039, registeredVoters: 3166262 },
   { id: "R09", code: "Region IX", name: "Zamboanga Peninsula", islandGroup: "Mindanao", centerLat: 7.8399, centerLng: 122.836, registeredVoters: 2298930 },
   { id: "R10", code: "Region X", name: "Northern Mindanao", islandGroup: "Mindanao", centerLat: 8.228, centerLng: 124.646, registeredVoters: 3060485 },
@@ -105,7 +108,7 @@ export const PHILIPPINE_PROVINCES: ProvinceInfo[] = [
   { id: "masbate", name: "Masbate", regionId: "R05", islandGroup: "Luzon", centerLat: 12.2189, centerLng: 123.4475, svgX: 550, svgY: 605, cities: ["Masbate City", "Aroroy", "Milagros", "Cataingan"] },
   // Region VI - Western Visayas
   { id: "iloilo", name: "Iloilo", regionId: "R06", islandGroup: "Visayas", centerLat: 10.7202, centerLng: 122.5621, svgX: 470, svgY: 690, cities: ["Iloilo City", "Passi City", "Oton", "Santa Barbara", "Pototan"] },
-  { id: "negros-occidental", name: "Negros Occidental", regionId: "R06", islandGroup: "Visayas", centerLat: 10.6667, centerLng: 123.0, svgX: 515, svgY: 710, cities: ["Bacolod City", "Bago City", "Cadiz City", "Silay City", "Kabankalan City"] },
+  { id: "negros-occidental", name: "Negros Occidental", regionId: "NIR", islandGroup: "Visayas", centerLat: 10.6667, centerLng: 123.0, svgX: 515, svgY: 710, cities: ["Bacolod City", "Bago City", "Cadiz City", "Silay City", "Kabankalan City"] },
   { id: "capiz", name: "Capiz", regionId: "R06", islandGroup: "Visayas", centerLat: 11.4137, centerLng: 122.7533, svgX: 490, svgY: 650, cities: ["Roxas City", "Panay", "Pontevedra", "Dumarao"] },
   { id: "aklan", name: "Aklan", regionId: "R06", islandGroup: "Visayas", centerLat: 11.6667, centerLng: 122.3333, svgX: 450, svgY: 640, cities: ["Kalibo", "Malay (Boracay)", "Ibajay", "New Washington"] },
   { id: "antique", name: "Antique", regionId: "R06", islandGroup: "Visayas", centerLat: 11.1667, centerLng: 122.0833, svgX: 430, svgY: 680, cities: ["San Jose de Buenavista", "Sibalom", "Hamtic", "Culasi"] },
@@ -113,8 +116,8 @@ export const PHILIPPINE_PROVINCES: ProvinceInfo[] = [
   // Region VII - Central Visayas
   { id: "cebu", name: "Cebu", regionId: "R07", islandGroup: "Visayas", centerLat: 10.3157, centerLng: 123.8854, svgX: 565, svgY: 730, cities: ["Cebu City", "Mandaue City", "Lapu-Lapu City", "Talisay City", "Toledo City", "Danao City"] },
   { id: "bohol", name: "Bohol", regionId: "R07", islandGroup: "Visayas", centerLat: 9.85, centerLng: 124.1435, svgX: 605, svgY: 770, cities: ["Tagbilaran City", "Panglao", "Tubigon", "Carmen", "Ubay"] },
-  { id: "negros-oriental", name: "Negros Oriental", regionId: "R07", islandGroup: "Visayas", centerLat: 9.3068, centerLng: 123.3054, svgX: 520, svgY: 775, cities: ["Dumaguete City", "Bais City", "Bayawan City", "Tanjay City", "Guihulngan City"] },
-  { id: "siquijor", name: "Siquijor", regionId: "R07", islandGroup: "Visayas", centerLat: 9.2141, centerLng: 123.5157, svgX: 535, svgY: 810, cities: ["Siquijor", "Larena", "San Juan"] },
+  { id: "negros-oriental", name: "Negros Oriental", regionId: "NIR", islandGroup: "Visayas", centerLat: 9.3068, centerLng: 123.3054, svgX: 520, svgY: 775, cities: ["Dumaguete City", "Bais City", "Bayawan City", "Tanjay City", "Guihulngan City"] },
+  { id: "siquijor", name: "Siquijor", regionId: "NIR", islandGroup: "Visayas", centerLat: 9.2141, centerLng: 123.5157, svgX: 535, svgY: 810, cities: ["Siquijor", "Larena", "San Juan"] },
   // Region VIII - Eastern Visayas
   { id: "leyte", name: "Leyte", regionId: "R08", islandGroup: "Visayas", centerLat: 10.8333, centerLng: 124.8333, svgX: 650, svgY: 700, cities: ["Tacloban City", "Ormoc City", "Baybay City", "Palo", "Tanauan"] },
   { id: "southern-leyte", name: "Southern Leyte", regionId: "R08", islandGroup: "Visayas", centerLat: 10.2333, centerLng: 124.9833, svgX: 660, svgY: 760, cities: ["Maasin City", "Sogod", "Macrohon"] },
@@ -153,7 +156,7 @@ export const PHILIPPINE_PROVINCES: ProvinceInfo[] = [
   { id: "maguindanao", name: "Maguindanao", regionId: "BARMM", islandGroup: "Mindanao", centerLat: 7.0, centerLng: 124.3, svgX: 535, svgY: 960, cities: ["Cotabato City", "Shariff Aguak", "Buluan", "Datu Odin Sinsuat"] },
   { id: "lanao-del-sur", name: "Lanao del Sur", regionId: "BARMM", islandGroup: "Mindanao", centerLat: 7.8, centerLng: 124.3, svgX: 545, svgY: 920, cities: ["Marawi City", "Malabang", "Wao", "Balabagan"] },
   { id: "basilan", name: "Basilan", regionId: "BARMM", islandGroup: "Mindanao", centerLat: 6.55, centerLng: 122.0, svgX: 410, svgY: 995, cities: ["Isabela City", "Lamitan City", "Maluso"] },
-  { id: "sulu", name: "Sulu", regionId: "BARMM", islandGroup: "Mindanao", centerLat: 6.0, centerLng: 121.0, svgX: 345, svgY: 1030, cities: ["Jolo", "Patikul", "Indanan", "Maimbung"] },
+  { id: "sulu", name: "Sulu", regionId: "R09", islandGroup: "Mindanao", centerLat: 6.0, centerLng: 121.0, svgX: 345, svgY: 1030, cities: ["Jolo", "Patikul", "Indanan", "Maimbung"] },
   { id: "tawi-tawi", name: "Tawi-Tawi", regionId: "BARMM", islandGroup: "Mindanao", centerLat: 5.15, centerLng: 119.95, svgX: 270, svgY: 1080, cities: ["Bongao", "Panglima Sugala", "Sitangkai", "Simunul"] },
 ];
 

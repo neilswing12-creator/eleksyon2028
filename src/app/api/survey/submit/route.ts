@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { hashIP, generateManagementToken, hashManagementToken } from "@/lib/security";
 import { getTrustedClientIp, isIpBlocked, logDuplicateAttempt } from "@/lib/ip-security";
 import { isValidCountryCode, getCountryByCode } from "@/lib/overseas-geo";
+import { PHILIPPINE_REGIONS, PHILIPPINE_PROVINCES, getCitiesForProvince } from "@/lib/philippines-geo";
 
 export async function POST(req: NextRequest) {
   let clientIP = "127.0.0.1";
@@ -74,6 +75,36 @@ export async function POST(req: NextRequest) {
       resolvedProvinceName = null;
       resolvedCityId = null;
       resolvedCityName = null;
+    } else {
+      // Domestic: location is optional, but whatever is sent must be a real PSGC place and
+      // names are taken from our own data, never from the request, so the map can't be fed
+      // invented provinces or towns.
+      const province = resolvedProvinceId ? PHILIPPINE_PROVINCES.find((p) => p.id === resolvedProvinceId) : undefined;
+      if (resolvedProvinceId && !province) {
+        return NextResponse.json({ error: "Please select a valid province." }, { status: 400 });
+      }
+      const region = PHILIPPINE_REGIONS.find((r) => r.id === (province ? province.regionId : resolvedRegionId));
+      if (resolvedRegionId && !region) {
+        return NextResponse.json({ error: "Please select a valid region." }, { status: 400 });
+      }
+      resolvedRegionId = region ? region.id : null;
+      resolvedRegionName = region ? region.name : null;
+      resolvedProvinceId = province ? province.id : null;
+      resolvedProvinceName = province ? province.name : null;
+
+      const requestedCity = (cityId || cityName || "").toString().trim();
+      if (requestedCity) {
+        const cities = province ? getCitiesForProvince(province.id) : [];
+        const city = cities.find((c) => c.psgc === requestedCity || c.name.toLowerCase() === requestedCity.toLowerCase());
+        if (!city) {
+          return NextResponse.json({ error: "Please select a valid city or municipality for your province." }, { status: 400 });
+        }
+        resolvedCityId = city.psgc;
+        resolvedCityName = city.name;
+      } else {
+        resolvedCityId = null;
+        resolvedCityName = null;
+      }
     }
 
     // 2. Check active survey campaign and schedule

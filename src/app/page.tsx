@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import GMASmartMapStation from "@/components/GMASmartMapStation";
+import PhilippineResultsMap from "@/components/PhilippineResultsMap";
 import GMATripleLeaderboard from "@/components/GMATripleLeaderboard";
 import ProvinceDetailModal from "@/components/ProvinceDetailModal";
 import {
@@ -177,7 +177,7 @@ export default function HomePage() {
               </p>
             </div>
           ) : (
-            <GMASmartMapStation
+            <PhilippineResultsMap
               candidates={analytics?.candidates || []}
               presidentialRankings={analytics?.presidentialRankings || []}
               vicePresidentialRankings={analytics?.vicePresidentialRankings || []}
@@ -185,7 +185,6 @@ export default function HomePage() {
               provinces={analytics?.provinces || []}
               regions={analytics?.regions || []}
               lastUpdated={analytics?.summary?.lastUpdated}
-              onSelectProvince={(p) => setSelectedProvince(p)}
             />
           )}
         </div>

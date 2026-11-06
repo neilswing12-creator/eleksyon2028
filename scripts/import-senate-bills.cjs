@@ -156,6 +156,7 @@ const sourceUrl = (no, congress) =>
   }
 
   for (const d of duplicates) {
+    if (d.reviewStatus === "NEEDS_REVIEW" && (d.matchNotes || "").startsWith("Duplicate of")) continue;
     ops.unshift(prisma.candidateLegislativeRecord.update({
       where: { id: d.id },
       data: { reviewStatus: "NEEDS_REVIEW", matchNotes: `Duplicate of ${normBill(d.billNo)} (${d.congress}th Congress) after bill-number normalisation. Previous note: ${d.matchNotes || "none"}` },

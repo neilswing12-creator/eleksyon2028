@@ -19,7 +19,7 @@ const prisma = new PrismaClient(args.includes("--db") ? { datasources: { db: { u
 // Patterns use the given name too, so relatives with the same surname never match.
 const AUTHOR_TO_SLUGS = [
   [/^MARCOS,\s*FERDINAND ALEXANDER/i, ["sandro-marcos", "sandro-marcos-sen"]],
-  [/^ROBREDO,\s*(MARIA LEONOR|LENI)/i, ["leni-robredo", "leni-robredo-pres"]],
+  [/^(GERONA-)?ROBREDO,\s*(MARIA LEONOR|LENI)/i, ["leni-robredo", "leni-robredo-pres"]],
   [/^PACQUIAO,\s*EMMANUEL/i, ["manny-pacquiao", "manny-pacquiao-sen"]],
   [/^VILLAR,\s*MARK/i, ["mark-villar"]],
   [/^CAYETANO,\s*ALAN PETER/i, ["alan-cayetano"]],

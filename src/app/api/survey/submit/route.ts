@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { hashIP, generateManagementToken, hashManagementToken } from "@/lib/security";
+import { hashIP, ipHashesForLookup, generateManagementToken, hashManagementToken } from "@/lib/security";
 import { getTrustedClientIp, isIpBlocked, logDuplicateAttempt } from "@/lib/ip-security";
 import { isValidCountryCode, getCountryByCode } from "@/lib/overseas-geo";
 import { PHILIPPINE_REGIONS, PHILIPPINE_PROVINCES, getCitiesForProvince } from "@/lib/philippines-geo";
@@ -201,6 +201,7 @@ export async function POST(req: NextRequest) {
     // 4. IP restriction check with trusted proxy resolution & normalization
     clientIP = getTrustedClientIp(req.headers);
     ipHash = hashIP(clientIP);
+    const lookupHashes = ipHashesForLookup(clientIP);
 
     // Check if IP is actively blocked under security rules
     const blockCheck = await isIpBlocked(clientIP);
@@ -227,7 +228,7 @@ export async function POST(req: NextRequest) {
       const existingActiveSubmission = await prisma.surveySubmission.findFirst({
         where: {
           campaignId: campaign.id,
-          ipHash,
+          ipHash: { in: lookupHashes },
           status: "ACTIVE",
         },
         select: {
@@ -270,7 +271,7 @@ export async function POST(req: NextRequest) {
         const inTxDuplicate = await tx.surveySubmission.findFirst({
           where: {
             campaignId: campaign.id,
-            ipHash,
+            ipHash: { in: lookupHashes },
             status: "ACTIVE",
           },
           select: {

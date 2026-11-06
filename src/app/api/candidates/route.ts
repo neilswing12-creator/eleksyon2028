@@ -63,19 +63,10 @@ export async function GET(req: NextRequest) {
         sources: {
           orderBy: { displayOrder: "asc" },
         },
-        legislativeRecords: {
-          where: { reviewStatus: "CONFIRMED" },
-          select: {
-            id: true,
-            chamber: true,
-            congress: true,
-            billNo: true,
-            title: true,
-            role: true,
-            status: true,
-            republicActNo: true,
-            sourceInstitution: true,
-          },
+        // Bill lists can run to 1,000+ per legislator, so the list view only sends counts;
+        // the full records come from ?slug= for one candidate.
+        _count: {
+          select: { legislativeRecords: { where: { reviewStatus: "CONFIRMED" } } },
         },
       },
       orderBy: [{ position: "asc" }, { displayOrder: "asc" }],

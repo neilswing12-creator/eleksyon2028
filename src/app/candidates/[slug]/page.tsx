@@ -201,6 +201,10 @@ export default function CandidateDetailPage() {
     });
   }, [allRecords, legSearch, legChamber, legCongress, legRole, legStatus]);
 
+  // Long records (1,000+ bills for some senators) are shown 50 at a time.
+  const [legVisible, setLegVisible] = useState(50);
+  useEffect(() => setLegVisible(50), [legSearch, legChamber, legCongress, legRole, legStatus]);
+
   // Legislative Metrics
   const legMetrics = useMemo(() => {
     const total = allRecords.length;
@@ -640,7 +644,7 @@ export default function CandidateDetailPage() {
           {/* Record List */}
           {filteredRecords.length > 0 ? (
             <div className="space-y-3">
-              {filteredRecords.map((bill: any) => {
+              {filteredRecords.slice(0, legVisible).map((bill: any) => {
                 const isEnacted =
                   bill.status === "ENACTED_INTO_LAW" ||
                   bill.status === "REPUBLIC_ACT" ||
@@ -750,6 +754,14 @@ export default function CandidateDetailPage() {
                   </div>
                 );
               })}
+              {filteredRecords.length > legVisible && (
+                <button
+                  onClick={() => setLegVisible((v) => v + 50)}
+                  className="w-full rounded-md border border-slate-200 bg-white py-2.5 text-sm font-semibold text-[#0038A8] hover:bg-slate-50"
+                >
+                  Ipakita pa · Show more ({(filteredRecords.length - legVisible).toLocaleString()} remaining)
+                </button>
+              )}
             </div>
           ) : allRecords.length > 0 ? (
             <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">

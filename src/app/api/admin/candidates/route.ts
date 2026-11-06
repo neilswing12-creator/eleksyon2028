@@ -45,9 +45,6 @@ export async function GET(req: NextRequest) {
         sources: {
           orderBy: { displayOrder: "asc" },
         },
-        legislativeRecords: {
-          orderBy: [{ congress: "desc" }, { displayOrder: "asc" }],
-        },
         legislativeImportJobs: {
           orderBy: { startedAt: "desc" },
           take: 1,

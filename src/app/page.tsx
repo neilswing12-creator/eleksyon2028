@@ -148,10 +148,10 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
           {[
-            { k: "Mga tugon", en: "Survey responses", v: fmt(s.rawActiveSubmissions ?? s.totalActiveSubmissions) },
-            { k: "Ngayong araw", en: "Today (PH time)", v: fmt(s.rawTodaySubmissions ?? s.todaySubmissions) },
-            { k: "Lalawigang may tugon", en: "Provinces reporting", v: s.totalProvinces ? `${s.rawProvincesReporting ?? s.provincesReporting} / ${s.totalProvinces}` : "—" },
-            { k: "Mula sa ibang bansa", en: "Overseas Filipinos", v: fmt(s.rawOverseasSubmissions ?? s.overseasSubmissionsCount) },
+            { k: "Mga tugon", en: "Survey responses", v: fmt(s.totalActiveSubmissions) },
+            { k: "Ngayong araw", en: "Today (PH time)", v: fmt(s.todaySubmissions) },
+            { k: "Lalawigang may tugon", en: "Provinces reporting", v: s.totalProvinces ? `${s.provincesReporting} / ${s.totalProvinces}` : "—" },
+            { k: "Mula sa ibang bansa", en: "Overseas Filipinos", v: fmt(s.overseasSubmissionsCount) },
           ].map((x) => (
             <div key={x.k} className="bg-white p-5 sm:p-6">
               <dt className="text-[13px] font-medium text-ink-soft">

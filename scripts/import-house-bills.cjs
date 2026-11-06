@@ -112,6 +112,7 @@ function mapStatus(rec) {
   const flagged = [];
   for (const e of existing) {
     if (!coveredCongresses.has(e.congress) || !/^H[BR]/i.test(e.billNo)) continue;
+    if (e.role !== "PRINCIPAL_AUTHOR") continue; // the House list only shows principal authors
     if (officialBills.has(`${e.candidateId}|${normHouse(e.billNo)}|${e.congress}`)) continue;
     if (e.reviewStatus === "NEEDS_REVIEW" && (e.matchNotes || "").startsWith("Not found in House")) continue;
     flagged.push(e);

@@ -55,7 +55,7 @@ import {
   Search,
   ExternalLink,
   Info,
-} from "lucide-react";
+} from "@/components/icons";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS } from "@/lib/philippines-geo";
 
 export default function AdminPage() {

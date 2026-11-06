@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import { Info } from "lucide-react";
+import { Info } from "@/components/icons";
 
 export interface BallotCandidate {
   id: string;
@@ -94,13 +94,13 @@ function BallotLine({
         onChange={onToggle}
         className="peer sr-only"
       />
-      <span className="w-6 shrink-0 text-right font-mono text-xs text-slate-500">{number}</span>
+      <span className="w-6 shrink-0 text-right font-mono text-xs text-ink-muted">{number}</span>
       <span className="rounded-full peer-focus-visible:ring-2 peer-focus-visible:ring-[#0038A8] peer-focus-visible:ring-offset-1">
         <Oval filled={selected} />
       </span>
-      <span className="min-w-0 flex-1 text-[13px] leading-tight text-slate-900">
+      <span className="min-w-0 flex-1 text-[13px] leading-tight text-ink">
         <span className="font-semibold tracking-wide">{ballotName(candidate.name)}</span>{" "}
-        <span className="text-slate-500">({partyAbbr(candidate.party)})</span>
+        <span className="text-ink-muted">({partyAbbr(candidate.party)})</span>
       </span>
       <Link
         href={`/candidates/${candidate.slug}`}
@@ -158,20 +158,20 @@ export default function SurveyBallot({
     <div className="border-2 border-[#111827] bg-white shadow-[6px_6px_0_0_rgba(17,24,39,0.12)]">
       {/* Ballot head */}
       <div className="border-b-2 border-[#111827] px-4 py-4 text-center sm:px-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">Eleksyon 2028 · Pambansang Survey</p>
-        <h2 className="mt-1 text-2xl font-bold uppercase tracking-wide text-[#111827]">Balota ng Survey</h2>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-muted">Eleksyon 2028 · Pambansang Survey</p>
+        <h2 className="mt-1 text-2xl font-bold text-[#111827]">Balota ng Survey</h2>
+        <p className="mt-1 text-xs text-ink-soft">
           Eleksyon 2028 opinion survey. <strong>Hindi ito opisyal na balota ng COMELEC</strong> · This is not an official ballot.
         </p>
       </div>
 
       {/* Instructions */}
-      <div className="border-b border-slate-300 bg-slate-50 px-4 py-3 text-xs text-slate-700 sm:px-6">
+      <div className="border-b border-slate-300 bg-slate-50 px-4 py-3 text-xs text-ink-soft sm:px-6">
         <p>
           <strong>Panuto:</strong> Itiman ang bilog <Oval filled inline /> sa tabi ng pangalan ng iyong napili. Puwedeng iwanang blangko
           ang isang posisyon.
         </p>
-        <p className="mt-0.5 text-slate-500">
+        <p className="mt-0.5 text-ink-muted">
           Instructions: shade the oval beside the name of your choice. You may leave a position blank.
         </p>
       </div>
@@ -194,7 +194,7 @@ export default function SurveyBallot({
             ))}
           </div>
           {president && (
-            <button onClick={() => onPresident("")} className="px-3 py-2 text-[11px] text-slate-500 underline hover:text-slate-800">
+            <button onClick={() => onPresident("")} className="px-3 py-2 text-[11px] text-ink-muted underline hover:text-ink">
               Burahin ang pinili · Clear
             </button>
           )}
@@ -217,7 +217,7 @@ export default function SurveyBallot({
             ))}
           </div>
           {vicePresident && (
-            <button onClick={() => onVicePresident("")} className="px-3 py-2 text-[11px] text-slate-500 underline hover:text-slate-800">
+            <button onClick={() => onVicePresident("")} className="px-3 py-2 text-[11px] text-ink-muted underline hover:text-ink">
               Burahin ang pinili · Clear
             </button>
           )}
@@ -227,20 +227,20 @@ export default function SurveyBallot({
       <section>
         <SectionHeader en="Senator" fil="Senador" rule={`Vote for not more than ${maxSenators}`} />
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-300 bg-white/95 px-3 py-2 text-xs backdrop-blur">
-          <span className="text-slate-600">
-            Napili: <strong className="tabular-nums text-slate-900">{senators.length}</strong> / {maxSenators}
+          <span className="text-ink-soft">
+            Napili: <strong className="tabular-nums text-ink">{senators.length}</strong> / {maxSenators}
           </span>
           {full ? (
             <span className="font-semibold text-[#CE1126]">Puno na · Limit reached</span>
           ) : (
-            <span className="text-slate-400">{maxSenators - senators.length} pa ang puwede</span>
+            <span className="text-ink-faint">{maxSenators - senators.length} pa ang puwede</span>
           )}
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3" role="group" aria-label="Senators">
           {sorted.sen.map((c, i) => {
             const selected = senators.includes(c.id);
             return (
-              <div key={c.id} className="sm:border-r sm:border-slate-200">
+              <div key={c.id} className="sm:border-r sm:border-line">
                 <BallotLine
                   number={i + 1}
                   candidate={c}
@@ -286,10 +286,10 @@ export function BallotReceipt({
     .sort((a, b) => surnameKey(a!).localeCompare(surnameKey(b!))) as BallotCandidate[];
 
   return (
-    <div className="mx-auto w-full max-w-sm bg-[#FFFEF8] px-5 py-6 font-mono text-[12px] leading-relaxed text-slate-900 shadow-[0_1px_0_#e5e7eb,0_10px_30px_-12px_rgba(0,0,0,0.25)]">
+    <div className="mx-auto w-full max-w-sm bg-[#FFFEF8] px-5 py-6 font-mono text-[12px] leading-relaxed text-ink shadow-[0_1px_0_#e5e7eb,0_10px_30px_-12px_rgba(0,0,0,0.25)]">
       <p className="text-center font-bold tracking-widest">ELEKSYON 2028</p>
       <p className="text-center">RESIBO NG SURVEY</p>
-      <p className="text-center text-[10px] text-slate-500">HINDI OPISYAL · NOT AN OFFICIAL RECEIPT</p>
+      <p className="text-center text-[10px] text-ink-muted">HINDI OPISYAL · NOT AN OFFICIAL RECEIPT</p>
       <div className="my-3 border-t border-dashed border-slate-400" />
       <p className="truncate">BOTANTE: {voterLine.toUpperCase()}</p>
       <p className="truncate">LUGAR: {locationLine.toUpperCase()}</p>
@@ -310,7 +310,7 @@ export function BallotReceipt({
         <p className="pl-3">— WALANG PINILI —</p>
       )}
       <div className="my-3 border-t border-dashed border-slate-400" />
-      <p className="text-center text-[10px] text-slate-500">Suriin bago isumite · Check before submitting</p>
+      <p className="text-center text-[10px] text-ink-muted">Suriin bago isumite · Check before submitting</p>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen, Search, CheckCircle2, ExternalLink, Filter, ShieldCheck } from "lucide-react";
+import { BookOpen, Search, CheckCircle2, ExternalLink, Filter, ShieldCheck } from "@/components/icons";
 
 export default function PlatformsPage() {
   const [candidates, setCandidates] = useState<any[]>([]);
@@ -62,16 +62,16 @@ export default function PlatformsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-16">
+    <div className="min-h-screen bg-paper pb-16">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200/80 py-8">
+      <div className="bg-white border-b border-line py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-blue-50 border border-blue-200/60 text-ph-blue text-xs font-semibold mb-2">
               <BookOpen className="w-3.5 h-3.5" />
               <span>Comparative Policy Repository</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#0B1E36] tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-bold text-ink tracking-tight">
               Candidate Agendas &amp; Platforms
             </h1>
             <p className="text-xs sm:text-sm text-brand-slate mt-1 max-w-2xl">
@@ -83,13 +83,13 @@ export default function PlatformsPage() {
           {/* Controls Bar */}
           <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="relative w-full sm:w-80">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-3 text-ink-faint" />
               <input
                 type="text"
                 placeholder="Search policy topic or candidate..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200/80 focus:ring-2 focus:ring-brand-blue/30 focus:border-brand-blue outline-none transition-all"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-line focus:ring-2 focus:ring-brand-blue/30 focus:border-brand-blue outline-none transition-all"
               />
             </div>
 
@@ -100,7 +100,7 @@ export default function PlatformsPage() {
                   onClick={() => setSelectedCategory(cat.value)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                     selectedCategory === cat.value
-                      ? "bg-blue-600 text-white shadow-xs"
+                      ? "bg-ph-blue text-white "
                       : "bg-slate-100 text-brand-slate hover:bg-slate-200"
                   }`}
                 >
@@ -115,9 +115,9 @@ export default function PlatformsPage() {
       {/* Platform Proposals Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         {loading ? (
-          <div className="py-16 text-center text-xs text-slate-400">Loading policy platforms...</div>
+          <div className="py-16 text-center text-xs text-ink-faint">Loading policy platforms...</div>
         ) : filtered.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center text-xs text-slate-500">
+          <div className="bg-white rounded-2xl border border-line p-12 text-center text-xs text-ink-muted">
             No platforms found for the selected category.
           </div>
         ) : (
@@ -125,12 +125,12 @@ export default function PlatformsPage() {
             {filtered.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-subtle hover:shadow-card transition-all flex flex-col justify-between space-y-4"
+                className="bg-white rounded-2xl border border-line p-6 shadow-subtle hover:shadow-subtle transition-all flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3">
                   {/* Category Pill & Verification */}
                   <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-ph-blue">
                       {item.category.replace("_", " ")}
                     </span>
                     <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold">
@@ -139,12 +139,12 @@ export default function PlatformsPage() {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-lg text-[#0B1E36] leading-snug">{item.title}</h3>
+                  <h3 className="font-bold text-lg text-ink leading-snug">{item.title}</h3>
                   <p className="text-xs text-brand-slate leading-relaxed">{item.description}</p>
                 </div>
 
                 {/* Candidate Tag & Link */}
-                <div className="pt-4 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+                <div className="pt-4 border-t border-line flex flex-wrap items-center justify-between gap-2">
                   <Link
                     href={`/candidates/${item.candidateSlug}`}
                     className="flex items-center gap-2 group min-w-0 flex-1"
@@ -154,10 +154,10 @@ export default function PlatformsPage() {
                       style={{ backgroundColor: item.candidateColor }}
                     ></span>
                     <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-[#0B1E36] group-hover:text-blue-600 transition-colors truncate">
+                      <div className="text-xs font-bold text-ink group-hover:text-ph-blue transition-colors truncate">
                         {item.candidateName}
                       </div>
-                      <div className="text-[10px] text-slate-400 truncate">
+                      <div className="text-[10px] text-ink-faint truncate">
                         {item.candidatePosition.replace("_", " ")} &bull; {item.candidateParty}
                       </div>
                     </div>
@@ -168,7 +168,7 @@ export default function PlatformsPage() {
                       href={item.sourceUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:underline flex-shrink-0 ml-auto"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-ph-blue hover:underline flex-shrink-0 ml-auto"
                     >
                       <span>Source</span>
                       <ExternalLink className="w-3 h-3" />

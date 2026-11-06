@@ -4,472 +4,288 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import PhilippineResultsMap from "@/components/PhilippineResultsMap";
 import GMATripleLeaderboard from "@/components/GMATripleLeaderboard";
-import ProvinceDetailModal from "@/components/ProvinceDetailModal";
 import {
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  FileText,
+  Globe,
+  Landmark,
+  Lock,
+  MapPin,
+  ShieldCheck,
+  Users,
   Vote,
   BarChart3,
-  MapPin,
-  Users,
-  BookOpen,
-  ArrowRight,
-  ShieldCheck,
-  Award,
-  Layers,
-  Map,
-  ChevronRight,
-  RefreshCw,
-  Landmark,
-  FileCheck,
-  CheckCircle2,
-  Lock,
-  Globe,
-} from "lucide-react";
+} from "@/components/icons";
+
+const fmt = (n?: number) => (typeof n === "number" ? n.toLocaleString("en-PH") : "—");
+
+function SectionHead({ eyebrow, title, sub, action }: { eyebrow: string; title: string; sub?: string; action?: React.ReactNode }) {
+  return (
+    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="max-w-2xl">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-ph-red">{eyebrow}</p>
+        <h2 className="mt-2 text-[28px] font-bold leading-tight text-ink sm:text-[32px]">{title}</h2>
+        {sub && <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">{sub}</p>}
+      </div>
+      {action}
+    </div>
+  );
+}
+
+function MiniStanding({ label, rows }: { label: string; rows: any[] }) {
+  const total = rows.reduce((a, r) => a + (r.votes || 0), 0);
+  return (
+    <div>
+      <p className="mb-3 text-[13px] font-semibold text-ink-soft">{label}</p>
+      <ol className="space-y-3">
+        {rows.slice(0, 3).map((r, i) => {
+          const pct = r.percentage ?? (total ? (r.votes / total) * 100 : 0);
+          return (
+            <li key={r.id}>
+              <div className="flex items-baseline justify-between gap-3 text-[14px]">
+                <span className="min-w-0 truncate font-medium text-ink">
+                  <span className="mr-2 text-ink-faint tabular-nums">{i + 1}</span>
+                  {r.name}
+                </span>
+                <span className="font-semibold tabular-nums text-ink">{Number(pct).toFixed(1)}%</span>
+              </div>
+              <div className="mt-1.5 h-1.5 rounded-full bg-paper">
+                <div className="h-1.5 rounded-full" style={{ width: `${Math.max(2, pct)}%`, background: r.color }} />
+              </div>
+            </li>
+          );
+        })}
+        {!rows.length && <li className="text-[13px] text-ink-faint">Wala pang datos.</li>}
+      </ol>
+    </div>
+  );
+}
+
+const EXPLORE = [
+  { href: "/map", icon: MapPin, title: "Mapa ng resulta", en: "Results map", body: "Tingnan ang nangunguna sa bawat lalawigan, lungsod at bayan." },
+  { href: "/candidates", icon: Users, title: "Mga kandidato", en: "Candidates", body: "Talambuhay, edukasyon at mga panukalang batas mula sa Senado at Kamara." },
+  { href: "/platforms", icon: BookOpen, title: "Mga plataporma", en: "Platforms", body: "Ihambing ang mga plano ng kandidato ayon sa paksa: ekonomiya, kalusugan, edukasyon at iba pa." },
+  { href: "/voters", icon: BarChart3, title: "Profile ng botante", en: "Voter profile", body: "Bilang ng rehistradong botante at hatian ayon sa rehiyon at edad." },
+];
+
+const STEPS = [
+  { icon: Vote, title: "Punan ang balota", body: "Itiman ang bilog sa tabi ng napili mo para Pangulo, Pangalawang Pangulo at hanggang 12 Senador." },
+  { icon: Lock, title: "Isang boto bawat koneksyon", body: "Hindi namin hinihingi ang email o ID. Isang tugon lang ang tinatanggap bawat internet connection." },
+  { icon: FileText, title: "Itago ang iyong link", body: "Makakatanggap ka ng pribadong link para baguhin o bawiin ang boto mo anumang oras." },
+];
 
 export default function HomePage() {
   const [analytics, setAnalytics] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedProvince, setSelectedProvince] = useState<any>(null);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const res = await fetch("/api/analytics");
-        if (res.ok) {
-          const data = await res.json();
-          setAnalytics(data);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
+    fetch("/api/analytics", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setAnalytics)
+      .catch(() => undefined);
   }, []);
 
-  const presLeader = analytics?.presidentialRankings?.[0];
-  const vpLeader = analytics?.vicePresidentialRankings?.[0];
-  const featuredCandidates = analytics?.candidates?.slice(0, 6) || [];
+  const s = analytics?.summary || {};
+  const updated = s.lastUpdated ? new Date(s.lastUpdated).toLocaleString("en-PH", { dateStyle: "medium", timeStyle: "short" }) : null;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ========================================================= */}
-      {/* 1. HERO SECTION (Clean White / Light Blue-Gray Civic Design) */}
-      {/* ========================================================= */}
-      <section className="relative bg-gradient-to-b from-[#F0F6FF]/70 via-[#F8FAFC] to-white border-b border-slate-200/80 pt-14 pb-16 sm:pt-20 sm:pb-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-5">
-            {/* Understated Civic Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200/80 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-              <span>Independent Civic Opinion Research &bull; Philippines 2028</span>
-            </div>
-
-            {/* Clear Primary Heading */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0B1E36] leading-tight">
-              2028 Philippine Pre-Election{" "}
-              <span className="text-blue-600">Public Opinion Survey</span>
+    <div className="bg-paper">
+      {/* Hero */}
+      <section className="border-b border-line bg-white">
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:px-8">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-1 text-[12.5px] font-medium text-ink-soft">
+              <Landmark className="h-4 w-4 text-ph-blue" />
+              Halalan 2028 · Pambansang survey
+            </p>
+            <h1 className="mt-5 text-[40px] font-extrabold leading-[1.08] text-ink sm:text-[54px]">
+              Ano ang pulso ng bayan para sa 2028?
             </h1>
-
-            {/* Concise Transparency Notice */}
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto font-normal">
-              An independent, non-partisan public opinion study measuring voluntary citizen sentiment for President,
-              Vice President, and Senators for the 2028 Philippine National Elections. Results reflect voluntary online
-              submissions and are not certified election returns.
+            <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-soft">
+              Isang malaya at walang kinikilingang survey para sa Pangulo, Pangalawang Pangulo at Senado.
+              Bukas sa lahat ng Pilipino, nasa bansa man o nasa ibang bansa.
             </p>
-
-            {/* Action Buttons */}
-            <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                href="/survey"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
-              >
-                <Vote className="w-4 h-4 text-white" />
-                <span>Participate in Survey</span>
+            <p className="mt-2 max-w-xl text-[14px] text-ink-muted">
+              An independent, non-partisan opinion survey for the 2028 Philippine elections. Results are voluntary responses, not official election returns.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/survey" className="inline-flex items-center gap-2 rounded-lg bg-ph-blue px-5 py-3 text-[15px] font-semibold text-white hover:bg-ph-blueDeep">
+                <Vote className="h-5 w-5" /> Bumoto sa survey
               </Link>
-              <Link
-                href="/map"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold text-sm shadow-xs transition-colors flex items-center justify-center gap-2"
-              >
-                <MapPin className="w-4 h-4 text-blue-600" />
-                <span>Explore Map &amp; Results</span>
+              <Link href="/map" className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-5 py-3 text-[15px] font-semibold text-ink hover:bg-paper">
+                Tingnan ang resulta <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
+            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[13.5px] text-ink-soft">
+              {["Walang email o ID", "Isang boto bawat koneksyon", "Puwedeng bawiin anumang oras"].map((t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" /> {t}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Hero Statistics Summary Cards */}
-          <div className="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Active Verified Submissions
-              </span>
-              <div className="text-2xl sm:text-3xl font-bold text-[#0B1E36] mt-1 tabular-nums">
-                {(analytics?.summary?.totalActiveSubmissions || 0).toLocaleString()}
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">Contributing to live tallies</p>
+          {/* Live snapshot */}
+          <div className="rounded-2xl border border-line bg-white p-6 shadow-soft sm:p-7">
+            <div className="flex items-center justify-between">
+              <p className="text-[15px] font-bold text-ink">Kasalukuyang resulta</p>
+              <span className="rounded-md bg-paper px-2 py-1 text-[11.5px] font-medium text-ink-muted">Hindi opisyal</span>
             </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Submissions Today
-              </span>
-              <div className="text-2xl sm:text-3xl font-bold text-blue-600 mt-1 tabular-nums">
-                {(analytics?.summary?.todaySubmissions ?? 0).toLocaleString()}
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">Philippine calendar day (PST)</p>
+            <p className="mt-1 text-[12.5px] text-ink-muted">{updated ? `Huling update: ${updated}` : "Nilo-load…"}</p>
+            <div className="mt-6 space-y-7">
+              <MiniStanding label="Pangulo · President" rows={analytics?.presidentialRankings || []} />
+              <MiniStanding label="Pangalawang Pangulo · Vice President" rows={analytics?.vicePresidentialRankings || []} />
             </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Provinces Reporting
-              </span>
-              <div className="text-2xl sm:text-3xl font-bold text-[#0B1E36] mt-1 tabular-nums">
-                {analytics?.summary?.provincesReporting ?? (analytics?.provinces?.filter((p: any) => p.totalSubmissions > 0).length || 0)} / {analytics?.summary?.totalProvinces ?? 82}
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">Nationwide geographic coverage</p>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Abuse Prevention
-              </span>
-              <div className="text-sm font-bold text-slate-800 mt-2 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>HMAC Salted Hash</span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">1 vote per IP network</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 2. INTERACTIVE MAP & GEOGRAPHIC COVERAGE                   */}
-      {/* ========================================================= */}
-      <section className="bg-[#F8FAFC] py-16 border-b border-slate-200/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-                Geographic Coverage
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
-                Interactive Philippine Survey Map
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-                Analyze province-by-province trends with authentic geographic boundaries and hexagonal cartogram visualizations.
-              </p>
-            </div>
-            <Link
-              href="/map"
-              className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 self-start sm:self-auto"
-            >
-              <span>Full-screen map station</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+            <Link href="/results" className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-semibold text-ph-blue hover:underline">
+              Buong resulta at Senado <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-
-          {loading ? (
-            <div className="w-full h-[580px] bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center gap-3">
-              <RefreshCw className="w-7 h-7 text-blue-600 animate-spin" />
-              <p className="text-xs font-semibold text-slate-500">
-                Loading interactive geographic map...
-              </p>
-            </div>
-          ) : (
-            <PhilippineResultsMap
-              candidates={analytics?.candidates || []}
-              presidentialRankings={analytics?.presidentialRankings || []}
-              vicePresidentialRankings={analytics?.vicePresidentialRankings || []}
-              senatorialRankings={analytics?.senatorialRankings || []}
-              provinces={analytics?.provinces || []}
-              regions={analytics?.regions || []}
-              lastUpdated={analytics?.summary?.lastUpdated}
-            />
-          )}
         </div>
       </section>
 
-      {/* ========================================================= */}
-      {/* 3. CURRENT SURVEY STANDINGS (TRIPLE LEADERBOARD)          */}
-      {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-slate-200/70">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-              Current Survey Standings
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
-              National Survey Results
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-              Real-time tabulation across President, Vice President, and the Senatorial Magic 12 from voluntary survey submissions.
-            </p>
-          </div>
-          <Link
-            href="/results"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 self-start sm:self-auto"
-          >
-            <span>Explore full results breakdown</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+      {/* Stats */}
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
+          {[
+            { k: "Mga tugon", en: "Survey responses", v: fmt(s.rawActiveSubmissions ?? s.totalActiveSubmissions) },
+            { k: "Ngayong araw", en: "Today (PH time)", v: fmt(s.rawTodaySubmissions ?? s.todaySubmissions) },
+            { k: "Lalawigang may tugon", en: "Provinces reporting", v: s.totalProvinces ? `${s.rawProvincesReporting ?? s.provincesReporting} / ${s.totalProvinces}` : "—" },
+            { k: "Mula sa ibang bansa", en: "Overseas Filipinos", v: fmt(s.rawOverseasSubmissions ?? s.overseasSubmissionsCount) },
+          ].map((x) => (
+            <div key={x.k} className="bg-white p-5 sm:p-6">
+              <dt className="text-[13px] font-medium text-ink-soft">
+                {x.k}
+                <span className="block text-[12px] font-normal text-ink-faint">{x.en}</span>
+              </dt>
+              <dd className="mt-2 text-[30px] font-bold tabular-nums tracking-tight text-ink">{x.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
-        <GMATripleLeaderboard
-          presidentialRankings={analytics?.presidentialRankings || []}
-          vicePresidentialRankings={analytics?.vicePresidentialRankings || []}
-          senatorialRankings={analytics?.senatorialRankings || []}
-          lastUpdated={analytics?.summary?.lastUpdated}
+      {/* Map */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <SectionHead
+          eyebrow="Mapa"
+          title="Resulta sa bawat lalawigan, lungsod at bayan"
+          sub="Pumili ng rehiyon o i-click ang lalawigan para makita ang lahat ng bayan at lungsod nito."
+          action={
+            <Link href="/map" className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ph-blue hover:underline">
+              Buksan ang buong mapa <ArrowRight className="h-4 w-4" />
+            </Link>
+          }
         />
+        {analytics ? (
+          <PhilippineResultsMap
+            candidates={analytics.candidates || []}
+            presidentialRankings={analytics.presidentialRankings || []}
+            vicePresidentialRankings={analytics.vicePresidentialRankings || []}
+            senatorialRankings={analytics.senatorialRankings || []}
+            provinces={analytics.provinces || []}
+            regions={analytics.regions || []}
+            lastUpdated={analytics.summary?.lastUpdated}
+          />
+        ) : (
+          <div className="flex h-[560px] items-center justify-center rounded-xl border border-line bg-white text-[14px] text-ink-muted">Nilo-load ang mapa…</div>
+        )}
       </section>
 
-      {/* ========================================================= */}
-      {/* 4. HOW THE SURVEY WORKS (Ayos Bayan & eGovPH Style)       */}
-      {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-slate-200/70">
-        <div className="text-center max-w-2xl mx-auto space-y-2 mb-12">
-          <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
-            Transparent Civic Process
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
-            How Eleksyon 2028 Survey Works
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500">
-            From participant submission to cryptographic hashing and public aggregation, every step is transparent and documented.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-3">
-            <div className="w-8 h-8 rounded-full bg-[#0B1E36] text-white flex items-center justify-center font-bold text-xs">
-              01
-            </div>
-            <h3 className="text-base font-bold text-[#0B1E36]">Voluntary Ballot Selection</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Select your candidate preferences for President, Vice President, and up to 12 Senators across verified candidates.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-3">
-            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-              02
-            </div>
-            <h3 className="text-base font-bold text-[#0B1E36]">Cryptographic Verification</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              IP addresses are converted to one-way HMAC-SHA256 salted hashes to enforce a strict 1-response-per-network rule without collecting personal identifiers.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-3">
-            <div className="w-8 h-8 rounded-full bg-[#0B1E36] text-white flex items-center justify-center font-bold text-xs">
-              03
-            </div>
-            <h3 className="text-base font-bold text-[#0B1E36]">Token-Based Response Control</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Participants receive an anonymous management token that allows editing choices or retracting their ballot at any time.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-3">
-            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-              04
-            </div>
-            <h3 className="text-base font-bold text-[#0B1E36]">Live Open Analytics</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Submissions update public tallies in real time with transparent provincial maps, overseas Filipino participation, and audit trails.
-            </p>
-          </div>
+      {/* Standings */}
+      <section className="border-y border-line bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <SectionHead
+            eyebrow="Talaan"
+            title="Pangulo, Pangalawang Pangulo at Magic 12"
+            action={
+              <Link href="/results" className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ph-blue hover:underline">
+                Detalyadong resulta <ArrowRight className="h-4 w-4" />
+              </Link>
+            }
+          />
+          <GMATripleLeaderboard
+            presidentialRankings={analytics?.presidentialRankings || []}
+            vicePresidentialRankings={analytics?.vicePresidentialRankings || []}
+            senatorialRankings={analytics?.senatorialRankings || []}
+            lastUpdated={analytics?.summary?.lastUpdated}
+          />
         </div>
       </section>
 
-      {/* ========================================================= */}
-      {/* 5. VOTERS PROFILE & DEMOGRAPHICS PREVIEW                  */}
-      {/* ========================================================= */}
-      <section className="bg-[#F8FAFC] py-16 border-b border-slate-200/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-                Electoral Demographics
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
-                Philippine Registered Voters Profile
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-                Official Commission on Elections (COMELEC) baseline demographics contextualized with voluntary survey participation.
-              </p>
-            </div>
-            <Link
-              href="/voters"
-              className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 self-start sm:self-auto"
-            >
-              <span>Explore full demographics directory</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-2">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Official Registered Voters (COMELEC)
-              </span>
-              <div className="text-3xl font-bold text-[#0B1E36]">65.74M+</div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Total certified registered voters across 82 provinces and 17 administrative regions.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-2">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Youth Electorate (Gen Z &amp; Millennials)
-              </span>
-              <div className="text-3xl font-bold text-blue-600">56.4%</div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Voters aged 18 to 41 constitute the decisive majority of the Philippine electorate for 2028.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-2">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-                Overseas Filipino Participation
-              </span>
-              <div className="text-3xl font-bold text-[#0B1E36]">1.69M+</div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Registered overseas voters across the Middle East, Asia-Pacific, North America, and Europe.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 6. CANDIDATE DIRECTORY & LEGISLATIVE RECORDS SPOTLIGHT    */}
-      {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-slate-200/70 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">
-              Public Accountability
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1E36] tracking-tight">
-              Candidate Directory &amp; Legislative Records
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-              Verified public profiles, educational credentials, and one-click imported bills from the Senate and House of Representatives.
-            </p>
-          </div>
-          <Link
-            href="/candidates"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 self-start sm:self-auto"
-          >
-            <span>View all 42 candidates</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featuredCandidates.map((c: any) => (
-            <div
-              key={c.id}
-              className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:border-blue-300 transition-all flex flex-col justify-between"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  {c.photoUrl ? (
-                    <picture className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 shadow-xs flex-shrink-0 bg-slate-100">
-                      <source srcSet={c.photoUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp")} type="image/webp" />
-                      <img
-                        src={c.photoUrl}
-                        alt={c.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover object-top"
-                        width={48}
-                        height={48}
-                      />
-                    </picture>
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
-                      {c.name.slice(0, 2)}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
-                      {c.position.replace("_", " ")}
-                    </span>
-                    <h3 className="font-bold text-base text-[#0B1E36] truncate leading-tight">
-                      {c.name}
-                    </h3>
-                    <p className="text-xs text-slate-500 font-medium truncate">{c.party || "Independent"}</p>
-                  </div>
-                </div>
-                {c.bio && (
-                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{c.bio}</p>
-                )}
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs mt-3">
-                <span className="flex items-center gap-1.5 font-mono text-[11px] text-slate-500">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full inline-block"
-                    style={{ backgroundColor: c.color }}
-                  ></span>
-                  Map Indicator
+      {/* How it works */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <SectionHead eyebrow="Paano ito gumagana" title="Tatlong hakbang, wala pang limang minuto" />
+        <div className="grid gap-5 md:grid-cols-3">
+          {STEPS.map((st, i) => (
+            <div key={st.title} className="rounded-2xl border border-line bg-white p-6">
+              <div className="flex items-center justify-between">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-ph-sky text-ph-blue">
+                  <st.icon className="h-6 w-6" />
                 </span>
-                <Link
-                  href={`/candidates/${c.slug}`}
-                  className="font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1"
-                >
-                  <span>View Profile &amp; Bills</span>
-                  <ChevronRight className="w-3 h-3" />
-                </Link>
+                <span className="text-[13px] font-semibold tabular-nums text-ink-faint">0{i + 1}</span>
               </div>
+              <h3 className="mt-5 text-[18px] font-bold text-ink">{st.title}</h3>
+              <p className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">{st.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ========================================================= */}
-      {/* 7. CIVIC TRANSPARENCY CARD (eGovPH Banner Style)          */}
-      {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-gradient-to-r from-[#004B93] to-blue-600 rounded-3xl p-8 sm:p-12 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-semibold backdrop-blur-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-sky-200" />
-              <span>Philippine Civic Technology</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              An Open, Non-Partisan Public Opinion Platform
-            </h2>
-            <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
-              Compliant with the Philippine Data Privacy Act of 2012 (RA 10173). Zero commercial monetization, zero advertising, and open methodology designed to foster informed democratic discourse.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
-            <Link
-              href="/survey"
-              className="px-6 py-3 rounded-xl bg-white text-[#004B93] hover:bg-slate-50 font-bold text-xs uppercase tracking-wider text-center shadow-sm transition-all"
-            >
-              Participate Now
-            </Link>
-            <Link
-              href="/methodology"
-              className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs text-center border border-white/20 transition-colors"
-            >
-              Read Methodology
-            </Link>
+      {/* Explore */}
+      <section className="border-t border-line bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <SectionHead eyebrow="Alamin" title="Kilalanin ang mga kandidato bago bumoto" />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {EXPLORE.map((c) => (
+              <Link
+                key={c.href}
+                href={c.href}
+                className="group flex flex-col rounded-2xl border border-line border-t-[3px] border-t-ph-blue bg-white p-6 transition-shadow hover:shadow-soft"
+              >
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-ph-sky text-ph-blue">
+                  <c.icon className="h-6 w-6" />
+                </span>
+                <h3 className="mt-5 text-[17px] font-bold text-ink">{c.title}</h3>
+                <p className="text-[12.5px] text-ink-faint">{c.en}</p>
+                <p className="mt-3 flex-1 text-[14px] leading-relaxed text-ink-muted">{c.body}</p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-ph-blue">
+                  Tingnan <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Modal for Province Details */}
-      <ProvinceDetailModal
-        province={selectedProvince}
-        onClose={() => setSelectedProvince(null)}
-        minThreshold={analytics?.summary?.minResponseThreshold || 1}
-      />
+      {/* Transparency band */}
+      <section className="bg-[#111827] text-white">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:px-8">
+          <div>
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-ph-gold/15 text-ph-gold">
+              <ShieldCheck className="h-6 w-6" />
+            </span>
+            <h2 className="mt-5 text-[30px] font-bold leading-tight">Bukas, malinaw at walang kinikilingan</h2>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-slate-300">
+              Ang mga panukalang batas ay kinuha mula sa opisyal na talaan ng Senado at Kamara, may link sa bawat isa.
+              Basahin ang aming <Link href="/privacy" className="font-semibold text-white underline underline-offset-2">privacy notice</Link> para malaman kung paano iniingatan ang iyong tugon.
+            </p>
+          </div>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {[
+              { icon: Landmark, t: "Opisyal na pinagmulan", d: "Senate LIS at House of Representatives records." },
+              { icon: Lock, t: "Pribado", d: "Walang email, telepono o government ID na kailangan." },
+              { icon: Globe, t: "Para sa lahat", d: "Kasama ang mga OFW at Pilipino sa ibang bansa." },
+              { icon: FileText, t: "Malinaw na metodolohiya", d: "Alamin kung paano binibilang ang bawat tugon." },
+            ].map((x) => (
+              <li key={x.t} className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
+                <x.icon className="h-6 w-6 text-ph-gold" />
+                <p className="mt-3 text-[15px] font-semibold">{x.t}</p>
+                <p className="mt-1 text-[13.5px] text-slate-400">{x.d}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
     </div>
   );
 }

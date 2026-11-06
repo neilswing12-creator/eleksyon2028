@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Download, Share2, X, Check, Loader2, Vote } from "lucide-react";
+import { Download, Share2, X, Check, Loader2, Vote } from "@/components/icons";
 import { SHARE_LOGO_DATA_URL, SHARE_SUN_DATA_URL } from "@/lib/share-card-assets";
 
 export interface ShareCandidateData {

@@ -15,7 +15,7 @@ import {
   Vote,
   ExternalLink,
   Share2,
-} from "lucide-react";
+} from "@/components/icons";
 import ShareVoteCardModal, {
   ShareCandidateData,
   CompetitorData,
@@ -181,7 +181,7 @@ export default function ManageVotePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-brand-light flex items-center justify-center p-4">
+      <div className="min-h-screen bg-paper flex items-center justify-center p-4">
         <div className="text-center space-y-3">
           <div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="text-xs text-brand-slate font-medium">Validating private token...</p>
@@ -192,19 +192,19 @@ export default function ManageVotePage() {
 
   if (error || !submission) {
     return (
-      <div className="min-h-screen bg-brand-light flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl border border-brand-border p-8 max-w-md w-full text-center space-y-4 shadow-card">
+      <div className="min-h-screen bg-paper flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl border border-brand-border p-8 max-w-md w-full text-center space-y-4 shadow-subtle">
           <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
             <AlertTriangle className="w-6 h-6" />
           </div>
-          <h2 className="text-lg font-bold text-brand-navy">Invalid Recovery Link</h2>
+          <h2 className="text-lg font-bold text-ink">Invalid Recovery Link</h2>
           <p className="text-xs text-brand-slate leading-relaxed">
             {error || "The private token provided does not match any active or historical survey record."}
           </p>
           <div className="pt-2">
             <Link
               href="/survey"
-              className="inline-block px-5 py-2.5 rounded-xl bg-brand-blue text-white text-xs font-bold shadow-sm hover:bg-blue-700"
+              className="inline-block px-5 py-2.5 rounded-xl bg-brand-blue text-white text-xs font-bold shadow-sm hover:bg-ph-blueDeep"
             >
               Return to Survey
             </Link>
@@ -219,38 +219,38 @@ export default function ManageVotePage() {
   const senSelections = submission.selections?.filter((s: any) => s.position === "SENATOR") || [];
 
   return (
-    <div className="min-h-screen bg-brand-light py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-paper py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between">
           <Link
             href="/results"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-slate hover:text-brand-navy"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-slate hover:text-ink"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Live Results</span>
           </Link>
-          <span className="text-[11px] text-slate-400 font-mono">Token: {token.slice(0, 10)}...</span>
+          <span className="text-[11px] text-ink-faint font-mono">Token: {token.slice(0, 10)}...</span>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-2xl border border-brand-border p-6 sm:p-8 shadow-card space-y-6">
+        <div className="bg-white rounded-2xl border border-brand-border p-6 sm:p-8 shadow-subtle space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
             <div>
               <div className="text-xs font-bold uppercase tracking-wider text-brand-slate">
                 Private Vote Management Record
               </div>
-              <h1 className="text-2xl font-black text-brand-navy mt-1">
+              <h1 className="text-2xl font-bold text-ink mt-1">
                 {submission.participantName}
               </h1>
               <div className="flex items-center gap-4 mt-2 text-xs text-brand-slate">
                 <span className="flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  <Calendar className="w-3.5 h-3.5 text-ink-faint" />
                   {new Date(submission.createdAt).toLocaleDateString()}
                 </span>
                 {submission.residenceType === "OVERSEAS" ? (
                   <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[11px] font-bold">
-                    <Globe className="w-3.5 h-3.5 text-blue-600" />
+                    <Globe className="w-3.5 h-3.5 text-ph-blue" />
                     <span>
                       {submission.countryName || "Overseas Filipino"} (OFW)
                       {submission.overseasCity ? ` • ${submission.overseasCity}` : ""}
@@ -258,7 +258,7 @@ export default function ManageVotePage() {
                   </span>
                 ) : submission.provinceName ? (
                   <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                    <MapPin className="w-3.5 h-3.5 text-ink-faint" />
                     {submission.provinceName}
                   </span>
                 ) : null}
@@ -273,7 +273,7 @@ export default function ManageVotePage() {
                   <span>Active &amp; Counted</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-200 text-slate-700 text-xs font-bold">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-200 text-ink-soft text-xs font-bold">
                   <RotateCcw className="w-4 h-4" />
                   <span>Retracted (Excluded)</span>
                 </span>
@@ -297,7 +297,7 @@ export default function ManageVotePage() {
 
           {/* Recorded Selections */}
           <div className="space-y-4">
-            <h3 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-ink">
               Recorded Survey Selections
             </h3>
 
@@ -311,19 +311,19 @@ export default function ManageVotePage() {
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: presSelection.candidate.color }}
                     ></span>
-                    <span className="font-bold text-sm text-brand-navy">
+                    <span className="font-bold text-sm text-ink">
                       {presSelection.candidate.name}
                     </span>
                     <span className="text-xs text-brand-slate">({presSelection.candidate.party})</span>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic mt-1">No selection recorded</p>
+                  <p className="text-xs text-ink-faint italic mt-1">No selection recorded</p>
                 )}
               </div>
               {presSelection && (
                 <button
                   onClick={() => openShareModal(presSelection.candidate, "PRESIDENT")}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold tracking-normal transition-colors shadow-xs self-start sm:self-auto"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ph-blue hover:bg-ph-blueDeep text-white text-xs font-semibold tracking-normal transition-colors  self-start sm:self-auto"
                 >
                   <Share2 className="w-3.5 h-3.5 text-white" />
                   <span>Share My Vote (1080×1350)</span>
@@ -341,19 +341,19 @@ export default function ManageVotePage() {
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: vpSelection.candidate.color }}
                     ></span>
-                    <span className="font-bold text-sm text-brand-navy">
+                    <span className="font-bold text-sm text-ink">
                       {vpSelection.candidate.name}
                     </span>
                     <span className="text-xs text-brand-slate">({vpSelection.candidate.party})</span>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic mt-1">No selection recorded</p>
+                  <p className="text-xs text-ink-faint italic mt-1">No selection recorded</p>
                 )}
               </div>
               {vpSelection && (
                 <button
                   onClick={() => openShareModal(vpSelection.candidate, "VICE_PRESIDENT")}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold tracking-normal transition-colors shadow-xs self-start sm:self-auto"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ph-blue hover:bg-ph-blueDeep text-white text-xs font-semibold tracking-normal transition-colors  self-start sm:self-auto"
                 >
                   <Share2 className="w-3.5 h-3.5 text-white" />
                   <span>Share My Vote (1080×1350)</span>
@@ -367,21 +367,21 @@ export default function ManageVotePage() {
                 <span className="text-[10px] font-bold uppercase text-brand-slate">
                   Senatorial Slate ({senSelections.length} selected)
                 </span>
-                <span className="text-[10px] text-slate-400">Click candidate to generate 1080×1350 share card</span>
+                <span className="text-[10px] text-ink-faint">Click candidate to generate 1080×1350 share card</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {senSelections.map((s: any) => (
                   <button
                     key={s.candidate.id}
                     onClick={() => openShareModal(s.candidate, "SENATOR")}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-400 text-xs font-semibold text-brand-navy shadow-sm transition-all group"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-amber-50 border border-line hover:border-amber-400 text-xs font-semibold text-ink shadow-sm transition-all group"
                   >
                     <span
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: s.candidate.color }}
                     ></span>
                     <span>{s.candidate.name}</span>
-                    <Share2 className="w-3 h-3 text-slate-400 group-hover:text-amber-600 ml-1" />
+                    <Share2 className="w-3 h-3 text-ink-faint group-hover:text-amber-600 ml-1" />
                   </button>
                 ))}
               </div>
@@ -392,7 +392,7 @@ export default function ManageVotePage() {
           <div className="pt-4 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-3">
             <Link
               href="/map"
-              className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-brand-border text-xs font-bold text-brand-slate hover:text-brand-navy text-center transition-colors"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-brand-border text-xs font-bold text-brand-slate hover:text-ink text-center transition-colors"
             >
               Explore Map
             </Link>
@@ -408,7 +408,7 @@ export default function ManageVotePage() {
             ) : (
               <Link
                 href="/survey"
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-colors flex items-center justify-center gap-1.5"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-ph-blueDeep text-white text-xs font-bold shadow-sm transition-colors flex items-center justify-center gap-1.5"
               >
                 <Vote className="w-4 h-4" />
                 <span>Submit New Survey Response</span>
@@ -427,7 +427,7 @@ export default function ManageVotePage() {
             </div>
 
             <div className="text-center">
-              <h3 className="text-lg font-bold text-brand-navy">Confirm Vote Retraction</h3>
+              <h3 className="text-lg font-bold text-ink">Confirm Vote Retraction</h3>
               <p className="text-xs text-brand-slate mt-1 leading-relaxed">
                 Are you sure you want to retract your survey response? This action will immediately remove your
                 vote from all candidate rankings, percentage totals, and live geographic maps.

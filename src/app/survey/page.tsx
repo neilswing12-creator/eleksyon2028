@@ -18,7 +18,7 @@ import {
   Search,
   Building2,
   MapPin,
-} from "lucide-react";
+} from "@/components/icons";
 import SurveyBallot, { BallotReceipt } from "@/components/SurveyBallot";
 import ShareVoteCardModal, {
   ShareCandidateData,
@@ -290,10 +290,10 @@ export default function SurveyPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-paper flex items-center justify-center p-4">
         <div className="text-center space-y-3">
           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
             Loading Eleksyon Ballot Candidates...
           </p>
         </div>
@@ -302,7 +302,7 @@ export default function SurveyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-paper py-8 px-4 sm:px-6 lg:px-8">
       <div className={`mx-auto ${step === 2 ? "max-w-5xl" : "max-w-3xl"}`}>
         {/* Step Progress Tracker */}
         {step <= 5 && (
@@ -315,11 +315,11 @@ export default function SurveyPage() {
               const done = step > it.s;
               const active = step === it.s;
               return (
-                <li key={it.n} className={`border-t-4 pt-2 ${active ? "border-[#0038A8]" : done ? "border-[#0038A8]/40" : "border-slate-200"}`}>
-                  <span className={`font-semibold ${active ? "text-[#0038A8]" : "text-slate-500"}`}>
+                <li key={it.n} className={`border-t-4 pt-2 ${active ? "border-[#0038A8]" : done ? "border-[#0038A8]/40" : "border-line"}`}>
+                  <span className={`font-semibold ${active ? "text-[#0038A8]" : "text-ink-muted"}`}>
                     {it.n}. {it.fil}
                   </span>
-                  <span className="block text-[11px] text-slate-400">{it.en}</span>
+                  <span className="block text-[11px] text-ink-faint">{it.en}</span>
                 </li>
               );
             })}
@@ -328,16 +328,16 @@ export default function SurveyPage() {
 
         {/* STEP 1: Basic Info & Location */}
         {step === 1 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-8 shadow-card space-y-6">
+          <div className="bg-white rounded-2xl border border-line p-6 sm:p-8 shadow-subtle space-y-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold tracking-normal mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-ph-blue text-xs font-semibold tracking-normal mb-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Anonymous Civic Participation</span>
               </div>
-              <h2 className="text-3xl font-sans font-black text-[#0B1E36] uppercase tracking-wide">
+              <h2 className="text-3xl font-bold text-ink">
                 2028 National Election Survey Ballot
               </h2>
-              <p className="text-xs text-slate-600 font-sans mt-1 leading-relaxed">
+              <p className="text-xs text-ink-soft font-sans mt-1 leading-relaxed">
                 Participation is voluntary and completely anonymous. No email or password is required.
                 Only your declared name and geographical location are recorded to aggregate provincial trends.
               </p>
@@ -345,11 +345,11 @@ export default function SurveyPage() {
 
             <div className="space-y-4 pt-2 font-sans">
               <div>
-                <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
-                  Your Full Name or Pseudonym <span className="text-blue-600">*</span>
+                <label className="block text-xs font-semibold tracking-wide text-ink mb-1.5">
+                  Your Full Name or Pseudonym <span className="text-ph-blue">*</span>
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 absolute left-3 top-3.5 text-slate-400" />
+                  <User className="w-4 h-4 absolute left-3 top-3.5 text-ink-faint" />
                   <input
                     type="text"
                     required
@@ -359,15 +359,15 @@ export default function SurveyPage() {
                     className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none transition-all"
                   />
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">
+                <p className="text-[11px] text-ink-faint mt-1">
                   Used strictly to identify your ballot and issue your private vote management link.
                 </p>
               </div>
 
               {/* Location Type Selection: Domestic vs Overseas */}
               <div>
-                <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-2">
-                  Voting Location / Sector <span className="text-blue-600">*</span>
+                <label className="block text-xs font-semibold tracking-wide text-ink mb-2">
+                  Voting Location / Sector <span className="text-ph-blue">*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
@@ -380,21 +380,21 @@ export default function SurveyPage() {
                     className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
                       residenceType === "DOMESTIC"
                         ? "border-[#004B93] bg-blue-50/60 ring-2 ring-[#004B93]/20"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        : "border-line bg-white hover:border-slate-300"
                     }`}
                   >
                     <div
                       className={`p-2 rounded-lg flex-shrink-0 ${
-                        residenceType === "DOMESTIC" ? "bg-[#004B93] text-white" : "bg-slate-100 text-slate-500"
+                        residenceType === "DOMESTIC" ? "bg-[#004B93] text-white" : "bg-slate-100 text-ink-muted"
                       }`}
                     >
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="font-semibold text-xs uppercase text-[#0B1E36]">
+                      <div className="font-semibold text-xs uppercase text-ink">
                         Within the Philippines
                       </div>
-                      <div className="text-[11px] text-slate-500 font-sans mt-0.5">
+                      <div className="text-[11px] text-ink-muted font-sans mt-0.5">
                         Resident citizen residing in Philippine provinces and cities
                       </div>
                     </div>
@@ -411,21 +411,21 @@ export default function SurveyPage() {
                     className={`p-3.5 rounded-xl border-2 text-left transition-all flex items-start gap-3 ${
                       residenceType === "OVERSEAS"
                         ? "border-[#004B93] bg-blue-50/60 ring-2 ring-[#004B93]/20"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        : "border-line bg-white hover:border-slate-300"
                     }`}
                   >
                     <div
                       className={`p-2 rounded-lg flex-shrink-0 ${
-                        residenceType === "OVERSEAS" ? "bg-[#004B93] text-white" : "bg-slate-100 text-slate-500"
+                        residenceType === "OVERSEAS" ? "bg-[#004B93] text-white" : "bg-slate-100 text-ink-muted"
                       }`}
                     >
                       <Globe className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="font-semibold text-xs uppercase text-[#0B1E36]">
+                      <div className="font-semibold text-xs uppercase text-ink">
                         Outside the Philippines (OFW / Overseas Filipino)
                       </div>
-                      <div className="text-[11px] text-slate-500 font-sans mt-0.5">
+                      <div className="text-[11px] text-ink-muted font-sans mt-0.5">
                         Filipino migrant workers, permanent residents, and diaspora worldwide
                       </div>
                     </div>
@@ -435,16 +435,16 @@ export default function SurveyPage() {
 
               {/* DOMESTIC: Philippine Region, Province, City */}
               {residenceType === "DOMESTIC" ? (
-                <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <div className="text-[11px] font-semibold tracking-normal text-slate-600 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                <div className="space-y-4 p-4 rounded-xl bg-slate-50 border border-line">
+                  <div className="text-[11px] font-semibold tracking-normal text-ink-soft flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-ph-blue" />
                     <span>Philippine Geographic Location (Domestic)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
-                        Region <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                      <label className="block text-xs font-semibold tracking-wide text-ink mb-1.5">
+                        Region <span className="text-ink-faint font-normal lowercase">(optional)</span>
                       </label>
                       <select
                         value={selectedRegionId}
@@ -466,8 +466,8 @@ export default function SurveyPage() {
 
                     {/* Province */}
                     <div>
-                      <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
-                        Province <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                      <label className="block text-xs font-semibold tracking-wide text-ink mb-1.5">
+                        Province <span className="text-ink-faint font-normal lowercase">(optional)</span>
                       </label>
                       <select
                         value={selectedProvinceId}
@@ -490,8 +490,8 @@ export default function SurveyPage() {
                   {/* City / Municipality */}
                   {availableCities.length > 0 && (
                     <div>
-                      <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
-                        City / Municipality <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                      <label className="block text-xs font-semibold tracking-wide text-ink mb-1.5">
+                        City / Municipality <span className="text-ink-faint font-normal lowercase">(optional)</span>
                       </label>
                       <select
                         value={selectedCity}
@@ -513,7 +513,7 @@ export default function SurveyPage() {
                 <div className="space-y-4 p-4 rounded-xl bg-blue-50/50 border border-blue-200">
                   <div className="text-[11px] font-semibold tracking-normal text-blue-900 flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <Globe className="w-3.5 h-3.5 text-blue-600" />
+                      <Globe className="w-3.5 h-3.5 text-ph-blue" />
                       <span>Overseas Filipino Country of Residence</span>
                     </span>
                     <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">
@@ -523,13 +523,13 @@ export default function SurveyPage() {
 
                   {/* Searchable Country Selector */}
                   <div>
-                    <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
-                      Country Abroad <span className="text-blue-600">*</span>
+                    <label className="block text-xs font-semibold tracking-wide text-ink mb-1.5">
+                      Country Abroad <span className="text-ph-blue">*</span>
                     </label>
 
                     {/* Filter Input */}
                     <div className="relative mb-2">
-                      <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
+                      <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-ink-faint" />
                       <input
                         type="text"
                         placeholder="Search country (e.g. Saudi Arabia, UAE, USA, Japan, Singapore, Canada)..."
@@ -552,18 +552,18 @@ export default function SurveyPage() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-[10px] text-slate-500 mt-1">
+                    <p className="text-[10px] text-ink-muted mt-1">
                       No Philippine province is required. Overseas submissions are tallied independently under the Global Diaspora breakdown.
                     </p>
                   </div>
 
                   {/* Optional City or Region Abroad */}
                   <div>
-                    <label className="block text-xs font-semibold tracking-wide text-[#0B1E36] mb-1.5">
-                      City, State, or Region Abroad <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                    <label className="block text-xs font-semibold tracking-wide text-ink mb-1.5">
+                      City, State, or Region Abroad <span className="text-ink-faint font-normal lowercase">(optional)</span>
                     </label>
                     <div className="relative">
-                      <Building2 className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                      <Building2 className="w-4 h-4 absolute left-3 top-3 text-ink-faint" />
                       <input
                         type="text"
                         placeholder="e.g. Dubai, Riyadh, Los Angeles, Toronto, Hong Kong, Sydney"
@@ -577,12 +577,12 @@ export default function SurveyPage() {
                 </div>
               )}
               {/* Optional Demographic Profile for Voters Research */}
-              <div className="pt-3 border-t border-slate-200 space-y-3">
+              <div className="pt-3 border-t border-line space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold tracking-normal text-[#0B1E36]">
+                  <span className="text-xs font-semibold tracking-normal text-ink">
                     Optional Demographic Profile
                   </span>
-                  <span className="text-[10px] text-slate-400 font-sans font-medium">
+                  <span className="text-[10px] text-ink-faint font-sans font-medium">
                     (Helps map national generational cohorts &amp; voter demographics)
                   </span>
                 </div>
@@ -590,7 +590,7 @@ export default function SurveyPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Age Group */}
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-ink-soft uppercase mb-1">
                       Age Bracket
                     </label>
                     <select
@@ -608,7 +608,7 @@ export default function SurveyPage() {
 
                   {/* Gender */}
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                    <label className="block text-[11px] font-bold text-ink-soft uppercase mb-1">
                       Gender
                     </label>
                     <select
@@ -630,24 +630,24 @@ export default function SurveyPage() {
                     type="checkbox"
                     checked={isFirstTimeVoter}
                     onChange={(e) => setIsFirstTimeVoter(e.target.checked)}
-                    className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 border-slate-300"
+                    className="rounded text-ph-blue focus:ring-blue-500 w-4 h-4 border-slate-300"
                   />
-                  <span className="text-xs text-slate-700 font-medium">
+                  <span className="text-xs text-ink-soft font-medium">
                     I am a first-time voter in the Philippine National Elections
                   </span>
                 </label>
               </div>
 
               {/* Privacy Notice */}
-              <div className="pt-3 border-t border-slate-200">
+              <div className="pt-3 border-t border-line">
                 <label className="flex items-start gap-2.5 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={privacyAgreed}
                     onChange={(e) => setPrivacyAgreed(e.target.checked)}
-                    className="mt-0.5 rounded text-blue-600 focus:ring-blue-500 w-4 h-4 border-slate-300"
+                    className="mt-0.5 rounded text-ph-blue focus:ring-blue-500 w-4 h-4 border-slate-300"
                   />
-                  <span className="text-xs text-slate-600 leading-relaxed font-sans">
+                  <span className="text-xs text-ink-soft leading-relaxed font-sans">
                     I understand that this is an independent, unofficial public opinion survey and not an official
                     election ballot. I agree to have my survey preferences aggregated anonymously.
                   </span>
@@ -659,7 +659,7 @@ export default function SurveyPage() {
               <button
                 disabled={!participantName.trim() || !privacyAgreed}
                 onClick={() => setStep(2)}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm tracking-wider uppercase shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-ph-blue hover:bg-ph-blueDeep text-white font-semibold text-sm tracking-wider uppercase shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <span>Proceed to Presidential Ballot</span>
                 <ArrowRight className="w-4 h-4" />
@@ -684,7 +684,7 @@ export default function SurveyPage() {
             <div className="flex items-center justify-between">
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
+                className="flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-ink-soft hover:text-ink"
               >
                 <ArrowLeft className="h-4 w-4" /> Bumalik
               </button>
@@ -707,8 +707,8 @@ export default function SurveyPage() {
         {step === 5 && (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-[#0B1E36]">Suriin ang iyong balota</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <h2 className="text-2xl font-bold text-ink">Suriin ang iyong balota</h2>
+              <p className="mt-1 text-sm text-ink-muted">
                 Check your choices. After you submit you get a private link to change or withdraw your vote anytime.
               </p>
             </div>
@@ -735,7 +735,7 @@ export default function SurveyPage() {
                   <p className="font-semibold">Hindi naisumite · Not submitted</p>
                   <p className="text-red-700">{errorMessage}</p>
                   {duplicateIPError ? (
-                    <p className="text-xs text-slate-700">
+                    <p className="text-xs text-ink-soft">
                       One vote is allowed per internet connection for the whole survey. If you already voted, use your
                       private vote link to change or withdraw it.
                     </p>
@@ -756,7 +756,7 @@ export default function SurveyPage() {
             <div className="flex items-center justify-between">
               <button
                 onClick={() => setStep(2)}
-                className="flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
+                className="flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-ink-soft hover:text-ink"
               >
                 <ArrowLeft className="h-4 w-4" /> Baguhin ang balota
               </button>
@@ -782,7 +782,7 @@ export default function SurveyPage() {
 
         {/* STEP 6: Confirmation */}
         {step === 6 && submissionResult && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-4 sm:p-10 shadow-sm text-center space-y-6 animate-in zoom-in-95 duration-200 font-sans">
+          <div className="bg-white rounded-2xl border border-line p-4 sm:p-10 shadow-sm text-center space-y-6 animate-in zoom-in-95 duration-200 font-sans">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-300">
               <CheckCircle2 className="w-10 h-10" />
             </div>
@@ -791,10 +791,10 @@ export default function SurveyPage() {
               <div className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
                 SURVEY RESPONSE RECORDED
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#0B1E36] uppercase mt-1 break-words">
+              <h2 className="text-2xl sm:text-3xl font-bold text-ink mt-1 break-words">
                 Thank You, {submissionResult.participantName}!
               </h2>
-              <p className="text-xs text-slate-600 font-sans mt-1 max-w-md mx-auto leading-relaxed">
+              <p className="text-xs text-ink-soft font-sans mt-1 max-w-md mx-auto leading-relaxed">
                 Your vote has been verified and securely recorded under survey integrity rules. It is
                 now officially included in active public results and Philippine map statistics.
               </p>
@@ -824,7 +824,7 @@ export default function SurveyPage() {
                       ? `${window.location.origin}/survey/manage/${submissionResult.managementToken}`
                       : ""
                   }
-                  className="w-full px-3 py-2.5 text-xs rounded-xl border border-amber-300 bg-white font-mono text-slate-800 select-all overflow-x-auto min-h-[44px]"
+                  className="w-full px-3 py-2.5 text-xs rounded-xl border border-amber-300 bg-white font-mono text-ink select-all overflow-x-auto min-h-[44px]"
                 />
                 <button
                   onClick={copyManagementLink}
@@ -837,11 +837,11 @@ export default function SurveyPage() {
             </div>
 
             {/* Share Your Vote 1080x1350 Banner */}
-            <div className="bg-gradient-to-r from-[#0B1E36] to-[#1E293B] border-2 border-amber-400/40 rounded-2xl p-4 sm:p-5 text-left text-white shadow-xl space-y-3 font-sans overflow-hidden">
+            <div className="">
               <div className="flex flex-wrap items-center justify-between gap-2 font-sans">
                 <div className="flex items-center gap-2 min-w-0">
                   <Vote className="w-5 h-5 text-amber-300 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-300 truncate">
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-300 truncate">
                     SHARE WHO YOU VOTED FOR (1080×1350)
                   </span>
                 </div>
@@ -888,7 +888,7 @@ export default function SurveyPage() {
 
               {senatorialChoices.length > 0 && (
                 <div className="pt-2 border-t border-white/10">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2 font-sans">
+                  <span className="text-[10px] font-bold text-ink-faint uppercase tracking-wider block mb-2 font-sans">
                     Senatorial Slate ({senatorialChoices.length} candidates) - Click to generate share card:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -918,13 +918,13 @@ export default function SurveyPage() {
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/survey/manage/${submissionResult.managementToken}`}
-                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold uppercase tracking-wider text-[#0B1E36] hover:bg-slate-50 transition-colors flex items-center justify-center"
+                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold uppercase tracking-wider text-ink hover:bg-slate-50 transition-colors flex items-center justify-center"
               >
                 Manage or Retract Vote
               </Link>
               <Link
                 href="/results"
-                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow flex items-center justify-center"
+                className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-ph-blue text-white text-xs font-bold uppercase tracking-wider hover:bg-blue-800 transition-colors shadow flex items-center justify-center"
               >
                 View Live Tallies &rarr;
               </Link>

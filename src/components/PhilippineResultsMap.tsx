@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronRight, Hexagon, Map as MapIcon, Minus, Plus, RotateCcw, Search, X } from "lucide-react";
+import { ChevronRight, Hexagon, Map as MapIcon, Minus, Plus, RotateCcw, Search, X } from "@/components/icons";
 import { PHILIPPINE_PROVINCES, PHILIPPINE_REGIONS } from "@/lib/philippines-geo";
 
 /* ------------------------------------------------------------------ types */
@@ -438,9 +438,9 @@ export default function PhilippineResultsMap({
   /* ------------------------------------------------------------ render */
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+    <section className="rounded-xl border border-line bg-white overflow-hidden">
       {/* Position tabs + view toggle */}
-      <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-6">
+      <div className="flex flex-col gap-3 border-b border-line px-4 py-3 md:flex-row md:items-center md:justify-between md:px-6">
         <div role="tablist" aria-label="Posisyon" className="flex gap-1 overflow-x-auto">
           {POSITIONS.map((p) => (
             <button
@@ -449,11 +449,11 @@ export default function PhilippineResultsMap({
               aria-selected={position === p.id}
               onClick={() => setPosition(p.id)}
               className={`shrink-0 rounded-md px-3 py-2 text-left transition-colors ${
-                position === p.id ? "bg-[#0038A8] text-white" : "text-slate-600 hover:bg-slate-100"
+                position === p.id ? "bg-[#0038A8] text-white" : "text-ink-soft hover:bg-slate-100"
               }`}
             >
               <span className="block text-sm font-semibold leading-tight">{p.fil}</span>
-              <span className={`block text-[11px] leading-tight ${position === p.id ? "text-blue-100" : "text-slate-400"}`}>{p.en}</span>
+              <span className={`block text-[11px] leading-tight ${position === p.id ? "text-blue-100" : "text-ink-faint"}`}>{p.en}</span>
             </button>
           ))}
         </div>
@@ -467,7 +467,7 @@ export default function PhilippineResultsMap({
               onClick={() => setView(id)}
               aria-pressed={view === id}
               className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-semibold ${
-                view === id ? "bg-white text-[#0038A8] shadow-sm" : "text-slate-500 hover:text-slate-800"
+                view === id ? "bg-white text-[#0038A8] shadow-sm" : "text-ink-muted hover:text-ink"
               }`}
             >
               <Icon className="h-3.5 w-3.5" /> {label}
@@ -478,32 +478,32 @@ export default function PhilippineResultsMap({
 
       {/* Breadcrumb */}
       <nav aria-label="Location" className="flex flex-wrap items-center gap-1 border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs md:px-6">
-        <button onClick={goNational} className={`font-semibold ${regionId ? "text-[#0038A8] hover:underline" : "text-slate-800"}`}>
+        <button onClick={goNational} className={`font-semibold ${regionId ? "text-[#0038A8] hover:underline" : "text-ink"}`}>
           Pilipinas
         </button>
         {regionId && (
           <>
-            <ChevronRight className="h-3 w-3 text-slate-400" />
-            <button onClick={() => goRegion(regionId)} className={`font-semibold ${provinceId ? "text-[#0038A8] hover:underline" : "text-slate-800"}`}>
+            <ChevronRight className="h-3 w-3 text-ink-faint" />
+            <button onClick={() => goRegion(regionId)} className={`font-semibold ${provinceId ? "text-[#0038A8] hover:underline" : "text-ink"}`}>
               {regionMeta.get(regionId)?.code}
             </button>
           </>
         )}
         {provinceId && (
           <>
-            <ChevronRight className="h-3 w-3 text-slate-400" />
-            <button onClick={() => setCityPsgc("")} className={`font-semibold ${cityPsgc ? "text-[#0038A8] hover:underline" : "text-slate-800"}`}>
+            <ChevronRight className="h-3 w-3 text-ink-faint" />
+            <button onClick={() => setCityPsgc("")} className={`font-semibold ${cityPsgc ? "text-[#0038A8] hover:underline" : "text-ink"}`}>
               {provinceMeta.get(provinceId)?.name}
             </button>
           </>
         )}
         {cityPsgc && (
           <>
-            <ChevronRight className="h-3 w-3 text-slate-400" />
-            <span className="font-semibold text-slate-800">{cityResultMap.get(cityPsgc)?.name}</span>
+            <ChevronRight className="h-3 w-3 text-ink-faint" />
+            <span className="font-semibold text-ink">{cityResultMap.get(cityPsgc)?.name}</span>
           </>
         )}
-        <span className="ml-auto hidden text-slate-400 sm:inline">
+        <span className="ml-auto hidden text-ink-faint sm:inline">
           Hindi opisyal na resulta ng survey · Unofficial survey results
           {lastUpdated ? ` · as of ${new Date(lastUpdated).toLocaleString("en-PH", { dateStyle: "medium", timeStyle: "short" })}` : ""}
         </span>
@@ -516,7 +516,7 @@ export default function PhilippineResultsMap({
             <select
               value={regionId}
               onChange={(e) => (e.target.value ? goRegion(e.target.value) : goNational())}
-              className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 shadow-sm"
+              className="w-full rounded-md border border-line bg-white px-2 py-1.5 text-xs text-ink-soft shadow-sm"
               aria-label="Pumili ng rehiyon"
             >
               <option value="">Lahat ng rehiyon</option>
@@ -530,7 +530,7 @@ export default function PhilippineResultsMap({
               <select
                 value={provinceId}
                 onChange={(e) => (e.target.value ? goProvince(e.target.value) : goRegion(regionId))}
-                className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 shadow-sm"
+                className="w-full rounded-md border border-line bg-white px-2 py-1.5 text-xs text-ink-soft shadow-sm"
                 aria-label="Pumili ng lalawigan"
               >
                 <option value="">Lahat ng lalawigan</option>
@@ -543,20 +543,20 @@ export default function PhilippineResultsMap({
             )}
           </div>
 
-          <div className="absolute right-3 top-3 z-10 flex flex-col overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+          <div className="absolute right-3 top-3 z-10 flex flex-col overflow-hidden rounded-md border border-line bg-white shadow-sm">
             <button aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(6, z * 1.4))} className="p-2 hover:bg-slate-50">
-              <Plus className="h-4 w-4 text-slate-600" />
+              <Plus className="h-4 w-4 text-ink-soft" />
             </button>
-            <button aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(1, z / 1.4))} className="border-t border-slate-200 p-2 hover:bg-slate-50">
-              <Minus className="h-4 w-4 text-slate-600" />
+            <button aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(1, z / 1.4))} className="border-t border-line p-2 hover:bg-slate-50">
+              <Minus className="h-4 w-4 text-ink-soft" />
             </button>
-            <button aria-label="Reset map" onClick={goNational} className="border-t border-slate-200 p-2 hover:bg-slate-50">
-              <RotateCcw className="h-4 w-4 text-slate-600" />
+            <button aria-label="Reset map" onClick={goNational} className="border-t border-line p-2 hover:bg-slate-50">
+              <RotateCcw className="h-4 w-4 text-ink-soft" />
             </button>
           </div>
 
           {!geo && (
-            <div className="flex h-[560px] items-center justify-center text-sm text-slate-500">
+            <div className="flex h-[560px] items-center justify-center text-sm text-ink-muted">
               {geoError ? "Hindi ma-load ang mapa. Pakisubukang muli." : "Nilo-load ang mapa…"}
             </div>
           )}
@@ -678,49 +678,49 @@ export default function PhilippineResultsMap({
 
           {hover && hoverInfo && (
             <div
-              className="pointer-events-none absolute z-20 w-56 rounded-md border border-slate-200 bg-white p-3 text-xs shadow-lg"
+              className="pointer-events-none absolute z-20 w-56 rounded-md border border-line bg-white p-3 text-xs shadow-soft"
               style={{ left: Math.min(hover.x + 14, (wrapRef.current?.clientWidth || 600) - 236), top: hover.y + 14 }}
             >
-              <p className="font-semibold text-slate-900">{hoverInfo.name}</p>
+              <p className="font-semibold text-ink">{hoverInfo.name}</p>
               {hoverInfo.leader ? (
-                <p className="mt-1 flex items-center gap-1.5 text-slate-600">
+                <p className="mt-1 flex items-center gap-1.5 text-ink-soft">
                   <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: hoverInfo.leader.color }} />
                   <span className="truncate">{hoverInfo.leader.name}</span>
                   <span className="ml-auto font-semibold tabular-nums">{hoverInfo.share?.toFixed(1)}%</span>
                 </p>
               ) : (
-                <p className="mt-1 text-slate-400">Wala pang sapat na tugon · Not enough responses</p>
+                <p className="mt-1 text-ink-faint">Wala pang sapat na tugon · Not enough responses</p>
               )}
-              <p className="mt-1 text-slate-400 tabular-nums">{fmt(hoverInfo.responses)} responses</p>
+              <p className="mt-1 text-ink-faint tabular-nums">{fmt(hoverInfo.responses)} responses</p>
             </div>
           )}
 
           {/* Legend */}
-          <div className="absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-white/90 px-3 py-2 text-[11px] text-slate-600 backdrop-blur">
-            <span className="font-semibold text-slate-800">Nangunguna sa lalawigan:</span>
+          <div className="absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-white/90 px-3 py-2 text-[11px] text-ink-soft backdrop-blur">
+            <span className="font-semibold text-ink">Nangunguna sa lalawigan:</span>
             {legend.leaders.slice(0, 5).map(({ c, n }) =>
               c ? (
                 <span key={c.id} className="flex items-center gap-1">
                   <span className="h-2.5 w-2.5 rounded-sm" style={{ background: c.color }} />
-                  {shortName(c.name)} <span className="tabular-nums text-slate-400">{n}</span>
+                  {shortName(c.name)} <span className="tabular-nums text-ink-faint">{n}</span>
                 </span>
               ) : null
             )}
             <span className="flex items-center gap-1">
               <span className="h-2.5 w-2.5 rounded-sm border border-slate-300" style={{ background: NO_DATA }} />
-              Walang sapat na datos <span className="tabular-nums text-slate-400">{legend.none}</span>
+              Walang sapat na datos <span className="tabular-nums text-ink-faint">{legend.none}</span>
             </span>
           </div>
         </div>
 
         {/* Side panel */}
-        <aside className="flex max-h-[680px] flex-col border-t border-slate-200 lg:border-l lg:border-t-0">
-          <div className="border-b border-slate-200 px-5 py-4">
+        <aside className="flex max-h-[680px] flex-col border-t border-line lg:border-l lg:border-t-0">
+          <div className="border-b border-line px-5 py-4">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#CE1126]">{scope.level}</p>
-            <h3 className="mt-0.5 text-xl font-semibold text-slate-900">{scope.title}</h3>
-            <p className="text-xs text-slate-500">{scope.subtitle}</p>
-            <p className="mt-2 text-xs text-slate-500">
-              <span className="font-semibold tabular-nums text-slate-800">{fmt(scope.ranking ? scope.ranking.total : scope.responses)}</span>{" "}
+            <h3 className="mt-0.5 text-xl font-semibold text-ink">{scope.title}</h3>
+            <p className="text-xs text-ink-muted">{scope.subtitle}</p>
+            <p className="mt-2 text-xs text-ink-muted">
+              <span className="font-semibold tabular-nums text-ink">{fmt(scope.ranking ? scope.ranking.total : scope.responses)}</span>{" "}
               {scope.ranking ? "boto · votes" : "tugon · responses"} para sa {positionMeta.fil}
             </p>
           </div>
@@ -734,22 +734,22 @@ export default function PhilippineResultsMap({
                   return (
                     <li key={row.id} className="py-2.5">
                       <div className="flex items-baseline gap-2">
-                        <span className="w-5 shrink-0 text-xs font-semibold tabular-nums text-slate-400">{i + 1}</span>
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900">{c?.name || "—"}</span>
-                        <span className="text-sm font-semibold tabular-nums text-slate-900">{row.share.toFixed(1)}%</span>
+                        <span className="w-5 shrink-0 text-xs font-semibold tabular-nums text-ink-faint">{i + 1}</span>
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{c?.name || "—"}</span>
+                        <span className="text-sm font-semibold tabular-nums text-ink">{row.share.toFixed(1)}%</span>
                       </div>
                       <div className="ml-7 mt-1 flex items-center gap-2">
                         <div className="h-1.5 flex-1 rounded-full bg-slate-100">
                           <div className="h-1.5 rounded-full" style={{ width: `${Math.max(2, row.share)}%`, background: c?.color || "#64748B" }} />
                         </div>
-                        <span className="w-14 text-right text-[11px] tabular-nums text-slate-400">{fmt(row.votes)}</span>
+                        <span className="w-14 text-right text-[11px] tabular-nums text-ink-faint">{fmt(row.votes)}</span>
                       </div>
-                      {c?.party && <p className="ml-7 mt-0.5 truncate text-[11px] text-slate-400">{c.party}</p>}
+                      {c?.party && <p className="ml-7 mt-0.5 truncate text-[11px] text-ink-faint">{c.party}</p>}
                     </li>
                   );
                 })
               ) : (
-                <li className="py-6 text-sm text-slate-500">
+                <li className="py-6 text-sm text-ink-muted">
                   {scope.insufficient
                     ? "May mga tugon na, pero kulang pa para ipakita ang hatian. · Not enough responses to show a breakdown yet."
                     : "Wala pang tugon dito. · No responses here yet."}
@@ -759,8 +759,8 @@ export default function PhilippineResultsMap({
 
             {/* Provinces in region */}
             {regionId && !provinceId && (
-              <div className="border-t border-slate-200 px-5 py-4">
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Mga Lalawigan</p>
+              <div className="border-t border-line px-5 py-4">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-muted">Mga Lalawigan</p>
                 <ul className="space-y-1">
                   {PHILIPPINE_PROVINCES.filter((p) => p.regionId === regionId).map((p) => {
                     const r = provinceRank(p.id);
@@ -769,8 +769,8 @@ export default function PhilippineResultsMap({
                       <li key={p.id}>
                         <button onClick={() => goProvince(p.id)} className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-slate-50">
                           <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: leaderColor(r) }} />
-                          <span className="flex-1 truncate text-slate-800">{p.name}</span>
-                          <span className="truncate text-xs text-slate-400">{lead ? shortName(lead.name) : "—"}</span>
+                          <span className="flex-1 truncate text-ink">{p.name}</span>
+                          <span className="truncate text-xs text-ink-faint">{lead ? shortName(lead.name) : "—"}</span>
                         </button>
                       </li>
                     );
@@ -781,9 +781,9 @@ export default function PhilippineResultsMap({
 
             {/* Cities / municipalities in province */}
             {provinceId && (
-              <div className="border-t border-slate-200 px-5 py-4">
+              <div className="border-t border-line px-5 py-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
                     Mga Lungsod at Bayan · {(cityResults[provinceId] || []).length}
                   </p>
                   {cityPsgc && (
@@ -793,12 +793,12 @@ export default function PhilippineResultsMap({
                   )}
                 </div>
                 <label className="relative mb-2 block">
-                  <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-slate-400" />
+                  <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-ink-faint" />
                   <input
                     value={cityQuery}
                     onChange={(e) => setCityQuery(e.target.value)}
                     placeholder="Hanapin ang bayan o lungsod…"
-                    className="w-full rounded-md border border-slate-200 py-1.5 pl-7 pr-2 text-xs"
+                    className="w-full rounded-md border border-line py-1.5 pl-7 pr-2 text-xs"
                   />
                 </label>
                 <ul className="space-y-0.5">
@@ -813,22 +813,22 @@ export default function PhilippineResultsMap({
                           }`}
                         >
                           <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: leaderColor(r) }} />
-                          <span className="flex-1 truncate text-slate-800">
+                          <span className="flex-1 truncate text-ink">
                             {c.name}
-                            {c.type === "City" && <span className="ml-1 text-[10px] font-semibold text-slate-400">LUNGSOD</span>}
+                            {c.type === "City" && <span className="ml-1 text-[10px] font-semibold text-ink-faint">LUNGSOD</span>}
                           </span>
-                          <span className="text-xs tabular-nums text-slate-400">{c.responses}</span>
+                          <span className="text-xs tabular-nums text-ink-faint">{c.responses}</span>
                         </button>
                       </li>
                     );
                   })}
-                  {!cityResults[provinceId] && <li className="py-3 text-xs text-slate-400">Nilo-load…</li>}
+                  {!cityResults[provinceId] && <li className="py-3 text-xs text-ink-faint">Nilo-load…</li>}
                 </ul>
               </div>
             )}
 
             {!regionId && (
-              <p className="border-t border-slate-200 px-5 py-4 text-xs text-slate-500">
+              <p className="border-t border-line px-5 py-4 text-xs text-ink-muted">
                 I-click ang isang lalawigan para makita ang resulta sa bawat bayan at lungsod. · Click a province to see every town and city.
               </p>
             )}

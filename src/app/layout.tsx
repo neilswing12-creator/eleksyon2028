@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+// Plus Jakarta Sans: open, warm and very legible at small sizes (body + headings).
+const sans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+// JetBrains Mono: bill numbers, codes and receipts.
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -85,9 +87,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-brand-navy min-h-screen flex flex-col justify-between`}
+        className={`${sans.variable} ${mono.variable} font-sans antialiased bg-[#F7F8FA] text-ink min-h-screen flex flex-col justify-between`}
       >
         <Navbar />
         <main className="flex-1">{children}</main>

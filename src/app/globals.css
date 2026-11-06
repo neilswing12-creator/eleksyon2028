@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0b132b;
+  --ink: #0f1b2d;
+  --paper: #f7f8fa;
 }
 
 html {
@@ -14,47 +12,65 @@ html {
 }
 
 body {
-  color: #0b132b;
-  background-color: #f8fafc;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background-color: var(--paper);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: clip;
   width: 100%;
   min-height: 100vh;
 }
 
-h1, h2, h3, .font-headline {
-  font-family: 'Oswald', 'Inter', sans-serif;
+/* Headings: same family as body, tighter tracking, never condensed or all-caps by default. */
+h1, h2, h3, h4, .font-headline {
+  font-family: var(--font-sans), system-ui, sans-serif;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-/* Tabular figures for election counts so numbers don't jump */
-.tabular-nums {
+p {
+  text-wrap: pretty;
+}
+
+/* Tabular figures for counts so numbers don't jump */
+.tabular-nums,
+td,
+.font-mono {
   font-variant-numeric: tabular-nums;
 }
 
-/* Pulsing live newsroom indicator */
-@keyframes live-pulse {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(0.95); opacity: 0.8; }
-}
-.animate-live-pulse {
-  animation: live-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Calm, visible keyboard focus */
+:focus-visible {
+  outline: 2px solid #0038a8;
+  outline-offset: 2px;
 }
 
-/* Custom crisp scrollbars */
+::selection {
+  background: #fcd11666;
+}
+
+/* Thin scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: #cfd6e0;
+  border-radius: 8px;
+  border: 2px solid var(--paper);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a9b4c4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

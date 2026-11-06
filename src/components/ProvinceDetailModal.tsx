@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { X, Award, Users, AlertCircle, CheckCircle2 } from "lucide-react";
+import { X, Award, Users, AlertCircle, CheckCircle2 } from "@/components/icons";
 
 interface ProvinceData {
   id: string;
@@ -54,7 +54,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
               <span>&bull;</span>
               <span>{province.regionId}</span>
             </div>
-            <h3 className="text-2xl font-headline font-black mt-1 text-white uppercase tracking-wide">
+            <h3 className="text-2xl font-bold mt-1 text-white">
               {province.name}
             </h3>
             <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-300 font-sans">
@@ -95,8 +95,8 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
           )}
 
           {/* Leading Presidential Candidate */}
-          <div className="border-2 border-slate-200 rounded-xl p-4 bg-slate-50/70">
-            <div className="text-xs font-headline font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center justify-between">
+          <div className="border border-line rounded-xl p-4 bg-slate-50/70">
+            <div className="text-xs font-headline font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center justify-between">
               <span>Presidential Survey Leader</span>
               <Award className="w-4 h-4 text-amber-500" />
             </div>
@@ -112,14 +112,14 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                     <h4 className="text-lg font-headline font-bold text-[#0B132B] uppercase">
                       {province.leadingPresident.name}
                     </h4>
-                    <p className="text-xs text-slate-500 font-semibold">
+                    <p className="text-xs text-ink-muted font-semibold">
                       {province.leadingPresident.votes} votes &bull;{" "}
                       {province.leadingPresident.share}% of provincial responses
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-headline font-black text-gma-blue tabular-nums">
+                  <div className="text-2xl font-headline font-bold text-gma-blue tabular-nums">
                     {province.leadingPresident.share}%
                   </div>
                   {province.leadingPresident.margin > 0 && (
@@ -130,13 +130,13 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-400 italic">No presidential preferences cast yet.</p>
+              <p className="text-xs text-ink-faint italic">No presidential preferences cast yet.</p>
             )}
           </div>
 
           {/* Leading Vice Presidential Candidate */}
-          <div className="border-2 border-slate-200 rounded-xl p-4 bg-slate-50/70">
-            <div className="text-xs font-headline font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="border border-line rounded-xl p-4 bg-slate-50/70">
+            <div className="text-xs font-headline font-bold uppercase tracking-wider text-ink-muted mb-2">
               Vice Presidential Survey Leader
             </div>
             {province.leadingVicePresident ? (
@@ -150,34 +150,34 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                     <h4 className="text-base font-headline font-bold text-[#0B132B] uppercase">
                       {province.leadingVicePresident.name}
                     </h4>
-                    <p className="text-xs text-slate-500 font-semibold">
+                    <p className="text-xs text-ink-muted font-semibold">
                       {province.leadingVicePresident.votes} votes &bull; {province.leadingVicePresident.share}% share
                     </p>
                   </div>
                 </div>
-                <div className="text-xl font-headline font-black text-[#0B132B] tabular-nums">
+                <div className="text-xl font-headline font-bold text-[#0B132B] tabular-nums">
                   {province.leadingVicePresident.share}%
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-400 italic">No VP responses recorded.</p>
+              <p className="text-xs text-ink-faint italic">No VP responses recorded.</p>
             )}
           </div>
 
           {/* Top Senatorial Choices */}
           {province.topSenators && province.topSenators.length > 0 && (
             <div>
-              <div className="text-xs font-headline font-bold uppercase tracking-wider text-slate-500 mb-3">
+              <div className="text-xs font-headline font-bold uppercase tracking-wider text-ink-muted mb-3">
                 Top Senatorial Choices in {province.name}
               </div>
               <div className="space-y-2">
                 {province.topSenators.map((sen, idx) => (
                   <div
                     key={sen.id}
-                    className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 bg-white text-xs"
+                    className="flex items-center justify-between p-2.5 rounded-lg border border-line bg-white text-xs"
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-700 font-headline font-bold flex items-center justify-center text-[10px]">
+                      <span className="w-5 h-5 rounded-full bg-slate-100 text-ink-soft font-headline font-bold flex items-center justify-center text-[10px]">
                         #{idx + 1}
                       </span>
                       <span
@@ -188,7 +188,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
                         {sen.name}
                       </span>
                     </div>
-                    <span className="font-headline font-black text-slate-700 text-xs">
+                    <span className="font-headline font-bold text-ink-soft text-xs">
                       {sen.votes} voters
                     </span>
                   </div>
@@ -199,15 +199,15 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
 
           {/* Included Cities */}
           {province.cities && province.cities.length > 0 && (
-            <div className="border-t border-slate-200 pt-4">
-              <div className="text-xs font-headline font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <div className="border-t border-line pt-4">
+              <div className="text-xs font-headline font-bold text-ink-muted uppercase tracking-wider mb-2">
                 Key Cities &amp; Municipalities Covered
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {province.cities.map((city) => (
                   <span
                     key={city}
-                    className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-[11px] font-semibold"
+                    className="px-2.5 py-1 rounded-md bg-slate-100 text-ink-soft text-[11px] font-semibold"
                   >
                     {city}
                   </span>
@@ -218,7 +218,7 @@ export default function ProvinceDetailModal({ province, onClose, minThreshold }:
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <div className="p-4 bg-slate-50 border-t border-line flex justify-end">
           <button
             onClick={onClose}
             className="px-5 py-2 rounded-xl bg-[#0B132B] text-white font-headline font-bold text-xs uppercase tracking-wider hover:bg-slate-800 transition-colors"

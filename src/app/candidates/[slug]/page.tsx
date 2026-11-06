@@ -25,7 +25,7 @@ import {
   FileCheck,
   Award,
   Layers,
-} from "lucide-react";
+} from "@/components/icons";
 import ShareVoteCardModal, {
   ShareCandidateData,
   CompetitorData,
@@ -220,7 +220,7 @@ export default function CandidateDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-brand-light flex items-center justify-center p-4">
+      <div className="min-h-screen bg-paper flex items-center justify-center p-4">
         <div className="text-center space-y-2">
           <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="text-xs text-brand-slate font-medium">Loading candidate profile...</p>
@@ -231,9 +231,9 @@ export default function CandidateDetailPage() {
 
   if (!candidate) {
     return (
-      <div className="min-h-screen bg-brand-light flex items-center justify-center p-4">
+      <div className="min-h-screen bg-paper flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl border border-brand-border p-8 text-center max-w-md shadow-subtle">
-          <h2 className="text-lg font-bold text-brand-navy">Candidate Not Found</h2>
+          <h2 className="text-lg font-bold text-ink">Candidate Not Found</h2>
           <p className="text-xs text-brand-slate mt-1">
             The requested candidate profile does not exist or has been unpublished.
           </p>
@@ -257,13 +257,13 @@ export default function CandidateDetailPage() {
     : "March 2026";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-16">
+    <div className="min-h-screen bg-paper pb-16">
       {/* Top Breadcrumb & Verification Header */}
       <div className="bg-white border-b border-brand-border py-3.5">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link
             href="/candidates"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-sky-700 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-ink-soft hover:text-sky-700 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Candidates</span>
@@ -273,7 +273,7 @@ export default function CandidateDetailPage() {
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>Verified Public Profile</span>
             </span>
-            <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
+            <span className="text-xs text-ink-faint uppercase tracking-wider font-semibold">
               {candidate.position.replace("_", " ")}
             </span>
           </div>
@@ -282,12 +282,12 @@ export default function CandidateDetailPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
         {/* Profile Header Card (BetterGov.ph / eGov.ph style) */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-subtle">
+        <div className="bg-white rounded-2xl border border-line overflow-hidden shadow-subtle">
           <div className="h-2 w-full" style={{ backgroundColor: candidate.color }}></div>
 
           <div className="p-6 sm:p-8 flex flex-col md:flex-row items-start gap-6">
             {candidate.photoUrl ? (
-              <picture className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex-shrink-0 bg-slate-100">
+              <picture className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border border-line shadow-sm flex-shrink-0 bg-slate-100">
                 <source srcSet={candidate.photoUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp")} type="image/webp" />
                 <img
                   src={candidate.photoUrl}
@@ -299,7 +299,7 @@ export default function CandidateDetailPage() {
                 />
               </picture>
             ) : (
-              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-slate-100 flex items-center justify-center font-bold text-2xl text-slate-600 flex-shrink-0">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-slate-100 flex items-center justify-center font-bold text-2xl text-ink-soft flex-shrink-0">
                 {candidate.name.slice(0, 2)}
               </div>
             )}
@@ -309,10 +309,10 @@ export default function CandidateDetailPage() {
                 <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-sky-50 text-sky-800 border border-sky-100">
                   {candidate.position.replace("_", " ")}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700">
+                <span className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-ink-soft">
                   {candidate.party || "Independent"}
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-600 font-mono">
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-ink-soft font-mono">
                   <span
                     className="w-2.5 h-2.5 rounded-full inline-block"
                     style={{ backgroundColor: candidate.color }}
@@ -321,10 +321,10 @@ export default function CandidateDetailPage() {
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0B1E36]">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
                 {candidate.name}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1 max-w-3xl">
+              <p className="text-xs sm:text-sm text-ink-soft leading-relaxed pt-1 max-w-3xl">
                 {candidate.bio}
               </p>
 
@@ -341,8 +341,8 @@ export default function CandidateDetailPage() {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
-                <span className="inline-flex items-center gap-1 text-slate-400">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                <span className="inline-flex items-center gap-1 text-ink-faint">
+                  <Calendar className="w-3.5 h-3.5 text-ink-faint" />
                   <span>Audited: {verifiedDateFormatted}</span>
                 </span>
               </div>
@@ -358,7 +358,7 @@ export default function CandidateDetailPage() {
               </Link>
               <button
                 onClick={handleOpenShare}
-                className="w-full text-center px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B1E36] text-xs font-semibold shadow-sm flex items-center justify-center gap-1.5 transition-colors border border-slate-200"
+                className="w-full text-center px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-ink text-xs font-semibold shadow-sm flex items-center justify-center gap-1.5 transition-colors border border-line"
               >
                 <Share2 className="w-4 h-4 text-sky-700" />
                 <span>Share Results Card</span>
@@ -370,9 +370,9 @@ export default function CandidateDetailPage() {
         {/* Credentials & Background */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Education */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-subtle space-y-4">
+          <div className="bg-white rounded-2xl border border-line p-6 shadow-subtle space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#0B1E36] uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-bold text-ink uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4 text-sky-600" />
                 <span>Educational Background</span>
               </div>
@@ -383,17 +383,17 @@ export default function CandidateDetailPage() {
             {candidate.educations && candidate.educations.length > 0 ? (
               <ul className="space-y-3 pt-1">
                 {candidate.educations.map((edu: any, i: number) => (
-                  <li key={edu.id || i} className="flex items-start gap-2.5 text-xs text-[#0B1E36]">
+                  <li key={edu.id || i} className="flex items-start gap-2.5 text-xs text-ink">
                     <span className="w-2 h-2 rounded-full bg-sky-600 mt-1 flex-shrink-0"></span>
                     <div className="space-y-0.5">
-                      <div className="font-semibold text-[#0B1E36] leading-snug">{edu.degree}</div>
+                      <div className="font-semibold text-ink leading-snug">{edu.degree}</div>
                       {(edu.institution || edu.year) && (
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-ink-muted">
                           {edu.institution} {edu.year ? `(${edu.year})` : ""}
                         </div>
                       )}
                       {edu.sourceTitle && (
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-ink-faint">
                           Source: {edu.sourceTitle}
                         </div>
                       )}
@@ -404,23 +404,23 @@ export default function CandidateDetailPage() {
             ) : candidate.education ? (
               <ul className="space-y-3 pt-1">
                 {candidate.education.split(";").map((e: string, i: number) => (
-                  <li key={i} className="flex items-start gap-2.5 text-xs text-[#0B1E36]">
+                  <li key={i} className="flex items-start gap-2.5 text-xs text-ink">
                     <span className="w-2 h-2 rounded-full bg-sky-600 mt-1 flex-shrink-0"></span>
                     <span className="leading-relaxed font-semibold">{e.trim()}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-xs text-slate-500 italic">
+              <p className="text-xs text-ink-muted italic">
                 Verified academic records under research review.
               </p>
             )}
           </div>
 
           {/* Public Service History */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-subtle space-y-4">
+          <div className="bg-white rounded-2xl border border-line p-6 shadow-subtle space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#0B1E36] uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-bold text-ink uppercase tracking-wider">
                 <Briefcase className="w-4 h-4 text-emerald-600" />
                 <span>Public Service Record</span>
               </div>
@@ -431,17 +431,17 @@ export default function CandidateDetailPage() {
             {candidate.publicServices && candidate.publicServices.length > 0 ? (
               <ul className="space-y-3 pt-1">
                 {candidate.publicServices.map((srv: any, i: number) => (
-                  <li key={srv.id || i} className="flex items-start gap-2.5 text-xs text-[#0B1E36]">
+                  <li key={srv.id || i} className="flex items-start gap-2.5 text-xs text-ink">
                     <span className="w-2 h-2 rounded-full bg-emerald-600 mt-1 flex-shrink-0"></span>
                     <div className="space-y-0.5">
-                      <div className="font-semibold text-[#0B1E36] leading-snug">{srv.position}</div>
+                      <div className="font-semibold text-ink leading-snug">{srv.position}</div>
                       {(srv.title || srv.period) && (
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-ink-muted">
                           {srv.title} {srv.period ? `(${srv.period})` : ""}
                         </div>
                       )}
                       {srv.sourceTitle && (
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-ink-faint">
                           Source: {srv.sourceTitle}
                         </div>
                       )}
@@ -452,14 +452,14 @@ export default function CandidateDetailPage() {
             ) : candidate.publicService ? (
               <ul className="space-y-3 pt-1">
                 {candidate.publicService.split(";").map((s: string, i: number) => (
-                  <li key={i} className="flex items-start gap-2.5 text-xs text-[#0B1E36]">
+                  <li key={i} className="flex items-start gap-2.5 text-xs text-ink">
                     <span className="w-2 h-2 rounded-full bg-emerald-600 mt-1 flex-shrink-0"></span>
                     <span className="leading-relaxed font-semibold">{s.trim()}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-xs text-slate-500 italic">
+              <p className="text-xs text-ink-muted italic">
                 Previous elected or appointed public service details.
               </p>
             )}
@@ -467,16 +467,16 @@ export default function CandidateDetailPage() {
         </div>
 
         {/* SECTION: DEDICATED LEGISLATIVE RECORDS (Official Philippine Congress Registry) */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-subtle space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/70">
+        <div className="bg-white rounded-2xl border border-line p-6 sm:p-8 shadow-subtle space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
             <div>
               <div className="flex items-center gap-2">
                 <Landmark className="w-5 h-5 text-[#004B93]" />
-                <h3 className="text-lg font-bold text-[#0B1E36]">
+                <h3 className="text-lg font-bold text-ink">
                   Official Legislative Records &amp; Bills
                 </h3>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-ink-muted mt-1">
                 Primary records retrieved from the Senate Legislative Information System (LIS) and House of Representatives.
               </p>
             </div>
@@ -487,10 +487,10 @@ export default function CandidateDetailPage() {
                 <Award className="w-3.5 h-3.5 text-sky-600" />
                 <span>{legMetrics.enacted} Republic Acts</span>
               </span>
-              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-ink-soft">
                 {legMetrics.authored} Principal Author
               </span>
-              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-ink-soft">
                 {legMetrics.total} Total Recorded
               </span>
             </div>
@@ -498,9 +498,9 @@ export default function CandidateDetailPage() {
 
           {/* Legislative Summary Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200/60 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-[#0B1E36]">{legMetrics.total}</div>
-              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide mt-0.5">
+            <div className="bg-slate-50 rounded-xl p-3.5 border border-line text-center">
+              <div className="text-xl sm:text-2xl font-bold text-ink">{legMetrics.total}</div>
+              <div className="text-[11px] font-medium text-ink-muted uppercase tracking-wide mt-0.5">
                 Total Bills
               </div>
             </div>
@@ -516,9 +516,9 @@ export default function CandidateDetailPage() {
                 Authored Bills
               </div>
             </div>
-            <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200/60 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-slate-700">{legMetrics.pending}</div>
-              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wide mt-0.5">
+            <div className="bg-slate-50 rounded-xl p-3.5 border border-line text-center">
+              <div className="text-xl sm:text-2xl font-bold text-ink-soft">{legMetrics.pending}</div>
+              <div className="text-[11px] font-medium text-ink-muted uppercase tracking-wide mt-0.5">
                 Active / In Review
               </div>
             </div>
@@ -526,22 +526,22 @@ export default function CandidateDetailPage() {
 
           {/* Filters & Keyword Search Bar */}
           {allRecords.length > 0 && (
-            <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/60 space-y-3">
+            <div className="bg-slate-50/70 p-4 rounded-xl border border-line space-y-3">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
                 <div className="relative flex-1">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                  <Search className="w-4 h-4 text-ink-faint absolute left-3 top-3" />
                   <input
                     type="text"
                     value={legSearch}
                     onChange={(e) => setLegSearch(e.target.value)}
                     placeholder="Search by bill number, title, Republic Act (e.g. SB-1304, RA 10931)..."
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-line focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white"
                   />
                   {legSearch && (
                     <button
                       onClick={() => setLegSearch("")}
-                      className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600 font-bold"
+                      className="absolute right-3 top-2.5 text-xs text-ink-faint hover:text-ink-soft font-bold"
                     >
                       &times;
                     </button>
@@ -558,7 +558,7 @@ export default function CandidateDetailPage() {
                       setLegRole("ALL");
                       setLegStatus("ALL");
                     }}
-                    className="px-3 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+                    className="px-3 py-2 text-xs font-semibold text-ink-soft bg-white border border-line rounded-lg hover:bg-slate-100 transition-colors"
                   >
                     Reset Filters
                   </button>
@@ -569,13 +569,13 @@ export default function CandidateDetailPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 {/* Chamber */}
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-ink-muted mb-1">
                     Chamber
                   </label>
                   <select
                     value={legChamber}
                     onChange={(e) => setLegChamber(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-line bg-white text-xs text-ink-soft focus:outline-none focus:ring-1 focus:ring-sky-500"
                   >
                     <option value="ALL">All Chambers</option>
                     <option value="SENATE">Senate</option>
@@ -585,13 +585,13 @@ export default function CandidateDetailPage() {
 
                 {/* Congress */}
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-ink-muted mb-1">
                     Congress
                   </label>
                   <select
                     value={legCongress}
                     onChange={(e) => setLegCongress(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-line bg-white text-xs text-ink-soft focus:outline-none focus:ring-1 focus:ring-sky-500"
                   >
                     <option value="ALL">All Congresses</option>
                     <option value="19">19th Congress (2022–2025)</option>
@@ -605,13 +605,13 @@ export default function CandidateDetailPage() {
 
                 {/* Role */}
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-ink-muted mb-1">
                     Legislative Role
                   </label>
                   <select
                     value={legRole}
                     onChange={(e) => setLegRole(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-line bg-white text-xs text-ink-soft focus:outline-none focus:ring-1 focus:ring-sky-500"
                   >
                     <option value="ALL">All Roles</option>
                     <option value="PRINCIPAL_AUTHOR">Principal Author</option>
@@ -623,13 +623,13 @@ export default function CandidateDetailPage() {
 
                 {/* Status */}
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-ink-muted mb-1">
                     Bill Status
                   </label>
                   <select
                     value={legStatus}
                     onChange={(e) => setLegStatus(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-line bg-white text-xs text-ink-soft focus:outline-none focus:ring-1 focus:ring-sky-500"
                   >
                     <option value="ALL">All Statuses</option>
                     <option value="ENACTED">Enacted (Republic Act)</option>
@@ -653,7 +653,7 @@ export default function CandidateDetailPage() {
                 return (
                   <div
                     key={bill.id}
-                    className="p-5 rounded-xl border border-slate-200 bg-white hover:border-sky-300 transition-all space-y-2.5 shadow-sm"
+                    className="p-5 rounded-xl border border-line bg-white hover:border-sky-300 transition-all space-y-2.5 shadow-sm"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-2">
@@ -671,7 +671,7 @@ export default function CandidateDetailPage() {
                         )}
 
                         {/* Chamber & Congress */}
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-ink-soft">
                           {bill.chamber === "SENATE" ? "Senate" : "House"} &bull; {bill.congress}th Congress
                         </span>
 
@@ -698,29 +698,29 @@ export default function CandidateDetailPage() {
                     </div>
 
                     {/* Title */}
-                    <h4 className="text-base font-bold text-[#0B1E36] leading-snug">
+                    <h4 className="text-base font-bold text-ink leading-snug">
                       {bill.title}
                     </h4>
 
                     {/* Long Title / Summary */}
                     {bill.longTitle && bill.longTitle !== bill.title && (
-                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                      <p className="text-xs text-ink-soft leading-relaxed line-clamp-2">
                         {bill.longTitle}
                       </p>
                     )}
 
                     {/* Meta Footer */}
-                    <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 text-xs text-slate-500">
+                    <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 text-xs text-ink-muted">
                       <div className="flex items-center gap-3">
                         {bill.filedDate && (
                           <span className="flex items-center gap-1">
-                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                            <Calendar className="w-3.5 h-3.5 text-ink-faint" />
                             <span>
                               Filed: {new Date(bill.filedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                             </span>
                           </span>
                         )}
-                        <span className="text-[11px] text-slate-400">
+                        <span className="text-[11px] text-ink-faint">
                           Source: {bill.sourceInstitution === "SENATE_PH" ? "Senate LIS" : "House LIS"}
                         </span>
                       </div>
@@ -757,15 +757,15 @@ export default function CandidateDetailPage() {
               {filteredRecords.length > legVisible && (
                 <button
                   onClick={() => setLegVisible((v) => v + 50)}
-                  className="w-full rounded-md border border-slate-200 bg-white py-2.5 text-sm font-semibold text-[#0038A8] hover:bg-slate-50"
+                  className="w-full rounded-md border border-line bg-white py-2.5 text-sm font-semibold text-[#0038A8] hover:bg-slate-50"
                 >
                   Ipakita pa · Show more ({(filteredRecords.length - legVisible).toLocaleString()} remaining)
                 </button>
               )}
             </div>
           ) : allRecords.length > 0 ? (
-            <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-              <p className="text-xs font-semibold text-slate-600">
+            <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-line">
+              <p className="text-xs font-semibold text-ink-soft">
                 No legislative records matched the active filter criteria.
               </p>
               <button
@@ -783,15 +783,15 @@ export default function CandidateDetailPage() {
             </div>
           ) : (
             // Informative Graceful State for Non-Congressional Candidates
-            <div className="p-6 rounded-xl border border-slate-200 bg-slate-50/60 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
-                <Landmark className="w-6 h-6 text-slate-400" />
+            <div className="p-6 rounded-xl border border-line bg-slate-50/60 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-ink-faint">
+                <Landmark className="w-6 h-6 text-ink-faint" />
               </div>
               <div className="max-w-md mx-auto space-y-1">
-                <h4 className="text-sm font-bold text-[#0B1E36]">
+                <h4 className="text-sm font-bold text-ink">
                   No Congressional Legislative Records on File
                 </h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-ink-muted leading-relaxed">
                   Legislative records for {candidate.name} may still be pending,
                   loading, or awaiting verification. The absence of records displayed
                   here does not necessarily mean that no legislative history exists.
@@ -808,13 +808,13 @@ export default function CandidateDetailPage() {
         </div>
 
         {/* Agendas & Policy Platforms */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-subtle space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-200/70">
+        <div className="bg-white rounded-2xl border border-line p-6 sm:p-8 shadow-subtle space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-line">
             <div className="flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-sky-600" />
-              <h3 className="text-lg font-bold text-[#0B1E36]">Published Agendas &amp; Platforms</h3>
+              <h3 className="text-lg font-bold text-ink">Published Agendas &amp; Platforms</h3>
             </div>
-            <span className="text-xs text-slate-500 font-medium">
+            <span className="text-xs text-ink-muted font-medium">
               {candidate.platforms?.length || 0} policy platform{candidate.platforms?.length !== 1 ? "s" : ""} documented
             </span>
           </div>
@@ -824,7 +824,7 @@ export default function CandidateDetailPage() {
               {candidate.platforms.map((p: any) => (
                 <div
                   key={p.id}
-                  className="p-5 rounded-xl border border-slate-100 bg-slate-50/50 hover:border-slate-200 transition-colors space-y-2"
+                  className="p-5 rounded-xl border border-slate-100 bg-slate-50/50 hover:border-line transition-colors space-y-2"
                 >
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-sky-800">
@@ -836,12 +836,12 @@ export default function CandidateDetailPage() {
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-base text-[#0B1E36]">{p.title}</h4>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{p.description}</p>
+                  <h4 className="font-bold text-base text-ink">{p.title}</h4>
+                  <p className="text-xs sm:text-sm text-ink-soft leading-relaxed">{p.description}</p>
 
-                  <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/60 mt-3 text-xs">
+                  <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-line mt-3 text-xs">
                     {p.sourceType && (
-                      <span className="text-[10px] uppercase font-mono tracking-wider text-slate-500">
+                      <span className="text-[10px] uppercase font-mono tracking-wider text-ink-muted">
                         Type: {p.sourceType.replace(/_/g, " ")}
                       </span>
                     )}
@@ -861,20 +861,20 @@ export default function CandidateDetailPage() {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-slate-500 italic py-4">
+            <p className="text-xs text-ink-muted italic py-4">
               No verified policy platform information has been submitted yet for this profile.
             </p>
           )}
         </div>
 
         {/* Sources & Public Domain Citations */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-subtle space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-200/70">
+        <div className="bg-white rounded-2xl border border-line p-6 sm:p-8 shadow-subtle space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-line">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-600" />
-              <h3 className="text-lg font-bold text-[#0B1E36]">Sources &amp; Verification Citations</h3>
+              <h3 className="text-lg font-bold text-ink">Sources &amp; Verification Citations</h3>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-ink-muted">
               {candidate.sources?.length || 0} primary reference{candidate.sources?.length !== 1 ? "s" : ""}
             </span>
           </div>
@@ -888,8 +888,8 @@ export default function CandidateDetailPage() {
                 >
                   <FileText className="w-4 h-4 text-sky-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0 flex-1 space-y-1">
-                    <div className="text-xs font-semibold text-[#0B1E36] truncate">{src.title}</div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-xs font-semibold text-ink truncate">{src.title}</div>
+                    <div className="text-[11px] text-ink-muted">
                       Publisher: {src.publisher || "Official Philippine Government Portal"}
                     </div>
                     {src.url && (
@@ -908,7 +908,7 @@ export default function CandidateDetailPage() {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-slate-500 italic">
+            <p className="text-xs text-ink-muted italic">
               Official public domain records provided by the Commission on Elections, Senate of the Philippines, and Official Gazette.
             </p>
           )}

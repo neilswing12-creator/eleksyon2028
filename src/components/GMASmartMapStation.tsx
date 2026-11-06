@@ -17,7 +17,7 @@ import {
   Award,
   Layers,
   Filter,
-} from "lucide-react";
+} from "@/components/icons";
 import { PHILIPPINE_REGIONS, PHILIPPINE_PROVINCES } from "@/lib/philippines-geo";
 import { PHILIPPINE_GEO_REGIONS } from "@/lib/philippines-geo-paths";
 import { CARTOGRAM_GRID } from "./Philippine2DMap";

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Vote } from "lucide-react";
+import { Vote } from "@/components/icons";
 
 interface ElectionLiveBadgeProps {
   label?: string;
@@ -21,7 +21,6 @@ export default function ElectionLiveBadge({
       {/* Animated Election Ballot / Survey Icon */}
       <span className="relative flex items-center justify-center">
         {/* Animated pulsing glow backdrop */}
-        <span className="absolute w-4 h-4 rounded bg-amber-400/40 animate-ping"></span>
         <Vote className="w-3.5 h-3.5 text-amber-300 relative z-10 transition-transform transform hover:scale-110" />
       </span>
       <span>{label}</span>

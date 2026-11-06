@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Map, Hexagon, Info, ChevronRight, Layers, Vote } from "lucide-react";
+import { Search, Map, Hexagon, Info, ChevronRight, Layers, Vote } from "@/components/icons";
 
 import ElectionLiveBadge from "./ElectionLiveBadge";
 

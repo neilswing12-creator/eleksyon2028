@@ -38,7 +38,7 @@ export default function CandidateAvatar({
   if (!fallback) {
     return (
       <div
-        className={`${sizeClasses[size]} rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-600 flex-shrink-0 ${className}`}
+        className={`${sizeClasses[size]} rounded-full bg-slate-100 border border-line flex items-center justify-center font-bold text-ink-soft flex-shrink-0 ${className}`}
       >
         {name.slice(0, 2).toUpperCase()}
       </div>
@@ -47,7 +47,7 @@ export default function CandidateAvatar({
 
   return (
     <div
-      className={`${sizeClasses[size]} rounded-full overflow-hidden border border-slate-200 shadow-xs flex-shrink-0 bg-slate-100 ${className}`}
+      className={`${sizeClasses[size]} rounded-full overflow-hidden border border-line  flex-shrink-0 bg-slate-100 ${className}`}
     >
       <picture>
         {webp && <source srcSet={webp} type="image/webp" />}
